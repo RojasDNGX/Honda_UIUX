@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ambiente - Dados Básicos</title>
+<style>
+  :root {
+    --red: #D6001C;
+    --red-dark: #AD0016;
+    --text-dark: #1a1a1a;
+    --text-gray: #666;
+    --text-gray-light: #9a9a9a;
+    --border-strong: #4a4a4a;
+    --border-light: #cfcfcf;
+    --bg-chip: #eeeeee;
+    --radius: 6px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, Arial, Helvetica, sans-serif;
+    font-size: 15px;
+    color: var(--text-dark);
+    background: #fff;
+  }
+
+  .topbar-strip { height: 4px; background: #1a1a1a; }
+
+  .topbar {
+    background: #fff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  }
+  .topbar-inner {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    padding: 12px 28px;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+  .logo { flex: 0 0 auto; display: flex; align-items: center; }
+
+  .breadcrumb { display: flex; align-items: center; gap: 10px; flex: 1; }
+  .crumb { font-size: 16px; color: #222; padding-bottom: 6px; white-space: nowrap; }
+  .crumb.active { font-weight: 700; color: #111; border-bottom: 3px solid var(--red); }
+  .crumb.disabled { color: #bbb; }
+  .crumb-sep { color: #999; font-size: 15px; }
+  a.crumb { text-decoration: none; cursor: pointer; }
+  a.crumb:hover { text-decoration: underline; }
+
+  .topbar-right { display: flex; align-items: center; gap: 18px; flex: 0 0 auto; }
+  .version { font-size: 13px; color: #aaa; }
+  .icon-btn { border: none; background: none; cursor: pointer; color: #888; display: flex; }
+  .avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: #9a9a9a; color: #fff; font-weight: 700; font-size: 14px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .user-info { line-height: 1.35; }
+  .user-name { font-size: 14px; color: #333; font-weight: 600; }
+  .user-id { font-size: 12px; color: #999; }
+
+  .page { max-width: 1280px; margin: 0 auto; padding: 32px 40px 60px 40px; }
+
+  .page-title { display: flex; align-items: center; gap: 12px; margin-bottom: 26px; }
+  .page-title h1 { font-size: 26px; font-weight: 700; color: #111; }
+
+  .section-chip {
+    display: inline-block;
+    background: var(--bg-chip);
+    color: #222;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 10px 18px;
+    border-radius: 4px;
+    margin-bottom: 22px;
+  }
+
+  .field-row {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 28px;
+    margin-bottom: 22px;
+    align-items: flex-start;
+  }
+
+  .radio-group { display: flex; align-items: center; gap: 22px; height: 50px; flex: 0 0 216px; width: 216px; }
+  .radio-option { display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 15px; white-space: nowrap; }
+  .radio-option input[type="radio"] { accent-color: var(--red); width: 17px; height: 17px; cursor: pointer; }
+  .radio-option span { color: #222; font-weight: 500; }
+  .radio-option.unselected span { color: #999; font-weight: 400; }
+
+  /* Larguras fixas (não responsivas) de cada campo, medidas a partir da referência */
+  .w-a { flex: 0 0 276px; width: 276px; }
+  .w-b { flex: 0 0 174px; width: 174px; }
+  .w-modelo { flex: 0 0 378px; width: 378px; }
+
+  .field {
+    position: relative;
+    height: 50px;
+    border: 1.5px solid var(--border-strong);
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    background: #fff;
+  }
+  .field.light { border-color: var(--border-light); }
+
+  .field select, .field input {
+    border: none;
+    outline: none;
+    background: transparent;
+    width: 100%;
+    height: 100%;
+    font-size: 15px;
+    color: var(--text-dark);
+    font-family: inherit;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+  .field input::placeholder { color: var(--text-dark); opacity: 1; }
+  .field.light input::placeholder,
+  .field.light select.placeholder { color: var(--text-gray-light); }
+  .field select.placeholder { color: var(--text-gray-light); }
+  .field select:disabled,
+  .field input:disabled { color: var(--text-gray-light); -webkit-text-fill-color: var(--text-gray-light); cursor: not-allowed; }
+
+  .field .chevron { position: absolute; right: 14px; color: #555; pointer-events: none; display: flex; }
+  .field.light .chevron, .field select:disabled ~ .chevron { color: var(--text-gray-light); }
+
+  .field-floating { position: relative; }
+  .field-floating label {
+    position: absolute;
+    top: -9px;
+    left: 12px;
+    background: #fff;
+    padding: 0 4px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-gray);
+    z-index: 1;
+  }
+  .field-floating.disabled label { color: var(--text-gray-light); }
+  .field-floating .field { height: 50px; }
+
+  /* Campos de texto (exceto dropdowns): foco vermelho com label flutuante,
+     e estado de erro (campo obrigatório vazio) com aviso abaixo do campo. */
+  .tf .field { position: relative; }
+  .tf label {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 15px;
+    color: var(--text-dark);
+    background: transparent;
+    padding: 0 4px;
+    pointer-events: none;
+    transition: top 0.15s ease, font-size 0.15s ease, color 0.15s ease, background 0.15s ease;
+    white-space: nowrap;
+  }
+  .tf .field.light label { color: var(--text-gray-light); }
+
+  .tf input:focus + label,
+  .tf input:not(:placeholder-shown) + label {
+    top: 0;
+    font-size: 12px;
+    font-weight: 600;
+    background: #fff;
+  }
+  .tf input:focus + label { color: var(--red); }
+  .tf .field:focus-within { border-color: var(--red); }
+
+  .tf .field-error {
+    display: none;
+    color: var(--red);
+    font-size: 12px;
+    font-weight: 500;
+    margin-top: 4px;
+    padding-left: 2px;
+  }
+  .tf.error .field { border-color: var(--red); }
+  .tf.error label { color: var(--red); }
+  .tf.error .field-error { display: block; }
+
+  /* Dropdowns pesquisáveis (combobox): a label fica vermelha ao abrir, mas a borda do
+     campo permanece neutra. Têm botão de limpar e lista de opções filtrável abaixo. */
+  .cb { position: relative; }
+  .cb .field { cursor: text; }
+  .cb input { padding-right: 46px; cursor: text; }
+  .cb input:disabled { cursor: not-allowed; }
+
+  .cb label {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 15px;
+    color: var(--text-dark);
+    background: transparent;
+    padding: 0 4px;
+    pointer-events: none;
+    transition: top 0.15s ease, font-size 0.15s ease, color 0.15s ease, background 0.15s ease;
+    white-space: nowrap;
+    z-index: 1;
+  }
+  .cb .field.light label { color: var(--text-gray-light); }
+
+  .cb input:focus + label,
+  .cb input:not(:placeholder-shown) + label {
+    top: 0;
+    font-size: 12px;
+    font-weight: 600;
+    background: #fff;
+  }
+  .cb input:focus + label { color: var(--red); }
+
+  .cb-clear {
+    position: absolute;
+    right: 32px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    background: none;
+    color: #888;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    display: none;
+    padding: 4px;
+  }
+  .cb-clear.visible { display: block; }
+
+  .cb-arrow {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #555;
+    display: flex;
+    transition: transform 0.15s ease;
+  }
+  .cb.open .cb-arrow { transform: translateY(-50%) rotate(180deg); }
+  .cb .field.light .cb-arrow { color: var(--text-gray-light); }
+
+  .cb-panel {
+    position: absolute;
+    top: calc(100% + 2px);
+    left: 0;
+    right: 0;
+    background: #fff;
+    border: 1.5px solid var(--border-strong);
+    border-top: none;
+    border-radius: 0 0 10px 10px;
+    box-shadow: 0 10px 24px rgba(0,0,0,0.14);
+    max-height: 260px;
+    overflow-y: auto;
+    z-index: 40;
+  }
+  .cb-panel[hidden] { display: none; }
+  .cb-option {
+    padding: 14px 16px;
+    font-size: 15px;
+    color: #444;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+  }
+  .cb-option:last-child { border-bottom: none; }
+  .cb-option:hover, .cb-option.highlighted { background: #f2f2f2; }
+  .cb-empty { padding: 14px 16px; font-size: 13px; color: var(--text-gray-light); }
+
+  /* Alinhado exatamente sob o input "Celular": largura do radio-group + gap + CPF/CNPJ + gap.
+     A largura total (label + switches) é igual à largura do input "Celular". */
+  .whatsapp-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 174px;
+    margin-bottom: 30px;
+    margin-left: 548px;
+  }
+  .wa-label { font-weight: 700; color: #222; font-size: 13px; white-space: nowrap; }
+  .segmented {
+    display: flex;
+    border: 1.5px solid var(--red);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .segmented button {
+    border: none;
+    background: #fff;
+    color: #222;
+    font-size: 12px;
+    padding: 6px 10px;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .segmented button + button { border-left: 1.5px solid var(--red); }
+  .segmented button.selected { background: var(--red); color: #fff; }
+
+  .bottom-row { align-items: center; margin-top: 6px; }
+  .bottom-row .spacer { flex: 1; }
+
+  .btn-enviar {
+    flex: 0 0 278px;
+    width: 278px;
+    background: var(--red);
+    color: #fff;
+    font-weight: 700;
+    font-size: 16px;
+    border: none;
+    border-radius: var(--radius);
+    padding: 14px 0;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .btn-enviar:hover { background: var(--red-dark); }
+  .btn-enviar:disabled {
+    background: var(--bg-chip);
+    color: var(--text-gray-light);
+    cursor: not-allowed;
+  }
+
+  .required-note { margin-top: 26px; font-size: 12px; color: #999; }
+
+  /* Popup de propostas existentes para o mesmo CPF */
+  .proposta-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  .proposta-overlay.hidden { display: none; }
+  .proposta-modal-box {
+    width: 600px;
+    max-width: 92vw;
+    background: #fff;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    position: relative;
+  }
+  .proposta-modal-close {
+    position: absolute;
+    top: 16px;
+    right: 18px;
+    border: none;
+    background: none;
+    color: #888;
+    font-size: 22px;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .proposta-modal-header {
+    background: var(--bg-chip);
+    padding: 30px 24px 24px 24px;
+    text-align: center;
+  }
+  .proposta-modal-header svg { display: block; margin: 0 auto 12px auto; }
+  .proposta-modal-title { color: var(--red); font-weight: 700; font-size: 19px; }
+  .proposta-modal-body { padding: 26px 32px 30px 32px; }
+  .proposta-modal-subtitle { text-align: center; font-weight: 700; font-size: 16px; color: #222; margin-bottom: 20px; }
+
+  .proposta-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    row-gap: 16px;
+    column-gap: 20px;
+    margin-bottom: 24px;
+  }
+  .proposta-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    color: #222;
+  }
+  .proposta-option input[type="radio"] { accent-color: var(--red); width: 18px; height: 18px; cursor: pointer; }
+
+  .proposta-action-btn {
+    display: block;
+    width: 100%;
+    padding: 14px 0;
+    font-size: 16px;
+    font-weight: 700;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: inherit;
+    background: var(--bg-chip);
+    color: var(--text-gray-light);
+    border: 1.5px solid var(--border-light);
+  }
+  .proposta-action-btn:disabled { cursor: not-allowed; }
+  .proposta-action-btn.enabled {
+    background: #fff;
+    color: var(--red);
+    border-color: var(--red);
+  }
+  .proposta-action-continuar {
+    background: #fff;
+    color: var(--red);
+    border-color: var(--red);
+  }
+  .proposta-caption {
+    font-size: 12px;
+    font-style: italic;
+    color: #999;
+    margin: 6px 0 18px 4px;
+  }
+  .proposta-caption:last-child { margin-bottom: 0; }
+</style>
+</head>
+<body>
+
+  <div class="topbar-strip"></div>
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="logo">
+        <svg width="52" height="30" viewBox="0 0.75 42 24.5" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M7.2975 11.25C7.21 11.25 7.105 11.25 7 11.25H7.2975ZM23.4675 0.75H15.75V4.25H22.0325L25.5325 7.75H19.25L12.25 11.25L8.75 7.75H0V11.25H7C3.1325 11.25 0 14.3825 0 18.25C0 22.1175 3.1325 25.25 7 25.25C10.8675 25.25 14 22.1175 14 18.25L17.5 21.75H22.75L28.8575 11.075L30.625 12.8425C29.0325 14.12 28 16.0625 28 18.25C28 22.1175 31.1325 25.25 35 25.25C38.8675 25.25 42 22.1175 42 18.25C42 14.3825 38.8675 11.25 35 11.25C34.685 11.25 34.37 11.3025 34.0725 11.3375L30.4675 7.75H35V2.5L28.49 5.755L23.4675 0.75ZM35 21.75C33.075 21.75 31.5 20.175 31.5 18.25C31.5 16.325 33.075 14.75 35 14.75C36.925 14.75 38.5 16.325 38.5 18.25C38.5 20.175 36.925 21.75 35 21.75ZM7 21.75C5.075 21.75 3.5 20.175 3.5 18.25C3.5 16.325 5.075 14.75 7 14.75C8.925 14.75 10.5 16.325 10.5 18.25C10.5 20.175 8.925 21.75 7 21.75Z" fill="#CC0000"/>
+        </svg>
+      </div>
+
+      <nav class="breadcrumb">
+        <a class="crumb" href="../index.html">Home</a>
+        <span class="crumb-sep">&rsaquo;</span>
+        <span class="crumb active">Dados Básicos</span>
+        <span class="crumb-sep">&rsaquo;</span>
+        <span class="crumb disabled">Simulador</span>
+        <span class="crumb-sep">&rsaquo;</span>
+        <span class="crumb disabled">Ficha Proposta</span>
+      </nav>
+
+      <div class="topbar-right">
+        <span class="version">v1.5.0</span>
+        <button class="icon-btn" title="Notificações">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="1.6"><path d="M6 8a6 6 0 1 1 12 0c0 5 2 6 2 6H4s2-1 2-6z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>
+        </button>
+        <div class="avatar">DA</div>
+        <div class="user-info">
+          <div class="user-name">Dennis Arthur</div>
+          <div class="user-id">1014145</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page">
+
+    <div class="page-title">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#D6001C" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>
+      <h1>Dados Básicos</h1>
+    </div>
+
+    <div class="section-chip">Informações Pessoais</div>
+
+    <div class="field-row">
+      <div class="radio-group">
+        <label class="radio-option">
+          <input type="radio" name="tipoCliente" checked>
+          <span>Varejo</span>
+        </label>
+        <label class="radio-option unselected">
+          <input type="radio" name="tipoCliente">
+          <span>Move Brasil</span>
+        </label>
+      </div>
+
+      <div class="tf w-a">
+        <div class="field">
+          <input type="text" id="cpfCnpj" placeholder=" " required>
+          <label for="cpfCnpj">CPF/CNPJ *</label>
+        </div>
+        <div class="field-error">Campo Obrigatório</div>
+      </div>
+
+      <div class="tf w-b">
+        <div class="field">
+          <input type="text" id="celular" placeholder=" " required>
+          <label for="celular">Celular *</label>
+        </div>
+        <div class="field-error">Campo Obrigatório</div>
+      </div>
+
+      <div class="cb w-a" data-cb="naturezaOcupacao">
+        <div class="field light">
+          <input type="text" id="cbNaturezaOcupacao" placeholder=" " autocomplete="off" disabled>
+          <label for="cbNaturezaOcupacao">Natureza da Ocupação *</label>
+          <button type="button" class="cb-clear" tabindex="-1">&times;</button>
+          <span class="cb-arrow">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </span>
+        </div>
+        <div class="cb-panel" hidden></div>
+      </div>
+
+      <div class="tf w-b">
+        <div class="field light">
+          <input type="text" id="rendaTotal" placeholder=" " required disabled>
+          <label for="rendaTotal">Renda total *</label>
+        </div>
+        <div class="field-error">Campo Obrigatório</div>
+      </div>
+    </div>
+
+    <div class="whatsapp-row">
+      <span class="wa-label">Whatsapp</span>
+      <div class="segmented" id="whatsappToggle">
+        <button type="button" data-value="Sim">Sim</button>
+        <button type="button" data-value="Não">Não</button>
+      </div>
+    </div>
+
+    <div class="section-chip">Informações do Veículo</div>
+
+    <div class="field-row">
+      <div class="cb w-b" data-cb="tipoBem">
+        <div class="field">
+          <input type="text" id="cbTipoBem" placeholder=" " autocomplete="off" value="NOVO">
+          <label for="cbTipoBem">Tipo do Bem *</label>
+          <button type="button" class="cb-clear" tabindex="-1">&times;</button>
+          <span class="cb-arrow">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </span>
+        </div>
+        <div class="cb-panel" hidden></div>
+      </div>
+
+      <div class="field-floating disabled w-b">
+        <label>Marca *</label>
+        <div class="field light">
+          <select id="selectMarca" disabled>
+            <option value="HONDA" selected>HONDA</option>
+          </select>
+          <span class="chevron">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </span>
+        </div>
+      </div>
+
+      <div class="cb w-b" data-cb="anoFabricacao">
+        <div class="field">
+          <input type="text" id="cbAnoFabricacao" placeholder=" " autocomplete="off">
+          <label for="cbAnoFabricacao">Ano Fabricação *</label>
+          <button type="button" class="cb-clear" tabindex="-1">&times;</button>
+          <span class="cb-arrow">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </span>
+        </div>
+        <div class="cb-panel" hidden></div>
+      </div>
+
+      <div class="cb w-b" data-cb="anoModelo">
+        <div class="field">
+          <input type="text" id="cbAnoModelo" placeholder=" " autocomplete="off">
+          <label for="cbAnoModelo">Ano Modelo *</label>
+          <button type="button" class="cb-clear" tabindex="-1">&times;</button>
+          <span class="cb-arrow">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </span>
+        </div>
+        <div class="cb-panel" hidden></div>
+      </div>
+
+      <div class="cb w-modelo" data-cb="modelo">
+        <div class="field">
+          <input type="text" id="cbModelo" placeholder=" " autocomplete="off">
+          <label for="cbModelo">Modelo *</label>
+          <button type="button" class="cb-clear" tabindex="-1">&times;</button>
+          <span class="cb-arrow">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </span>
+        </div>
+        <div class="cb-panel" hidden></div>
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div class="tf w-b">
+        <div class="field">
+          <input type="text" id="valorBem" placeholder=" " required>
+          <label for="valorBem">Valor do Bem *</label>
+        </div>
+        <div class="field-error">Campo Obrigatório</div>
+      </div>
+      <div class="tf w-b">
+        <div class="field">
+          <input type="text" id="valorEntrada" placeholder=" " required>
+          <label for="valorEntrada">Valor de Entrada *</label>
+        </div>
+        <div class="field-error">Campo Obrigatório</div>
+      </div>
+    </div>
+
+    <div class="section-chip">Informações Gerais</div>
+
+    <div class="field-row bottom-row">
+      <div class="cb w-a" data-cb="agenteCertificado">
+        <div class="field">
+          <input type="text" id="cbAgenteCertificado" placeholder=" " autocomplete="off">
+          <label for="cbAgenteCertificado">Agente Certificado *</label>
+          <button type="button" class="cb-clear" tabindex="-1">&times;</button>
+          <span class="cb-arrow">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </span>
+        </div>
+        <div class="cb-panel" hidden></div>
+      </div>
+      <div class="spacer"></div>
+      <button type="button" class="btn-enviar" disabled>Enviar</button>
+    </div>
+
+    <div class="required-note">* Preenchimento obrigatório.</div>
+
+  </div>
+
+  <div class="proposta-overlay hidden" id="propostaModalOverlay">
+    <div class="proposta-modal-box">
+      <button type="button" class="proposta-modal-close" id="propostaModalClose">&times;</button>
+      <div class="proposta-modal-header">
+        <svg width="46" height="42" viewBox="0 0 24 22" fill="none" stroke="#D6001C" stroke-width="1.6">
+          <path d="M12 1.5L23 20.5H1L12 1.5Z" stroke-linejoin="round" stroke-linecap="round"/>
+          <rect x="11.15" y="7.5" width="1.7" height="6.5" fill="#D6001C" stroke="none"/>
+          <rect x="11.15" y="16" width="1.7" height="1.8" fill="#D6001C" stroke="none"/>
+        </svg>
+        <div class="proposta-modal-title">Existem propostas aprovadas para o mesmo CPF</div>
+      </div>
+      <div class="proposta-modal-body">
+        <div class="proposta-modal-subtitle">Escolha uma proposta para continuar:</div>
+        <div class="proposta-list" id="propostaList">
+          <label class="proposta-option"><input type="radio" name="propostaExistente" value="1000003704"><span>1000003704</span></label>
+          <label class="proposta-option"><input type="radio" name="propostaExistente" value="1000003514"><span>1000003514</span></label>
+          <label class="proposta-option"><input type="radio" name="propostaExistente" value="1000003522"><span>1000003522</span></label>
+          <label class="proposta-option"><input type="radio" name="propostaExistente" value="1000003358"><span>1000003358</span></label>
+          <label class="proposta-option"><input type="radio" name="propostaExistente" value="1000001034"><span>1000001034</span></label>
+          <label class="proposta-option"><input type="radio" name="propostaExistente" value="1000000976"><span>1000000976</span></label>
+          <label class="proposta-option"><input type="radio" name="propostaExistente" value="1000000807"><span>1000000807</span></label>
+          <label class="proposta-option"><input type="radio" name="propostaExistente" value="1000000729"><span>1000000729</span></label>
+          <label class="proposta-option"><input type="radio" name="propostaExistente" value="1000000688"><span>1000000688</span></label>
+          <label class="proposta-option"><input type="radio" name="propostaExistente" value="1000000668"><span>1000000668</span></label>
+        </div>
+
+        <button type="button" class="proposta-action-btn" id="btnEditarProposta" disabled>Editar</button>
+        <div class="proposta-caption">*Abre a proposta selecionada para edição e não gera nova proposta.</div>
+
+        <button type="button" class="proposta-action-btn" id="btnSubstituirProposta" disabled>Substituir</button>
+        <div class="proposta-caption">*Gera uma nova proposta excluindo a proposta selecionada.</div>
+
+        <button type="button" class="proposta-action-btn proposta-action-continuar" id="btnContinuarProposta">Continuar</button>
+        <div class="proposta-caption">*Gera uma nova proposta mantendo as propostas.</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Máscara de moeda BR (R$ 00.000,00): o usuário só digita números, o resto é automático.
+    // Registrada antes de qualquer validação, para que elas já leiam o valor formatado.
+    function maskCurrencyBR(input) {
+      var digits = input.value.replace(/\D/g, "").replace(/^0+(?=\d)/, "");
+      if (!digits) { input.value = ""; return; }
+      var reais = (parseInt(digits, 10) / 100).toFixed(2);
+      var parts = reais.split(".");
+      var intPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+      input.value = "R$ " + intPart + "," + parts[1];
+    }
+    ["rendaTotal", "valorBem", "valorEntrada"].forEach(function (id) {
+      var input = document.getElementById(id);
+      input.addEventListener("input", function () { maskCurrencyBR(input); });
+    });
+
+    // Máscara de telefone BR ((00) 00000-0000): só dígitos, formatação automática.
+    function maskPhoneBR(digits) {
+      digits = digits.slice(0, 11);
+      if (digits.length === 0) return "";
+      if (digits.length <= 2) return "(" + digits;
+      if (digits.length <= 7) return "(" + digits.slice(0, 2) + ") " + digits.slice(2);
+      return "(" + digits.slice(0, 2) + ") " + digits.slice(2, 7) + "-" + digits.slice(7);
+    }
+    (function () {
+      var celularInput = document.getElementById("celular");
+      celularInput.addEventListener("input", function () {
+        celularInput.value = maskPhoneBR(celularInput.value.replace(/\D/g, ""));
+      });
+    })();
+
+    document.querySelectorAll(".radio-option input[type=radio]").forEach(function (radio) {
+      radio.addEventListener("change", function () {
+        document.querySelectorAll(".radio-option").forEach(function (label) {
+          label.classList.toggle("unselected", !label.querySelector("input").checked);
+        });
+      });
+    });
+
+    var whatsappToggle = document.getElementById("whatsappToggle");
+    whatsappToggle.querySelectorAll("button").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        whatsappToggle.querySelectorAll("button").forEach(function (b) { b.classList.remove("selected"); });
+        btn.classList.add("selected");
+      });
+    });
+
+    // Campos de texto obrigatórios: valida ao sair do campo (blur) e mostra "Campo Obrigatório".
+    document.querySelectorAll(".tf input[required]").forEach(function (input) {
+      var wrapper = input.closest(".tf");
+      input.addEventListener("blur", function () {
+        wrapper.classList.toggle("error", !input.value.trim());
+        checkFormComplete();
+      });
+      input.addEventListener("input", function () {
+        if (input.value.trim()) wrapper.classList.remove("error");
+        checkFormComplete();
+      });
+    });
+
+    // Botão "Enviar": só fica ativo (vermelho) quando todos os campos obrigatórios
+    // estiverem preenchidos. "Marca" fica de fora por ficar sempre inativo/bloqueado.
+    var btnEnviar = document.querySelector(".btn-enviar");
+    var REQUIRED_FIELD_IDS = [
+      "cpfCnpj", "celular", "cbNaturezaOcupacao", "rendaTotal",
+      "cbTipoBem", "cbAnoFabricacao", "cbAnoModelo", "cbModelo",
+      "valorBem", "valorEntrada", "cbAgenteCertificado"
+    ];
+    function checkFormComplete() {
+      var complete = REQUIRED_FIELD_IDS.every(function (id) {
+        return document.getElementById(id).value.trim() !== "";
+      });
+      if (complete) {
+        complete = isValidCPF(document.getElementById("cpfCnpj").value.replace(/\D/g, ""));
+      }
+      btnEnviar.disabled = !complete;
+    }
+
+    // "Valor de Entrada" é obrigatório e, além disso, não pode ser igual ao "Valor do Bem".
+    // Roda depois do laço genérico de campos obrigatórios acima e decide o texto final do aviso.
+    var valorBemInput = document.getElementById("valorBem");
+    var valorEntradaInput = document.getElementById("valorEntrada");
+    var valorEntradaWrapper = valorEntradaInput.closest(".tf");
+    var valorEntradaErrorEl = valorEntradaWrapper.querySelector(".field-error");
+    function checkValorEntrada(onBlur) {
+      var valor = valorEntradaInput.value.trim();
+      var vazio = valor === "";
+      var iguais = !vazio && valor === valorBemInput.value.trim();
+      if (vazio && onBlur) {
+        valorEntradaErrorEl.textContent = "Campo Obrigatório";
+        valorEntradaWrapper.classList.add("error");
+      } else if (iguais) {
+        valorEntradaErrorEl.textContent = "Valor de entrada é igual ao valor do bem";
+        valorEntradaWrapper.classList.add("error");
+      } else {
+        valorEntradaWrapper.classList.remove("error");
+      }
+      checkFormComplete();
+    }
+    valorEntradaInput.addEventListener("blur", function () { checkValorEntrada(true); });
+    valorEntradaInput.addEventListener("input", function () { checkValorEntrada(false); });
+    valorBemInput.addEventListener("blur", function () { checkValorEntrada(false); });
+
+    // Máscara de CPF (000.000.000-00, só dígitos) e liberação de "Natureza da Ocupação"
+    // e "Renda total" somente quando o CPF digitado for válido.
+    function isValidCPF(cpf) {
+      if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
+      var sum = 0, i, rest;
+      for (i = 1; i <= 9; i++) sum += parseInt(cpf.charAt(i - 1), 10) * (11 - i);
+      rest = (sum * 10) % 11;
+      if (rest === 10 || rest === 11) rest = 0;
+      if (rest !== parseInt(cpf.charAt(9), 10)) return false;
+      sum = 0;
+      for (i = 1; i <= 10; i++) sum += parseInt(cpf.charAt(i - 1), 10) * (12 - i);
+      rest = (sum * 10) % 11;
+      if (rest === 10 || rest === 11) rest = 0;
+      return rest === parseInt(cpf.charAt(10), 10);
+    }
+
+    function maskCPF(digits) {
+      if (digits.length > 9) return digits.replace(/(\d{3})(\d{3})(\d{3})(\d{1,2})/, "$1.$2.$3-$4");
+      if (digits.length > 6) return digits.replace(/(\d{3})(\d{3})(\d{1,3})/, "$1.$2.$3");
+      if (digits.length > 3) return digits.replace(/(\d{3})(\d{1,3})/, "$1.$2");
+      return digits;
+    }
+
+    var cpfCnpjInput = document.getElementById("cpfCnpj");
+    var naturezaInput = document.getElementById("cbNaturezaOcupacao");
+    var rendaTotalInput = document.getElementById("rendaTotal");
+
+    function setDependentFieldEnabled(enabled) {
+      naturezaInput.disabled = !enabled;
+      naturezaInput.closest(".field").classList.toggle("light", !enabled);
+      rendaTotalInput.disabled = !enabled;
+      rendaTotalInput.closest(".field").classList.toggle("light", !enabled);
+      if (!enabled) rendaTotalInput.closest(".tf").classList.remove("error");
+    }
+
+    var cpfWrapper = cpfCnpjInput.closest(".tf");
+    var cpfErrorEl = cpfWrapper.querySelector(".field-error");
+
+    function updateCpfState(onBlur) {
+      var digits = cpfCnpjInput.value.replace(/\D/g, "");
+      var valid = isValidCPF(digits);
+      setDependentFieldEnabled(valid);
+
+      if (digits === "") {
+        cpfErrorEl.textContent = "Campo Obrigatório";
+        cpfWrapper.classList.toggle("error", !!onBlur);
+      } else if (digits.length === 11 && !valid) {
+        cpfErrorEl.textContent = "CPF inválido";
+        cpfWrapper.classList.add("error");
+      } else {
+        cpfWrapper.classList.remove("error");
+      }
+      checkFormComplete();
+    }
+
+    cpfCnpjInput.addEventListener("input", function () {
+      var digits = cpfCnpjInput.value.replace(/\D/g, "").slice(0, 11);
+      cpfCnpjInput.value = maskCPF(digits);
+      updateCpfState(false);
+    });
+    cpfCnpjInput.addEventListener("blur", function () { updateCpfState(true); });
+
+    // Popup de propostas existentes: dispara ao clicar em "Enviar" (só possível com o
+    // formulário completo) quando o CPF já possui histórico de cadastro. Os demais CPFs
+    // seguem para a próxima tela (a definir).
+    var CPF_COM_HISTORICO = ["31166758800"];
+    var propostaOverlay = document.getElementById("propostaModalOverlay");
+    var btnEditarProposta = document.getElementById("btnEditarProposta");
+    var btnSubstituirProposta = document.getElementById("btnSubstituirProposta");
+
+    function showPropostaModal() {
+      document.querySelectorAll('input[name="propostaExistente"]').forEach(function (r) { r.checked = false; });
+      [btnEditarProposta, btnSubstituirProposta].forEach(function (btn) {
+        btn.disabled = true;
+        btn.classList.remove("enabled");
+      });
+      propostaOverlay.classList.remove("hidden");
+    }
+    function hidePropostaModal() {
+      propostaOverlay.classList.add("hidden");
+    }
+
+    document.getElementById("propostaModalClose").addEventListener("click", hidePropostaModal);
+    document.querySelectorAll('input[name="propostaExistente"]').forEach(function (radio) {
+      radio.addEventListener("change", function () {
+        [btnEditarProposta, btnSubstituirProposta].forEach(function (btn) {
+          btn.disabled = false;
+          btn.classList.add("enabled");
+        });
+      });
+    });
+    [btnEditarProposta, btnSubstituirProposta].forEach(function (btn) {
+      btn.addEventListener("click", hidePropostaModal);
+    });
+    // Guarda o Celular (para o campo "Telefone" readonly) e o CPF (para o
+    // autopreenchimento de CPF já cadastrado) usados na Ficha Proposta.
+    function salvarDadosParaFichaProposta() {
+      try {
+        localStorage.setItem("kta_celular", document.getElementById("celular").value);
+        localStorage.setItem("kta_cpf", cpfCnpjInput.value.replace(/\D/g, ""));
+      } catch (e) {}
+    }
+
+    // "Continuar" na popup de propostas existentes segue para o Simulador.
+    document.getElementById("btnContinuarProposta").addEventListener("click", function () {
+      salvarDadosParaFichaProposta();
+      window.location.href = "simulador.html";
+    });
+
+    // CPF sem histórico: "Enviar" vai direto para o Simulador.
+    // CPF com histórico (já cadastrado): "Enviar" abre a popup de propostas existentes.
+    btnEnviar.addEventListener("click", function () {
+      if (btnEnviar.disabled) return;
+      var digits = cpfCnpjInput.value.replace(/\D/g, "");
+      if (CPF_COM_HISTORICO.indexOf(digits) !== -1) {
+        showPropostaModal();
+      } else {
+        salvarDadosParaFichaProposta();
+        window.location.href = "simulador.html";
+      }
+    });
+
+    // Dropdowns pesquisáveis (combobox): digitar filtra a lista; a label fica vermelha
+    // enquanto aberto; existe um botão de limpar; clique fora ou Esc fecha a lista.
+    function initCombobox(key, options) {
+      var wrapper = document.querySelector('.cb[data-cb="' + key + '"]');
+      var input = wrapper.querySelector("input");
+      var clearBtn = wrapper.querySelector(".cb-clear");
+      var arrow = wrapper.querySelector(".cb-arrow");
+      var panel = wrapper.querySelector(".cb-panel");
+      var selected = input.value || "";
+
+      function renderOptions(filterText) {
+        var f = (filterText || "").toLowerCase();
+        var matches = options.filter(function (opt) { return opt.toLowerCase().indexOf(f) !== -1; });
+        panel.innerHTML = "";
+        if (!matches.length) {
+          var empty = document.createElement("div");
+          empty.className = "cb-empty";
+          empty.textContent = "Nenhum resultado encontrado";
+          panel.appendChild(empty);
+          return;
+        }
+        matches.forEach(function (opt, idx) {
+          var row = document.createElement("div");
+          row.className = "cb-option" + (idx === 0 ? " highlighted" : "");
+          row.textContent = opt;
+          row.addEventListener("mousedown", function (e) {
+            e.preventDefault();
+            selected = opt;
+            input.value = opt;
+            clearBtn.classList.toggle("visible", !!selected);
+            input.blur();
+          });
+          panel.appendChild(row);
+        });
+      }
+
+      function openPanel() {
+        if (input.disabled) return;
+        document.querySelectorAll(".cb.open").forEach(function (w) {
+          if (w !== wrapper) {
+            w.classList.remove("open");
+            w.querySelector(".cb-panel").hidden = true;
+          }
+        });
+        wrapper.classList.add("open");
+        panel.hidden = false;
+        renderOptions("");
+      }
+
+      function closePanel() {
+        wrapper.classList.remove("open");
+        panel.hidden = true;
+        input.value = selected;
+        clearBtn.classList.toggle("visible", !!selected);
+        checkFormComplete();
+      }
+
+      input.addEventListener("focus", openPanel);
+      input.addEventListener("blur", closePanel);
+      input.addEventListener("input", function () { renderOptions(input.value); });
+      input.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") input.blur();
+      });
+      arrow.addEventListener("mousedown", function (e) {
+        e.preventDefault();
+        if (wrapper.classList.contains("open")) input.blur();
+        else input.focus();
+      });
+      clearBtn.addEventListener("mousedown", function (e) {
+        e.preventDefault();
+        selected = "";
+        input.value = "";
+        clearBtn.classList.remove("visible");
+        renderOptions("");
+        input.focus();
+        checkFormComplete();
+      });
+
+      if (selected) clearBtn.classList.add("visible");
+    }
+
+    initCombobox("naturezaOcupacao", [
+      "APOSENTADO E PENSIONISTA",
+      "ESTUDANTE / DO LAR",
+      "PROF AUTÔNOMO, LIBERAL E RURAL",
+      "PROFISSIONAL REGISTRADO (CLT)",
+      "PROPRIETÁRIO DE EMPRESA",
+      "SERVIDOR PÚBLICO"
+    ]);
+
+    initCombobox("tipoBem", ["NOVO", "SEMINOVO", "ATV", "CRF", "PRODUTOS DE FORÇA"]);
+
+    initCombobox("anoFabricacao", ["2026", "2025", "2024", "2023", "2022"]);
+
+    initCombobox("anoModelo", ["2027", "2026"]);
+
+    initCombobox("modelo", [
+      "BIZ 125 ES 9CV",
+      "BIZ 125 ES FLEX",
+      "BIZ 125 ES FLEX",
+      "BIZ 125 EX",
+      "BIZ 125 EX *",
+      "BIZ 125 EX *",
+      "CB 300 F TWISTER ABS FLEX",
+      "CB 300 F TWISTER CBS FLEX",
+      "CB 650R E-CLUTCH 0P",
+      "CBR 1000RR-R SP",
+      "CG 160 CARGO CBS",
+      "CG 160 FAN (CBS)",
+      "CG 160 FAN (CBS) *",
+      "GXR120RT - KRWF",
+      "HONDA ADV 160",
+      "HORNET 500",
+      "HRN216 VYA",
+      "HRR216K9 - VYAA",
+      "HRS216K5 - PKAA",
+      "NC 750X ABS",
+      "NC 750X ABS DCT",
+      "NOVA X-ADV",
+      "NX 500",
+      "NXR 160 BROS ABS",
+      "NXR 160 BROS CBS"
+    ]);
+
+    initCombobox("agenteCertificado", ["WENDEL ALMEIDA"]);
+
+    checkFormComplete();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Usuário Master Analisa Proposta</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 13px;
+    color: #222;
+    background: #e9e9e9;
+  }
+
+  /* Barra superior do sistema (título da tela) */
+  .app-titlebar {
+    background: #4a4a4a;
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 16px;
+    font-size: 14px;
+  }
+  .app-titlebar .code {
+    background: #6b6b6b;
+    padding: 8px 16px;
+  }
+  .app-titlebar a {
+    color: #fff;
+    text-decoration: none;
+  }
+  .app-titlebar a:hover {
+    text-decoration: underline;
+  }
+
+  /* Barra de ações (delegar / relógio) */
+  .toolbar {
+    background: #f2f2f2;
+    border-bottom: 1px solid #ccc;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 16px;
+  }
+  .toolbar select {
+    padding: 4px 8px;
+    border: 1px solid #999;
+  }
+  .toolbar button.delegar {
+    background: #6b6b6b;
+    color: #fff;
+    border: none;
+    padding: 6px 18px;
+    margin-left: 8px;
+    cursor: pointer;
+  }
+  .toolbar .clock {
+    font-size: 20px;
+    font-weight: 400;
+  }
+  .toolbar .times {
+    text-align: right;
+    font-size: 11px;
+    color: #555;
+  }
+  .toolbar .times div { display: flex; gap: 6px; justify-content: flex-end; }
+
+  /* Cabeçalho Honda */
+  .brand-header {
+    background: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 20px 4px 20px;
+  }
+  .brand-header .logo {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .brand-header .logo .honda-word {
+    font-size: 26px;
+    font-weight: 800;
+    color: #cc0000;
+    letter-spacing: 1px;
+    line-height: 1;
+  }
+  .brand-header .logo .sub {
+    font-size: 13px;
+    color: #555;
+  }
+  .brand-header .env-user {
+    text-align: right;
+    font-size: 12px;
+    color: #333;
+    line-height: 1.6;
+  }
+
+  .section-title-row {
+    background: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    padding: 6px 20px 14px 20px;
+  }
+  .section-title-row h1 {
+    font-size: 15px;
+    font-weight: 700;
+    position: absolute;
+    left: 20px;
+  }
+  .btn-concluir {
+    background: #444;
+    color: #fff;
+    border: none;
+    padding: 8px 20px;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .btn-concluir:hover { background: #333; }
+
+  /* Layout principal 3 colunas */
+  .main-grid {
+    display: grid;
+    grid-template-columns: 460px 1fr 480px;
+    gap: 0;
+    background: #fff;
+    border-top: 1px solid #ddd;
+    height: calc(100vh - 175px);
+  }
+
+  /* Coluna esquerda: formulário */
+  .col-form {
+    border-right: 1px solid #ddd;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+  .tabs {
+    display: flex;
+    gap: 8px;
+    padding: 10px 14px;
+    border-bottom: 1px solid #ddd;
+  }
+  .tabs button {
+    padding: 10px 16px;
+    font-size: 13px;
+    border: 1px solid #adadad;
+    border-radius: 5px;
+    background: linear-gradient(to bottom, #fdfdfd 0%, #e2e2e2 100%);
+    box-shadow: 0 1px 0 rgba(255,255,255,0.7) inset;
+    cursor: pointer;
+    color: #333;
+    white-space: nowrap;
+  }
+  .tabs button.active {
+    color: #333;
+  }
+  .tabs button:disabled {
+    background: linear-gradient(to bottom, #efefef 0%, #dcdcdc 100%);
+    border-color: #ccc;
+    color: #999;
+    cursor: not-allowed;
+  }
+  .form-scroll {
+    overflow-y: auto;
+    padding: 14px 16px;
+    flex: 1;
+  }
+  .form-scroll fieldset {
+    border: none;
+    margin-bottom: 14px;
+  }
+  .form-scroll legend {
+    font-size: 12px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 8px;
+    padding: 0;
+  }
+  .field-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .field {
+    flex: 1;
+    min-width: 0;
+  }
+  .field label {
+    display: block;
+    font-size: 11px;
+    color: #555;
+    margin-bottom: 3px;
+    white-space: nowrap;
+  }
+  .field input {
+    width: 100%;
+    padding: 5px 6px;
+    border: 1px solid #bbb;
+    background: #fff;
+    font-size: 12px;
+    color: #222;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: clip;
+  }
+  .field input:disabled {
+    background: #f5f5f5;
+    color: #333;
+  }
+  .field.third {
+    flex: 0 0 32%;
+  }
+  .field textarea {
+    width: 100%;
+    padding: 6px;
+    border: 1px solid #bbb;
+    background: #f5f5f5;
+    color: #333;
+    font-size: 12px;
+    font-family: inherit;
+    height: 60px;
+    resize: none;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .mini-table-wrap {
+    max-height: 110px;
+    overflow-y: auto;
+    border-bottom: 1px solid #ddd;
+  }
+  .side-by-side {
+    display: flex;
+    gap: 16px;
+  }
+  .side-by-side fieldset {
+    flex: 1;
+    min-width: 0;
+  }
+  .nav-bem {
+    display: flex;
+    gap: 6px;
+  }
+  .nav-bem button {
+    border: 1px solid #adadad;
+    border-radius: 5px;
+    background: linear-gradient(to bottom, #fdfdfd 0%, #e2e2e2 100%);
+    box-shadow: 0 1px 0 rgba(255,255,255,0.7) inset;
+    color: #333;
+    padding: 5px 12px;
+    min-width: 60px;
+    cursor: pointer;
+  }
+  .nav-bem button:disabled {
+    background: linear-gradient(to bottom, #efefef 0%, #dcdcdc 100%);
+    border-color: #ccc;
+    color: #999;
+    cursor: not-allowed;
+  }
+
+  /* Coluna central: visualizador de documento */
+  .col-viewer {
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #ddd;
+    min-height: 0;
+  }
+  .viewer-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-bottom: 1px solid #ddd;
+    background: #fafafa;
+  }
+  .viewer-toolbar input {
+    width: 40px;
+    text-align: center;
+    border: 1px solid #ccc;
+    padding: 3px;
+  }
+  .viewer-toolbar .spacer { flex: 1; }
+  .viewer-toolbar select {
+    border: 1px solid #ccc;
+    padding: 4px 8px;
+  }
+  .viewer-toolbar button.icon {
+    border: 1px solid #ccc;
+    background: #fff;
+    width: 26px;
+    height: 26px;
+    cursor: pointer;
+  }
+  .viewer-body {
+    flex: 1;
+    overflow: auto;
+    background: #6d6d6d;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 20px;
+  }
+  .doc-placeholder {
+    background: #fff;
+    width: 480px;
+    min-height: 640px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #999;
+    font-size: 13px;
+    text-align: center;
+    padding: 20px;
+    box-shadow: 0 0 6px rgba(0,0,0,0.3);
+  }
+
+  /* Coluna direita: status + histórico */
+  .col-status {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow-y: auto;
+  }
+  .status-table-wrap {
+    flex: 0 0 380px;
+    height: 380px;
+    overflow: auto;
+    padding: 14px 16px 0 16px;
+  }
+  table.docs {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    table-layout: fixed;
+  }
+  #docsTable th:nth-child(1), #docsTable td:nth-child(1) { width: 55%; }
+  #docsTable th:nth-child(2), #docsTable td:nth-child(2) { width: 28%; }
+  #docsTable th:nth-child(3), #docsTable td:nth-child(3) { width: 17%; }
+  #checklistTable th:nth-child(1), #checklistTable td:nth-child(1) { width: 55%; }
+  #checklistTable th:nth-child(2), #checklistTable td:nth-child(2) { width: 15%; }
+  #checklistTable th:nth-child(3), #checklistTable td:nth-child(3) { width: 30%; }
+  table.docs th {
+    text-align: left;
+    background: #eee;
+    padding: 8px;
+    border-bottom: 1px solid #ccc;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: clip;
+  }
+  table.docs td {
+    padding: 8px;
+    border-bottom: 1px solid #eee;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: clip;
+  }
+  table.docs tbody tr {
+    cursor: pointer;
+  }
+  table.docs tbody tr:hover {
+    background: #f5f5f5;
+  }
+  table.docs tbody tr.selected {
+    background: #d9d9d9;
+  }
+  td.status-ok {
+    color: #222;
+  }
+  .historico-block {
+    flex: 0 0 230px;
+    height: 230px;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+  .historico-title {
+    padding: 14px 16px 6px 16px;
+    font-size: 13px;
+    font-weight: 700;
+    flex: 0 0 auto;
+  }
+  .historico-wrap {
+    flex: 1;
+    overflow: auto;
+    padding: 0 16px 16px 16px;
+    min-height: 0;
+  }
+  .checklist-block {
+    flex: 0 0 300px;
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    border-top: 1px solid #ddd;
+  }
+  .checklist-block.hidden {
+    display: none;
+  }
+  .checklist-title {
+    padding: 14px 16px 6px 16px;
+    font-size: 15px;
+    font-weight: 700;
+    flex: 0 0 auto;
+  }
+  .checklist-tabs {
+    padding: 0 16px;
+    flex: 0 0 auto;
+  }
+  .checklist-tabs button {
+    padding: 8px 16px;
+    font-size: 12px;
+    font-weight: 700;
+    border: 1px solid #ccc;
+    border-bottom: none;
+    background: #ddd;
+    color: #888;
+    cursor: pointer;
+  }
+  .checklist-tabs button.active {
+    background: #fff;
+    color: #222;
+  }
+  .pergunta-panel {
+    padding: 24px 20px;
+    text-align: center;
+  }
+  .pergunta-question {
+    font-size: 19px;
+    margin-bottom: 18px;
+  }
+  .pergunta-radios {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    font-size: 14px;
+    margin-bottom: 6px;
+  }
+  .pergunta-radios label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+  }
+  .pergunta-extra {
+    text-align: left;
+    max-width: 380px;
+    margin: 20px auto 0 auto;
+  }
+  .pergunta-extra label {
+    display: block;
+    font-size: 12px;
+    margin-bottom: 4px;
+  }
+  .pergunta-extra select,
+  .pergunta-extra textarea {
+    width: 100%;
+    padding: 6px;
+    border: 1px solid #999;
+    font-size: 12px;
+    font-family: inherit;
+    margin-bottom: 16px;
+  }
+  .pergunta-extra textarea {
+    height: 60px;
+    resize: none;
+  }
+  .btn-confirmar {
+    display: block;
+    margin: 0 auto;
+    padding: 8px 30px;
+    font-size: 13px;
+    border: 1px solid #adadad;
+    border-radius: 5px;
+    background: linear-gradient(to bottom, #fdfdfd 0%, #e2e2e2 100%);
+    box-shadow: 0 1px 0 rgba(255,255,255,0.7) inset;
+    color: #333;
+    cursor: pointer;
+  }
+  .checklist-wrap {
+    flex: 1;
+    overflow: auto;
+    padding: 0 16px 16px 16px;
+    min-height: 0;
+  }
+
+  /* Modal de erro (replica popup do sistema original) */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  .modal-overlay.hidden {
+    display: none;
+  }
+  .modal-box {
+    background: #fff;
+    width: 480px;
+    max-width: 90vw;
+    border: 1px solid #888;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+    font-size: 13px;
+  }
+  .modal-titlebar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    border-bottom: 1px solid #ddd;
+    font-weight: 700;
+    background: #f5f5f5;
+  }
+  .modal-close {
+    border: 1px solid #ccc;
+    background: #fff;
+    width: 22px;
+    height: 22px;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .modal-body {
+    padding: 22px 18px;
+    line-height: 1.6;
+  }
+  .modal-footer {
+    display: flex;
+    justify-content: center;
+    padding: 0 16px 20px 16px;
+  }
+</style>
+</head>
+<body>
+
+  <div class="app-titlebar">
+    <div><a href="../index.html">Usuário Master Analisa Proposta</a></div>
+    <div class="code">HAEX0677</div>
+  </div>
+
+  <div class="toolbar">
+    <div>
+      <select><option>(Nenhum)</option></select>
+      <button class="delegar">Delegar</button>
+    </div>
+    <div style="display:flex; align-items:center; gap:24px;">
+      <div class="clock" id="liveClock">16:37:19</div>
+      <div class="times">
+        <div><span>Início</span><span>:</span><span>:</span><span>03:00</span></div>
+        <div><span>Atual</span><span>:</span><span>:</span><span>11:13:03</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="brand-header">
+    <a class="logo" href="kta-lab.html">
+      <span class="honda-word">HONDA</span>
+      <span class="sub">Serviços Financeiros</span>
+    </a>
+    <div class="env-user">
+      <div>Ambiente: <strong>Homologação</strong></div>
+      <div>Usuário: <strong>BHB0 SB024880</strong></div>
+    </div>
+  </div>
+
+  <div class="section-title-row">
+    <h1>Formalização de Documentos</h1>
+    <button class="btn-concluir" id="btnConcluirFormalizacao">Concluir Formalização</button>
+  </div>
+
+  <div class="main-grid">
+
+    <!-- COLUNA ESQUERDA: FORMULARIO -->
+    <div class="col-form">
+      <div class="tabs">
+        <button class="active">Formalização de Documentos</button>
+        <button disabled>Dados Antifraude</button>
+      </div>
+      <div class="form-scroll">
+
+        <fieldset>
+          <legend>Dados Proposta</legend>
+          <div class="field-row">
+            <div class="field"><label>Proposta</label><input value="1000001789" disabled></div>
+            <div class="field"><label>Nº da Cédula</label><input value="3343364" disabled></div>
+            <div class="field"><label>Orçamento (CET)</label><input value="1000001789" disabled></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>Tipo Processo</label><input value="PF" disabled></div>
+            <div class="field" style="flex:2"><label>Processo</label><input value="Financiamento" disabled></div>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Dados Operação</legend>
+          <div class="field-row">
+            <div class="field"><label>Valor Entrada</label><input value="120.000,00" disabled></div>
+            <div class="field"><label>Valor da Parcela</label><input value="228,84" disabled></div>
+            <div class="field"><label>Valor da Documentação</label><input value="0,00" disabled></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>Valor de Acessórios</label><input value="0,00" disabled></div>
+            <div class="field"><label>Valor Financiado</label><input value="6.190,00" disabled></div>
+            <div class="field"><label>Prazo</label><input value="36" disabled></div>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+            <span>Dados do Bem Financiado</span>
+            <span class="nav-bem"><button disabled>&lt;&lt;</button><button>&gt;&gt;</button></span>
+          </legend>
+          <div class="field-row">
+            <div class="field"><label>Valor Total NF</label><input value="125.000,00" disabled></div>
+            <div class="field"><label>Nota Fiscal</label><input value="000000000629957" disabled></div>
+            <div class="field"><label>Chassi</label><input value="93HRV3850SK106323" disabled></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>Ano/Modelo</label><input value="2026" disabled></div>
+            <div class="field"><label>Placa</label><input value="" disabled></div>
+            <div class="field"><label>Renavam</label><input value="" disabled></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>Valor do Bem</label><input value="125.000,00" disabled></div>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Dados Proponente</legend>
+          <div class="field-row">
+            <div class="field"><label>Nome Proponente</label><input value="THIAGO ROJAS" disabled></div>
+            <div class="field"><label>CPF/CNPJ</label><input value="605.732.703-92" disabled></div>
+            <div class="field"><label>Dt. Nascimento</label><input value="25/01/1983" disabled></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>Nome da Mãe</label><input value="TESTE MAE" disabled></div>
+            <div class="field"><label>Nome do Pai</label><input value="TESTE PAI" disabled></div>
+            <div class="field"><label>Nome do Cônjuge</label><input value="" disabled></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>Tipo de Doc.</label><input value="RG" disabled></div>
+            <div class="field"><label>Nº de Doc.</label><input value="426467164" disabled></div>
+            <div class="field"><label>Renda</label><input value="5.000,00" disabled></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>Profissão</label><input value="PROJETISTA" disabled></div>
+            <div class="field"><label>Natureza Ocupação</label><input value="PROFISSIONAL REGISTRADO (CLT)" disabled></div>
+            <div class="field"><label>Empresa</label><input value="VALE S/A" disabled></div>
+          </div>
+          <div class="field-row">
+            <div class="field third"><label>Tipo de Residência</label><input value="PROPRIA/QUITADA" disabled></div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label>Geolocalização</label>
+              <textarea disabled>Rua Dona Elisa Flaquer, 128, Santo André, Santo André - SP, 09020-160</textarea>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Dados Endereço Proponente</legend>
+          <div class="field-row">
+            <div class="field"><label>Endereço</label><input value="RUA JOSE PEREIRA COSTA" disabled></div>
+            <div class="field"><label>Número</label><input value="282" disabled></div>
+            <div class="field"><label>Complemento</label><input value="CONDOMINIO" disabled></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>Bairro</label><input value="ESPLANADA" disabled></div>
+            <div class="field"><label>CEP</label><input value="68350133" disabled></div>
+            <div class="field"><label>UF</label><input value="PA" disabled></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>Cidade</label><input value="CANAA DOS CARAJAS" disabled></div>
+            <div class="field"><label>Tipo Endereço</label><input value="Residencial" disabled></div>
+            <div class="field"></div>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <div class="mini-table-wrap">
+            <table class="docs">
+              <thead>
+                <tr><th>Risco Dispositivo</th><th>Resultado</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>THIAGO ROJAS</td><td>Suspeita de fraude</td></tr>
+                <tr><td>THIAGO ROJAS</td><td>Suspeita de fraude</td></tr>
+                <tr><td>CARLOS EDUARDO MENDES</td><td>Suspeita de fraude</td></tr>
+                <tr><td>CARLOS EDUARDO MENDES</td><td>Suspeita de fraude</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+            <span>Facematch Selfie x Documento</span>
+            <span style="font-weight:700; font-size:12px;">Similaridade Esperada &gt;= 80%</span>
+          </legend>
+          <table class="docs">
+            <thead>
+              <tr><th>Assinante</th><th>Tipo</th><th>Resultado</th><th>Liveness</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>THIAGO ROJAS</td><td>Proponente</td><td>0,005</td><td>SIM</td></tr>
+              <tr><td>CARLOS EDUARDO MENDES</td><td>Avalista</td><td>96,212</td><td>SIM</td></tr>
+            </tbody>
+          </table>
+        </fieldset>
+
+        <div class="side-by-side">
+          <fieldset>
+            <legend>Biometria Assinantes</legend>
+            <table class="docs">
+              <thead>
+                <tr><th>Assinante</th><th>Tipo</th><th>Status Biometria</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>THIAGO ROJAS</td><td>Proponente</td><td>SEM BIOMETRIA</td></tr>
+                <tr><td>CARLOS EDUARDO MENDES</td><td>Avalista</td><td>SEM BIOMETRIA</td></tr>
+              </tbody>
+            </table>
+          </fieldset>
+          <fieldset>
+            <legend>Dados Avalista</legend>
+            <div style="color:#999; font-size:11px; padding:8px 0;">▼ campos abaixo (a informar) ▼</div>
+          </fieldset>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- COLUNA CENTRAL: VISUALIZADOR -->
+    <div class="col-viewer">
+      <div class="viewer-toolbar">
+        <button class="icon">▤</button>
+        <button class="icon">🔍</button>
+        <input value="1">
+        <span>de 1</span>
+        <div class="spacer"></div>
+        <select><option>Zoom automático</option></select>
+        <button class="icon">≫</button>
+      </div>
+      <div class="viewer-body">
+        <div class="doc-placeholder">
+          <div style="width: 100%;">
+            Documento anexado (imagem)<br>
+            <span id="docPlaceholderLabel">— Selecione um documento na lista à direita —</span><br><br>
+            <em>(placeholder — imagem real não replicada)</em>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COLUNA DIREITA: STATUS + HISTORICO -->
+    <div class="col-status">
+      <div class="status-table-wrap">
+        <table class="docs" id="docsTable">
+          <thead>
+            <tr><th>Documento</th><th>Tipo Pessoa</th><th>Status</th></tr>
+          </thead>
+          <tbody id="docsBody">
+            <!-- gerado via JS a partir de DOCS_DATA -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="historico-block">
+        <div class="historico-title">Histórico</div>
+        <div class="historico-wrap">
+          <table class="docs">
+            <thead>
+              <tr><th>Regra</th><th>Resposta</th><th>Pendência</th></tr>
+            </thead>
+            <tbody>
+              <!-- vazio na tela original -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="checklist-block hidden" id="checklistBlock">
+        <div class="checklist-title">Checklist</div>
+        <div class="checklist-tabs" id="checklistTabs"></div>
+        <div class="checklist-wrap" id="checklistContent"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="modal-overlay hidden" id="errorModalOverlay">
+    <div class="modal-box">
+      <div class="modal-titlebar">
+        <span>Kofax TotalAgility</span>
+        <button class="modal-close" id="modalCloseX">✕</button>
+      </div>
+      <div class="modal-body">
+        <p>Error reading JObject from JsonReader. Path "", line 0, position 0.</p>
+        <p>Caso precise de assistência técnica, consulte a ação: DotNetMethodGetProcessoJson.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-confirmar" id="modalOkBtn">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay hidden" id="ecmModalOverlay">
+    <div class="modal-box">
+      <div class="modal-titlebar">
+        <span>Portal ECM | Mensagem</span>
+      </div>
+      <div class="modal-body">
+        <p>Todos os documentos devem ser validados para a conclusão da formalização.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-confirmar" id="ecmModalOkBtn">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var errorModalOverlay = document.getElementById("errorModalOverlay");
+    function showErrorModal() { errorModalOverlay.classList.remove("hidden"); }
+    function hideErrorModal() { errorModalOverlay.classList.add("hidden"); }
+    document.getElementById("modalCloseX").addEventListener("click", hideErrorModal);
+    document.getElementById("modalOkBtn").addEventListener("click", hideErrorModal);
+
+    var ecmModalOverlay = document.getElementById("ecmModalOverlay");
+    function showEcmModal() { ecmModalOverlay.classList.remove("hidden"); }
+    function hideEcmModal() { ecmModalOverlay.classList.add("hidden"); }
+    document.getElementById("ecmModalOkBtn").addEventListener("click", hideEcmModal);
+
+    // Regras reais por documento, extraídas da planilha
+    // "Regras de Negócio - Extração ECM.xlsx" (aba "Regras Extração Financiamento").
+    var RULES_BY_DOC = {
+      "DOCUM. DE IDENTIDADE": [
+        "Nome confere com o do sistema?",
+        "Tipo de documento está correto?",
+        "Número do RG e do CPF confere com o sistema?",
+        "Data de nascimento confere com o sistema?",
+        "Possui assinatura?",
+        "Documento legível?"
+      ],
+      "DOCUM. IDENTID. AVAL": [
+        "Nome confere com o do sistema?",
+        "Tipo de documento está correto?",
+        "Número do RG e do CPF confere com o sistema?",
+        "Data de nascimento confere com o sistema?",
+        "Possui assinatura?",
+        "Documento legível?"
+      ],
+      "CONTRATO - CCB": [
+        "Contrato está legível?",
+        "Número e dígito da CCB confere com o do sistema?",
+        "Consta assinatura do cliente semelhante ao documento de identificação / Facematch validado?",
+        "Contrato está completo (todas as páginas)?"
+      ],
+      "FICHA PROPOSTA": [
+        "Número da proposta e o dígito confere com o do sistema?",
+        "Consta assinatura do cliente semelhante ao documento de identificação / Facematch validado?",
+        "Ficha está legível?"
+      ],
+      "FICHA PROPOSTA -AVAL": [
+        "Número da proposta e o dígito confere com o do sistema?",
+        "Consta assinatura do cliente semelhante ao documento de identificação / Facematch validado?",
+        "Ficha está legível?"
+      ],
+      "ORÇAMENTO - CET": [
+        "Número da proposta e o dígito confere com o do sistema?",
+        "Consta assinatura do cliente semelhante ao documento de identificação / Facematch validado?",
+        "Está legível?"
+      ],
+      "NF VEICULOS": [
+        "Chassi confere com o sistema?",
+        "CPF confere com o do sistema?",
+        "Documento legível?",
+        "Data da emissão da NF está dentro do prazo?",
+        "Endereço confere com a ficha?",
+        "Nome confere com o do sistema?",
+        "Número da NF está correto?",
+        "O documento está de acordo com as regras de formalização?",
+        "Possui informação de alienação?",
+        "Valor da NF está igual ao sistema?"
+      ],
+      "COPIA COMPR.RESIDEN": [
+        "Comprovante está em nome do cliente ou parente?",
+        "Mês de referência dentro de 60 dias?",
+        "Endereço confere com a ficha?",
+        "Documento legível?"
+      ],
+      "COMPROVANTE RES AV": [
+        "Comprovante está em nome do cliente ou parente?",
+        "Mês de referência dentro de 60 dias?",
+        "Endereço confere com a ficha?",
+        "Documento legível?"
+      ],
+      "CP COMPR. DE RENDA": [
+        "Nome do comprovante confere com os dados da ficha?",
+        "Data do documento está dentro do prazo de 60 dias?",
+        "Valor da renda bruta comporta 3x a parcela informada no sistema?",
+        "CRC do contador está ativo?"
+      ],
+      "CP COMPR. RENDA-AVAL": [
+        "Nome do comprovante confere com os dados da ficha?",
+        "Data do documento está dentro do prazo de 60 dias?",
+        "Valor da renda bruta comporta 3x a parcela informada no sistema?",
+        "CRC do contador está ativo?"
+      ]
+    };
+
+    var PENDENCIA_OPTIONS = [
+      "ABREVIAR SOBRENOME DO MEIO",
+      "DOCUMENTO NÃO ASSINADO",
+      "ENVIAR CERTIDÃO/AVERB. CASAMENTO",
+      "ENVIAR DOC. DOS ENVOLVIDOS",
+      "PROCURAÇÃO+RG DO PROCURADOR",
+      "FACEMATCH - REFAZER ASSINATURA",
+      "ENVIAR RG/CPF DOS ENVOLVIDOS",
+      "FALTA ASSINAT. DO CONJ FIADOR",
+      "FALTA ASS. TESTEMUNHAS",
+      "FALTA ASS. DO REPRE. LEGAL",
+      "FALTA ASS. RESPONSÁVEL LEGAL",
+      "NÃO PODE ASSINAR PELA EMPRESA",
+      "NOME AVAL DIVERGENTE-NOVA PROP",
+      "NOME DA EMPRESA DIVERGENTE",
+      "NOME DIVERGENTE -NOVA PROPOSTA",
+      "REGULARIZAR CONTRATO SOCIAL",
+      "ASSINATURA À ROGO INCORRETA",
+      "DEMAIS SÓCIOS DEVEM ASSINAR",
+      "CLIENTE É ALFABETIZADO",
+      "ENVIAR CURATELA/PROCURAÇÃO",
+      "ERRO NA VISUALIZAÇÃO DA IMAGEM",
+      "NÚMERO DO CHASSI INCORRETO",
+      "REENVIE APÓS REGULARIZAÇÃO"
+    ];
+
+    var DOCS_DATA = [
+      { doc: "DOCUM. DE IDENTIDADE",  tipo: "Proponente", status: "", label: "Documento de Identidade — Proponente" },
+      { doc: "CONTRATO - CCB",        tipo: "Proponente", status: "", label: "Contrato CCB" },
+      { doc: "FICHA PROPOSTA",        tipo: "Proponente", status: "", label: "Ficha Proposta" },
+      { doc: "ORÇAMENTO - CET",       tipo: "Proponente", status: "", label: "Orçamento (CET)" },
+      { doc: "NF VEICULOS",           tipo: "Proponente", status: "Ok", label: "Nota Fiscal do Veículo" },
+      { doc: "COPIA COMPR.RESIDEN",   tipo: "Proponente", status: "Ok", label: "Comprovante de Residência — Proponente" },
+      { doc: "CP COMPR. DE RENDA",    tipo: "Proponente", status: "", label: "Comprovante de Renda — Proponente" },
+      { doc: "FICHA PROPOSTA -AVAL",  tipo: "Avalista",   status: "Ok", label: "Ficha Proposta — Avalista" },
+      { doc: "DOCUM. IDENTID. AVAL",  tipo: "Avalista",   status: "Ok", label: "Documento de Identidade — Avalista" },
+      { doc: "COMPROVANTE RES AV",    tipo: "Avalista",   status: "", label: "Comprovante de Residência — Avalista" },
+      { doc: "CP COMPR. RENDA-AVAL",  tipo: "Avalista",   status: "Ok", label: "Comprovante de Renda — Avalista" }
+    ];
+
+    var docsBody = document.getElementById("docsBody");
+    var checklistBlock = document.getElementById("checklistBlock");
+    var checklistTabs = document.getElementById("checklistTabs");
+    var checklistContent = document.getElementById("checklistContent");
+
+    function formatNowPtBr() {
+      var d = new Date();
+      function pad(n) { return n < 10 ? "0" + n : "" + n; }
+      return pad(d.getDate()) + "/" + pad(d.getMonth() + 1) + "/" + d.getFullYear() + " " +
+        pad(d.getHours()) + ":" + pad(d.getMinutes()) + ":" + pad(d.getSeconds());
+    }
+
+    function renderRespostasContent(item) {
+      var rows = [];
+      if (item.status === "Ok") {
+        rows = (RULES_BY_DOC[item.doc] || []).map(function (regra) {
+          return [regra, "Sim", "13/05/2026 18:01:46"];
+        });
+      } else if (item.status === "Pendente" && item.answerLog) {
+        rows = [[item.answerLog.regra, item.answerLog.resposta, item.answerLog.data]];
+      }
+      var html = '<table class="docs" id="checklistTable"><thead><tr>' +
+        '<th>Regra</th><th>Resposta</th><th>Data</th></tr></thead><tbody>';
+      rows.forEach(function (row) {
+        html += '<tr><td>' + row[0] + '</td><td>' + row[1] + '</td><td>' + row[2] + '</td></tr>';
+      });
+      html += '</tbody></table>';
+      checklistContent.innerHTML = html;
+    }
+
+    function renderPerguntaContent(item, index) {
+      var optionsHtml = '<option value="">-- Selecione uma pendência --</option>';
+      PENDENCIA_OPTIONS.forEach(function (opt) {
+        optionsHtml += '<option value="' + opt + '">' + opt + '</option>';
+      });
+
+      checklistContent.innerHTML =
+        '<div class="pergunta-panel">' +
+          '<div class="pergunta-question">O documento está de acordo com as regras de formalização?</div>' +
+          '<div class="pergunta-radios">' +
+            '<label><input type="radio" name="perguntaResposta" value="sim"> Sim</label>' +
+            '<label><input type="radio" name="perguntaResposta" value="nao"> Não</label>' +
+          '</div>' +
+          '<div class="pergunta-extra" id="perguntaExtra" style="display:none;"></div>' +
+        '</div>';
+
+      var extra = document.getElementById("perguntaExtra");
+
+      function renderExtraSim() {
+        extra.innerHTML =
+          '<label>Observação</label>' +
+          '<textarea id="observacaoText"></textarea>' +
+          '<button type="button" class="btn-confirmar" id="btnConfirmar">Confirmar</button>';
+        document.getElementById("btnConfirmar").addEventListener("click", function () {
+          // Bug conhecido do sistema original: confirmar com "Sim" gera erro
+          // no backend (Kofax TotalAgility) e a decisão nunca é finalizada.
+          showErrorModal();
+        });
+      }
+
+      function renderExtraNao() {
+        extra.innerHTML =
+          '<label>* Pendência</label>' +
+          '<select id="pendenciaSelect">' + optionsHtml + '</select>' +
+          '<label>Observação</label>' +
+          '<textarea id="observacaoText"></textarea>' +
+          '<button type="button" class="btn-confirmar" id="btnConfirmar">Confirmar</button>';
+        document.getElementById("btnConfirmar").addEventListener("click", function () {
+          var select = document.getElementById("pendenciaSelect");
+          if (!select.value) {
+            select.style.border = "1px solid #c00";
+            return;
+          }
+          select.style.border = "1px solid #999";
+          item.status = "Pendente";
+          item.pendencia = select.value;
+          item.observacao = document.getElementById("observacaoText").value;
+          item.answerLog = {
+            regra: "O documento está de acordo com as regras de formalização?",
+            resposta: "Não",
+            data: formatNowPtBr()
+          };
+          updateDocRowStatus(index, "Pendente");
+          renderChecklistTabs(item, index, "Respostas");
+          renderRespostasContent(item);
+        });
+      }
+
+      var radios = checklistContent.querySelectorAll('input[name="perguntaResposta"]');
+      radios.forEach(function (radio) {
+        radio.addEventListener("change", function () {
+          if (!radio.checked) return;
+          extra.style.display = "block";
+          if (radio.value === "sim") {
+            renderExtraSim();
+          } else {
+            renderExtraNao();
+          }
+        });
+      });
+    }
+
+    function updateDocRowStatus(index, status) {
+      var row = docsBody.querySelectorAll("tr")[index];
+      var statusCell = row.children[2];
+      statusCell.textContent = status;
+      statusCell.className = (status === "Ok") ? "status-ok" : "";
+    }
+
+    function renderChecklistTabs(item, index, activeTab) {
+      var tabs = (item.status === "") ? ["Pergunta", "Respostas"] : ["Respostas"];
+      checklistTabs.innerHTML = "";
+      tabs.forEach(function (tabName) {
+        var btn = document.createElement("button");
+        btn.textContent = tabName;
+        if (tabName === activeTab) btn.classList.add("active");
+        btn.addEventListener("click", function () {
+          renderChecklistTabs(item, index, tabName);
+          if (tabName === "Pergunta") {
+            renderPerguntaContent(item, index);
+          } else {
+            renderRespostasContent(item);
+          }
+        });
+        checklistTabs.appendChild(btn);
+      });
+    }
+
+    function selectDoc(index) {
+      var rows = docsBody.querySelectorAll("tr");
+      rows.forEach(function (r) { r.classList.remove("selected"); });
+      rows[index].classList.add("selected");
+
+      var item = DOCS_DATA[index];
+      document.getElementById("docPlaceholderLabel").textContent = "— " + item.label + " —";
+      var defaultTab = (item.status === "") ? "Pergunta" : "Respostas";
+      renderChecklistTabs(item, index, defaultTab);
+      if (defaultTab === "Pergunta") {
+        renderPerguntaContent(item, index);
+      } else {
+        renderRespostasContent(item);
+      }
+      checklistBlock.classList.remove("hidden");
+    }
+
+    DOCS_DATA.forEach(function (item, index) {
+      var tr = document.createElement("tr");
+
+      var tdDoc = document.createElement("td");
+      tdDoc.textContent = item.doc;
+      tr.appendChild(tdDoc);
+
+      var tdTipo = document.createElement("td");
+      tdTipo.textContent = item.tipo;
+      tr.appendChild(tdTipo);
+
+      var tdStatus = document.createElement("td");
+      tdStatus.textContent = item.status;
+      if (item.status === "Ok") tdStatus.className = "status-ok";
+      tr.appendChild(tdStatus);
+
+      tr.addEventListener("click", function () { selectDoc(index); });
+      docsBody.appendChild(tr);
+    });
+
+    document.getElementById("btnConcluirFormalizacao").addEventListener("click", function () {
+      var todosOk = DOCS_DATA.every(function (item) { return item.status === "Ok"; });
+      if (!todosOk) {
+        showEcmModal();
+      }
+    });
+
+    // Relógio em tempo real (mock visual, só para parecer funcional)
+    (function () {
+      var clockEl = document.getElementById("liveClock");
+      function pad(n) { return n < 10 ? "0" + n : "" + n; }
+      function tick() {
+        var d = new Date();
+        clockEl.textContent = pad(d.getHours()) + ":" + pad(d.getMinutes()) + ":" + pad(d.getSeconds());
+      }
+      tick();
+      setInterval(tick, 1000);
+    })();
+  </script>
+
+</body>
+</html>

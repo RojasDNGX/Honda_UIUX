@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Propostas de UI/UX - Honda</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    min-height: 100vh;
+    background: #D6001C;
+    color: #fff;
+    font-family: -apple-system, "Segoe UI", Roboto, Arial, Helvetica, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 60px 20px 30px 20px;
+  }
+
+  .hero {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .title {
+    font-size: 34px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 8px;
+  }
+
+  .honda-word {
+    font-size: 52px;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: 10px;
+    margin-bottom: 56px;
+  }
+
+  .links {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    max-width: 420px;
+  }
+  .links a {
+    display: block;
+    padding: 16px 24px;
+    border: 2px solid #fff;
+    border-radius: 999px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 17px;
+    font-weight: 600;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .links a:hover { background: #fff; color: #D6001C; }
+
+  .footer {
+    font-size: 13px;
+    color: rgba(255,255,255,0.85);
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+  <div class="hero">
+    <div class="title">Propostas de UI / UX</div>
+    <div class="honda-word">HONDA</div>
+
+    <nav class="links">
+      <a href="OCR_KTA/kta-atual.html">Tela de análise OCR (KTA)</a>
+      <a href="AmbienteGRAVA/ambiente.html">Ambiente (histórico de dados)</a>
+    </nav>
+  </div>
+
+  <div class="footer">Processos e desenvolvimento de propostas: Thiago Rojas - DNGX Consultoria &amp; Sistemas® - 2026.</div>
+
+</body>
+</html>

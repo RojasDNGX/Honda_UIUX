@@ -1,0 +1,1404 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KTA Lab - Nova Proposta de Layout</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 13px;
+    color: #222;
+    background: #fff;
+  }
+
+  .topbar-strip {
+    height: 4px;
+    background: #4a4a4a;
+  }
+
+  .header-row {
+    background: #fff;
+    border-bottom: 1px solid #ddd;
+  }
+  .header-row-inner {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px 28px;
+    padding: 10px 16px;
+    max-width: 1900px;
+    margin: 0 auto;
+  }
+
+  .toolbar-controls { display: flex; align-items: center; gap: 8px; }
+  .toolbar-controls select { padding: 4px 8px; border: 1px solid #999; }
+  .toolbar-controls .delegar {
+    background: #6b6b6b;
+    color: #fff;
+    border: none;
+    padding: 6px 18px;
+    cursor: pointer;
+  }
+
+  .clock { font-size: 22px; font-weight: 400; }
+  .times { text-align: left; font-size: 11px; color: #555; }
+  .times div { display: flex; gap: 6px; justify-content: flex-start; }
+  .code {
+    background: #4a4a4a;
+    color: #fff;
+    padding: 6px 14px;
+    font-size: 13px;
+  }
+
+  .logo {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .logo .honda-word {
+    font-size: 24px;
+    font-weight: 800;
+    color: #cc0000;
+    letter-spacing: 1px;
+    line-height: 1;
+  }
+  .logo .sub { font-size: 12px; color: #555; }
+  .env-user {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    text-align: left;
+    font-size: 12px;
+    color: #333;
+    line-height: 1.6;
+  }
+
+  /* Badge de rodada da proposta — alterna 1ª Análise / Reanálise */
+  .round-badge {
+    border: none;
+    border-radius: 14px;
+    padding: 6px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .round-badge.primeira { background: #e3f0ff; color: #1a56db; }
+  .round-badge.reanalise { background: #fdecea; color: #c0392b; }
+
+  /* Banner de justificativa do colaborador (modo Histórico) */
+  .historico-banner {
+    background: #fff8e1;
+    border-bottom: 1px solid #f0dfa0;
+    padding: 8px 16px;
+    font-size: 12px;
+    color: #6b5a1c;
+    line-height: 1.5;
+  }
+
+  /* Grupo Aprovados / Pendentes / Concluir Formalização — início alinhado ao título "Análise OCR" abaixo */
+  .header-action-group {
+    display: flex;
+    width: min(444px, 100%);
+    margin-left: auto;
+    height: 38px;
+    border-radius: 5px;
+    overflow: hidden;
+  }
+  .header-action-group > * {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 100%;
+    font-size: 13px;
+    font-weight: 700;
+    border: none;
+    margin: 0;
+  }
+  .summary-card {
+    flex: 0 0 120px;
+    cursor: pointer;
+  }
+  .summary-card.ok { background: #e6f4ea; color: #1e7d34; }
+  .summary-card.pendente { background: #fff2e0; color: #b35c00; }
+
+  .btn-concluir {
+    flex: 1 1 210px;
+    background: #444;
+    color: #fff;
+    cursor: pointer;
+    padding: 0 5px;
+    white-space: nowrap;
+  }
+  .btn-concluir:hover { background: #333; }
+
+  /* Layout principal 3 colunas */
+  .main-grid {
+    display: grid;
+    grid-template-columns: minmax(300px, 480px) 1fr minmax(300px, 460px);
+    gap: 0;
+    background: #fff;
+    border-top: 1px solid #ddd;
+    height: calc(100vh - 85px);
+    max-width: 1900px;
+    margin: 0 auto;
+  }
+
+  /* Coluna esquerda: dados digitados */
+  .col-form {
+    border-right: 1px solid #ddd;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+  .col-title {
+    padding: 12px 16px;
+    font-size: 13px;
+    font-weight: 700;
+    border-bottom: 1px solid #ddd;
+    background: #fafafa;
+  }
+  .col-title-flex {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .col-title-flex .btn-glossy {
+    font-size: 12px;
+    font-weight: 700;
+    padding: 5px 14px;
+    min-width: 0;
+  }
+  .form-tabs {
+    display: flex;
+    padding: 0 16px;
+    background: #fff;
+    border-bottom: 1px solid #ddd;
+  }
+  .form-tabs button {
+    padding: 10px 14px;
+    border: none;
+    background: none;
+    font-size: 12px;
+    font-weight: 600;
+    color: #777;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -1px;
+  }
+  .form-tabs button.active {
+    color: #222;
+    border-bottom: 3px solid #cc0000;
+  }
+  .form-scroll {
+    overflow-y: auto;
+    padding: 14px 16px;
+    flex: 1;
+  }
+  .form-scroll fieldset {
+    border: none;
+    margin-bottom: 14px;
+  }
+  .form-scroll legend {
+    font-size: 12px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 8px;
+    padding: 0;
+  }
+  .field-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    align-items: flex-start;
+  }
+  .field { flex: 1; min-width: 0; }
+  .field.third { flex: 0 0 32%; }
+  .field label {
+    display: block;
+    font-size: 11px;
+    color: #555;
+    margin-bottom: 3px;
+  }
+  .field-value {
+    width: 100%;
+    padding: 5px 6px;
+    border: 1px solid #bbb;
+    background: #f5f5f5;
+    font-size: 12px;
+    color: #222;
+    white-space: normal;
+    overflow-wrap: break-word;
+    min-height: 26px;
+  }
+  .nav-bem { display: flex; gap: 6px; }
+  .nav-bem button, .btn-glossy {
+    border: 1px solid #adadad;
+    border-radius: 5px;
+    background: linear-gradient(to bottom, #fdfdfd 0%, #e2e2e2 100%);
+    box-shadow: 0 1px 0 rgba(255,255,255,0.7) inset;
+    color: #333;
+    padding: 5px 12px;
+    min-width: 60px;
+    cursor: pointer;
+  }
+  .nav-bem button:disabled, .btn-glossy:disabled {
+    background: linear-gradient(to bottom, #efefef 0%, #dcdcdc 100%);
+    border-color: #ccc;
+    color: #999;
+    cursor: not-allowed;
+  }
+  table.docs {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    table-layout: fixed;
+  }
+  table.docs th {
+    text-align: left;
+    background: #eee;
+    padding: 8px;
+    border-bottom: 1px solid #ccc;
+    font-weight: 700;
+    white-space: normal;
+  }
+  table.docs td {
+    padding: 8px;
+    border-bottom: 1px solid #eee;
+    white-space: normal;
+    overflow-wrap: break-word;
+  }
+  table.docs tbody tr { cursor: default; }
+
+  /* Coluna central: visualizador */
+  .col-viewer {
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #ddd;
+    min-height: 0;
+  }
+  .viewer-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-bottom: 1px solid #ddd;
+    background: #fafafa;
+  }
+  .viewer-toolbar input { width: 40px; text-align: center; border: 1px solid #ccc; padding: 3px; }
+  .viewer-toolbar .spacer { flex: 1; }
+  .viewer-toolbar select { border: 1px solid #ccc; padding: 4px 8px; }
+  .viewer-toolbar button.icon { border: 1px solid #ccc; background: #fff; width: 26px; height: 26px; cursor: pointer; }
+  .viewer-body {
+    flex: 1;
+    overflow: auto;
+    background: #6d6d6d;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 20px;
+  }
+  .doc-placeholder {
+    background: #fff;
+    width: min(480px, 100%);
+    aspect-ratio: 210 / 297; /* proporção A4 */
+    height: auto;
+    max-height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    font-size: 16px;
+    font-weight: 700;
+    text-align: center;
+    padding: 20px;
+    box-shadow: 0 0 6px rgba(0,0,0,0.3);
+    flex-shrink: 0;
+  }
+
+  /* Coluna direita: analise OCR */
+  .col-analise {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+  .status-table-wrap {
+    flex: 0 0 44%;
+    overflow: auto;
+    padding: 14px 16px 0 16px;
+  }
+  table.docs tbody tr.selected { background: #d9d9d9; }
+  table.docs tbody tr { cursor: pointer; }
+  table.docs tbody tr:hover { background: #f5f5f5; }
+  td.status-ok { color: #1e7d34; font-weight: 700; white-space: nowrap; }
+  td.status-pendente { color: #b35c00; font-weight: 700; white-space: nowrap; }
+
+  #docsTableLab th:nth-child(1), #docsTableLab td:nth-child(1) { width: 50%; }
+  #docsTableLab th:nth-child(2), #docsTableLab td:nth-child(2) { width: 28%; }
+  #docsTableLab th:nth-child(3), #docsTableLab td:nth-child(3) { width: 22%; }
+
+  /* Checklist da análise: cabeçalho estático fora da área de rolagem —
+     evita o bug de "position: sticky" em <th> vazando conteúdo por cima. */
+  .checklist-head {
+    display: flex;
+    gap: 8px;
+    padding: 8px 16px;
+    background: #eee;
+    border-bottom: 1px solid #ccc;
+    border-top: 1px solid #ddd;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .checklist-head .ch-regra { flex: 1; }
+  .checklist-head .ch-resposta { flex: 0 0 92px; text-align: center; }
+  .checklist-head .ch-data { flex: 0 0 85px; }
+  .ch-edit {
+    flex: 0 0 22px;
+    border: 1px solid #bbb;
+    border-radius: 4px;
+    background: #fff;
+    color: #555;
+    font-size: 13px;
+    line-height: 1;
+    padding: 2px 4px;
+    cursor: pointer;
+  }
+  .ch-edit.active { background: #444; color: #fff; border-color: #444; }
+  .ch-edit:disabled { opacity: 0.35; cursor: not-allowed; }
+  .analysis-title .ch-edit { margin-left: auto; }
+
+  .rule-row-lab {
+    display: flex;
+    gap: 8px;
+    padding: 8px 16px;
+    border-bottom: 1px solid #eee;
+    font-size: 12px;
+  }
+  .rule-row-lab .rl-regra { flex: 1; }
+  .rule-row-lab .rl-resposta { flex: 0 0 92px; text-align: center; }
+  /* Colunas laterais de mesma largura: o texto na coluna central fica no
+     mesmo centro de 92px que as respostas "Sim" (sem ícone), e o ícone
+     fica encostado à esquerda do texto sem deslocar seu centro. */
+  .rule-row-lab .rl-resposta.rl-resposta-editable {
+    display: grid;
+    grid-template-columns: 18px 1fr 18px;
+    align-items: start;
+    text-align: left;
+  }
+  .rl-resposta-editable .rl-edit-icon {
+    grid-column: 1;
+    justify-self: end;
+    margin-right: 4px;
+    font-size: 11px;
+    color: inherit;
+  }
+  .rl-resposta-editable .rl-resposta-text {
+    grid-column: 2;
+    text-align: center;
+  }
+  .rule-row-lab .rl-data { flex: 0 0 85px; line-height: 1.4; }
+  .rule-row-lab.linha-reprovada { background: #fdecea; }
+  .rule-row-lab .resposta-nao { color: #c0392b; font-weight: 700; }
+  .rule-row-lab.editavel { cursor: pointer; }
+  .rule-row-lab.editavel:hover { filter: brightness(0.96); }
+
+  .analysis-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    border-top: 6px solid #dcdcdc;
+  }
+  .analysis-title {
+    padding: 12px 16px;
+    font-size: 14px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid #ddd;
+    background: #fafafa;
+  }
+  .status-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 10px;
+  }
+  .status-badge.ok { background: #e6f4ea; color: #1e7d34; }
+  .status-badge.pendente { background: #fff2e0; color: #b35c00; }
+  .status-badge.reprovado { background: #fdecea; color: #c0392b; }
+  .analysis-content {
+    flex: 1;
+    overflow: auto;
+    padding: 0;
+  }
+  .analysis-empty {
+    color: #999;
+    font-size: 12px;
+    padding: 10px 16px;
+  }
+  .pendencia-note {
+    font-size: 12px;
+    color: #555;
+    background: #f7f7f7;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    padding: 10px 12px;
+    margin: 12px 16px 0 16px;
+    line-height: 1.5;
+  }
+  /* Modal */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  .modal-overlay.hidden { display: none; }
+  .modal-box {
+    background: #fff;
+    width: 480px;
+    max-width: 90vw;
+    border: 1px solid #888;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+    font-size: 13px;
+  }
+  .modal-titlebar {
+    padding: 8px 12px;
+    border-bottom: 1px solid #ddd;
+    font-weight: 700;
+    background: #f5f5f5;
+  }
+  .modal-body { padding: 22px 18px; line-height: 1.6; }
+  .modal-footer { display: flex; justify-content: center; gap: 10px; padding: 0 16px 20px 16px; }
+  .btn-dark {
+    border: none;
+    border-radius: 5px;
+    background: #444;
+    color: #fff;
+    padding: 6px 16px;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .btn-dark:hover { background: #333; }
+  .btn-dark:disabled { background: #999; cursor: not-allowed; }
+  .edit-rule-textarea {
+    width: 100%;
+    height: 70px;
+    padding: 6px;
+    border: 1px solid #999;
+    font-size: 12px;
+    font-family: inherit;
+    resize: none;
+  }
+  .edit-rule-error { color: #c00; font-size: 11px; margin-top: 4px; display: none; }
+  .edit-rule-warning {
+    background: #fff8e1;
+    border: 1px solid #f0dfa0;
+    color: #6b5a1c;
+    font-size: 12px;
+    padding: 10px 12px;
+    border-radius: 4px;
+    margin-top: 12px;
+    line-height: 1.5;
+    display: none;
+  }
+
+  /* ==================== RESPONSIVIDADE ==================== */
+
+  /* Laptops pequenos / tablets em modo paisagem: colunas mais estreitas */
+  @media (max-width: 1180px) {
+    .main-grid {
+      grid-template-columns: minmax(280px, 360px) 1fr minmax(280px, 360px);
+    }
+    .header-action-group { width: min(400px, 100%); }
+  }
+
+  /* Tablets em modo retrato e abaixo: empilha as 3 colunas verticalmente */
+  @media (max-width: 900px) {
+    .main-grid {
+      display: block;
+      height: auto;
+      max-width: 100%;
+    }
+    .col-form, .col-viewer, .col-analise {
+      max-height: 70vh;
+      border-right: none;
+      border-bottom: 1px solid #ddd;
+    }
+    .status-table-wrap { flex-basis: auto; max-height: 260px; }
+    .checklist-block, .analysis-panel { flex-basis: auto; }
+    .viewer-body { align-items: center; }
+  }
+
+  /* Smartphones: aperta espaçamentos e evita esmagar os campos em 3 colunas */
+  @media (max-width: 600px) {
+    body { font-size: 12px; }
+    .header-row-inner { gap: 10px; padding: 8px 12px; }
+    .honda-word { font-size: 20px; }
+    .clock { font-size: 18px; }
+    /* Metadados secundários somem no celular para não espremer o essencial */
+    .env-user, .times, .code { display: none; }
+    .header-action-group {
+      width: 100%;
+      flex-direction: column;
+      height: auto;
+    }
+    .header-action-group > * { flex: 1 1 auto; width: 100%; padding: 8px; }
+    .field-row { flex-wrap: wrap; }
+    .field-row .field { flex: 1 1 45%; min-width: 130px; }
+    .field.third { flex: 1 1 100%; }
+    .col-form, .col-viewer, .col-analise { max-height: 60vh; }
+    .modal-box { width: 92vw; }
+  }
+
+  /* Telas grandes (2K/4K): evita que a coluna central vire um vazio imenso */
+  @media (min-width: 1901px) {
+    body { font-size: 14px; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="topbar-strip"></div>
+
+  <div class="header-row">
+    <div class="header-row-inner">
+      <a class="logo" href="kta-remake.html">
+        <span class="honda-word">HONDA</span>
+        <span class="sub">Serviços Financeiros</span>
+      </a>
+
+      <div class="env-user">
+        <div>Ambiente: <strong>Homologação (Lab)</strong></div>
+        <div>Usuário: <strong>BHB0 SB024880</strong></div>
+      </div>
+
+      <div class="times">
+        <div><span>Início</span><span>:</span><span>:</span><span>03:00</span></div>
+        <div><span>Atual</span><span>:</span><span>:</span><span>11:13:03</span></div>
+      </div>
+
+      <div class="clock" id="liveClock">16:37:19</div>
+
+      <div class="toolbar-controls">
+        <select><option>(Nenhum)</option></select>
+        <button class="delegar">Delegar</button>
+      </div>
+
+      <div class="code">HAEX0677</div>
+
+      <div class="header-action-group">
+        <div class="summary-card ok"><span id="countOk">00</span> Aprovados</div>
+        <div class="summary-card pendente"><span id="countPendente">00</span> Pendentes</div>
+        <button class="btn-concluir" id="btnConcluirFormalizacao">Concluir Formalização</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-grid">
+
+    <!-- COLUNA ESQUERDA: DADOS DIGITADOS -->
+    <div class="col-form">
+      <div class="col-title col-title-flex">
+        <span>Dados digitados pelo colaborador</span>
+        <button class="round-badge primeira" id="roundBadge">1ª Análise</button>
+      </div>
+      <div class="form-tabs" id="formTabs">
+        <button class="form-tab active" data-tab="proposta">Proposta</button>
+        <button class="form-tab" data-tab="proponente">Proponente</button>
+        <button class="form-tab" data-tab="avalista">Avalista</button>
+        <button class="form-tab" data-tab="antifraude">Antifraude</button>
+      </div>
+      <div class="form-scroll">
+
+        <div class="tab-panel" data-panel="proposta">
+          <fieldset>
+            <legend>Dados Proposta</legend>
+            <div class="field-row">
+              <div class="field"><label>Proposta</label><div class="field-value">1000001789</div></div>
+              <div class="field"><label>Nº da Cédula</label><div class="field-value">3343364</div></div>
+              <div class="field"><label>Orçamento (CET)</label><div class="field-value">1000001789</div></div>
+            </div>
+            <div class="field-row">
+              <div class="field"><label>Tipo Processo</label><div class="field-value">PF</div></div>
+              <div class="field" style="flex:2"><label>Processo</label><div class="field-value">Financiamento</div></div>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Dados Operação</legend>
+            <div class="field-row">
+              <div class="field"><label>Valor Entrada</label><div class="field-value">120.000,00</div></div>
+              <div class="field"><label>Valor da Parcela</label><div class="field-value">228,84</div></div>
+              <div class="field"><label>Valor da Documentação</label><div class="field-value">0,00</div></div>
+            </div>
+            <div class="field-row">
+              <div class="field"><label>Valor de Acessórios</label><div class="field-value">0,00</div></div>
+              <div class="field"><label>Valor Financiado</label><div class="field-value">6.190,00</div></div>
+              <div class="field"><label>Prazo</label><div class="field-value">36</div></div>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+              <span>Dados do Bem Financiado</span>
+              <span class="nav-bem"><button disabled>&lt;&lt;</button><button>&gt;&gt;</button></span>
+            </legend>
+            <div class="field-row">
+              <div class="field"><label>Valor Total NF</label><div class="field-value">125.000,00</div></div>
+              <div class="field"><label>Nota Fiscal</label><div class="field-value">000000000629957</div></div>
+              <div class="field"><label>Chassi</label><div class="field-value">93HRV3850SK106323</div></div>
+            </div>
+            <div class="field-row">
+              <div class="field"><label>Ano/Modelo</label><div class="field-value">2026</div></div>
+              <div class="field"><label>Placa</label><div class="field-value">&nbsp;</div></div>
+              <div class="field"><label>Renavam</label><div class="field-value">&nbsp;</div></div>
+            </div>
+            <div class="field-row">
+              <div class="field"><label>Valor do Bem</label><div class="field-value">125.000,00</div></div>
+            </div>
+          </fieldset>
+        </div>
+
+        <div class="tab-panel" data-panel="proponente" style="display:none;">
+          <fieldset>
+            <legend>Dados Proponente</legend>
+            <div class="field-row">
+              <div class="field"><label>Nome Proponente</label><div class="field-value">THIAGO ROJAS</div></div>
+              <div class="field"><label>CPF/CNPJ</label><div class="field-value">605.732.703-92</div></div>
+              <div class="field"><label>Dt. Nascimento</label><div class="field-value">25/01/1983</div></div>
+            </div>
+            <div class="field-row">
+              <div class="field"><label>Nome da Mãe</label><div class="field-value">TESTE MAE</div></div>
+              <div class="field"><label>Nome do Pai</label><div class="field-value">TESTE PAI</div></div>
+              <div class="field"><label>Nome do Cônjuge</label><div class="field-value">&nbsp;</div></div>
+            </div>
+            <div class="field-row">
+              <div class="field"><label>Tipo de Doc.</label><div class="field-value">RG</div></div>
+              <div class="field"><label>Nº de Doc.</label><div class="field-value">426467164</div></div>
+              <div class="field"><label>Renda</label><div class="field-value">5.000,00</div></div>
+            </div>
+            <div class="field-row">
+              <div class="field"><label>Profissão</label><div class="field-value">PROJETISTA</div></div>
+              <div class="field"><label>Natureza Ocupação</label><div class="field-value">PROFISSIONAL REGISTRADO (CLT)</div></div>
+              <div class="field"><label>Empresa</label><div class="field-value">VALE S/A</div></div>
+            </div>
+            <div class="field-row">
+              <div class="field third"><label>Tipo de Residência</label><div class="field-value">PROPRIA/QUITADA</div></div>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label>Geolocalização</label>
+                <div class="field-value">Rua Dona Elisa Flaquer, 128, Santo André, Santo André - SP, 09020-160</div>
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Dados Endereço Proponente</legend>
+            <div class="field-row">
+              <div class="field"><label>Endereço</label><div class="field-value">RUA JOSE PEREIRA COSTA</div></div>
+              <div class="field"><label>Número</label><div class="field-value">282</div></div>
+              <div class="field"><label>Complemento</label><div class="field-value">CONDOMINIO</div></div>
+            </div>
+            <div class="field-row">
+              <div class="field"><label>Bairro</label><div class="field-value">ESPLANADA</div></div>
+              <div class="field"><label>CEP</label><div class="field-value">68350133</div></div>
+              <div class="field"><label>UF</label><div class="field-value">PA</div></div>
+            </div>
+            <div class="field-row">
+              <div class="field"><label>Cidade</label><div class="field-value">CANAA DOS CARAJAS</div></div>
+              <div class="field"><label>Tipo Endereço</label><div class="field-value">Residencial</div></div>
+              <div class="field"></div>
+            </div>
+          </fieldset>
+        </div>
+
+        <div class="tab-panel" data-panel="avalista" style="display:none;">
+          <fieldset>
+            <legend>Dados Avalista</legend>
+            <div class="field-row">
+              <div class="field"><label>Nome Avalista</label><div class="field-value">CARLOS EDUARDO MENDES</div></div>
+              <div class="field"><label>CPF/CNPJ</label><div class="field-value">412.897.560-33</div></div>
+              <div class="field"><label>Dt. Nascimento</label><div class="field-value">14/08/1979</div></div>
+            </div>
+            <div class="field-row">
+              <div class="field"><label>Nome da Mãe</label><div class="field-value">MARIA MENDES</div></div>
+              <div class="field"><label>Nome do Pai</label><div class="field-value">JOSÉ MENDES</div></div>
+              <div class="field"><label>Nome do Cônjuge</label><div class="field-value">&nbsp;</div></div>
+            </div>
+            <div class="field-row">
+              <div class="field"><label>Tipo de Doc.</label><div class="field-value">RG</div></div>
+              <div class="field"><label>Nº de Doc.</label><div class="field-value">298374651</div></div>
+              <div class="field"><label>Renda</label><div class="field-value">8.500,00</div></div>
+            </div>
+            <div class="field-row">
+              <div class="field"><label>Profissão</label><div class="field-value">ENGENHEIRO CIVIL</div></div>
+              <div class="field"><label>Natureza Ocupação</label><div class="field-value">AUTÔNOMO</div></div>
+              <div class="field"><label>Empresa</label><div class="field-value">MENDES ENGENHARIA LTDA</div></div>
+            </div>
+            <div class="field-row">
+              <div class="field third"><label>Tipo de Residência</label><div class="field-value">ALUGADA</div></div>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label>Geolocalização</label>
+                <div class="field-value">Avenida Paulista, 1578, Bela Vista, São Paulo - SP, 01310-200</div>
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Dados Endereço Avalista</legend>
+            <div class="field-row">
+              <div class="field"><label>Endereço</label><div class="field-value">AVENIDA PAULISTA</div></div>
+              <div class="field"><label>Número</label><div class="field-value">1578</div></div>
+              <div class="field"><label>Complemento</label><div class="field-value">APTO 302</div></div>
+            </div>
+            <div class="field-row">
+              <div class="field"><label>Bairro</label><div class="field-value">BELA VISTA</div></div>
+              <div class="field"><label>CEP</label><div class="field-value">01310200</div></div>
+              <div class="field"><label>UF</label><div class="field-value">SP</div></div>
+            </div>
+            <div class="field-row">
+              <div class="field"><label>Cidade</label><div class="field-value">SAO PAULO</div></div>
+              <div class="field"><label>Tipo Endereço</label><div class="field-value">Residencial</div></div>
+              <div class="field"></div>
+            </div>
+          </fieldset>
+        </div>
+
+        <div class="tab-panel" data-panel="antifraude" style="display:none;">
+          <fieldset>
+            <legend>Risco Dispositivo</legend>
+            <table class="docs">
+              <thead><tr><th>Risco Dispositivo</th><th>Resultado</th></tr></thead>
+              <tbody>
+                <tr><td>THIAGO ROJAS</td><td>Suspeita de fraude</td></tr>
+                <tr><td>THIAGO ROJAS</td><td>Suspeita de fraude</td></tr>
+                <tr><td>CARLOS EDUARDO MENDES</td><td>Suspeita de fraude</td></tr>
+                <tr><td>CARLOS EDUARDO MENDES</td><td>Suspeita de fraude</td></tr>
+              </tbody>
+            </table>
+          </fieldset>
+
+          <fieldset>
+            <legend style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+              <span>Facematch Selfie x Documento</span>
+              <span style="font-weight:700; font-size:12px;">Similaridade Esperada &gt;= 80%</span>
+            </legend>
+            <table class="docs">
+              <thead><tr><th>Assinante</th><th>Tipo</th><th>Resultado</th><th>Liveness</th></tr></thead>
+              <tbody>
+                <tr><td>THIAGO ROJAS</td><td>Proponente</td><td>0,005</td><td>SIM</td></tr>
+                <tr><td>CARLOS EDUARDO MENDES</td><td>Avalista</td><td>96,212</td><td>SIM</td></tr>
+              </tbody>
+            </table>
+          </fieldset>
+
+          <fieldset>
+            <legend>Biometria Assinantes</legend>
+            <table class="docs">
+              <thead><tr><th>Assinante</th><th>Tipo</th><th>Status Biometria</th></tr></thead>
+              <tbody>
+                <tr><td>THIAGO ROJAS</td><td>Proponente</td><td>SEM BIOMETRIA</td></tr>
+                <tr><td>CARLOS EDUARDO MENDES</td><td>Avalista</td><td>SEM BIOMETRIA</td></tr>
+              </tbody>
+            </table>
+          </fieldset>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- COLUNA CENTRAL: DOCUMENTO EM DESTAQUE -->
+    <div class="col-viewer">
+      <div class="viewer-toolbar">
+        <button class="icon">▤</button>
+        <button class="icon">🔍</button>
+        <input value="1">
+        <span>de 1</span>
+        <div class="spacer"></div>
+        <select><option>Zoom automático</option></select>
+        <button class="icon">≫</button>
+      </div>
+      <div class="viewer-body">
+        <div class="doc-placeholder" id="docPlaceholder">
+          Selecione um documento na lista à direita<br>para visualizá-lo aqui
+        </div>
+      </div>
+    </div>
+
+    <!-- COLUNA DIREITA: ANALISE OCR -->
+    <div class="col-analise">
+      <div class="col-title col-title-flex">
+        <span id="analiseOcrTitle">Análise OCR</span>
+        <button class="btn-glossy" id="btnHistorico" disabled>Histórico</button>
+      </div>
+      <div class="historico-banner" id="historicoBanner" style="display:none;">
+        <strong>Justificativa do colaborador (reenvio):</strong>
+        <span id="historicoJustificativaText"></span>
+      </div>
+      <div class="status-table-wrap">
+        <table class="docs" id="docsTableLab">
+          <thead><tr><th>Documento</th><th>Tipo Pessoa</th><th>Status</th></tr></thead>
+          <tbody id="docsBody"></tbody>
+        </table>
+      </div>
+
+      <div class="analysis-panel">
+        <div class="analysis-title">
+          <span>Análise do documento selecionado</span>
+          <span class="status-badge" id="analysisStatusBadge" style="display:none;"></span>
+          <button class="ch-edit" id="btnEditRules" title="Editar regras" style="display:none;">&#9998;</button>
+        </div>
+        <div class="checklist-head" id="checklistHead" style="display:none;">
+          <span class="ch-regra">Regra</span>
+          <span class="ch-resposta">Resposta</span>
+          <span class="ch-data">Data</span>
+        </div>
+        <div class="analysis-content" id="analysisContent">
+          <div class="analysis-empty">Selecione um documento na lista acima.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="modal-overlay hidden" id="ecmModalOverlay">
+    <div class="modal-box">
+      <div class="modal-titlebar">Portal ECM | Mensagem</div>
+      <div class="modal-body">
+        <p id="ecmModalMessage"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-glossy" id="ecmModalOkBtn">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay hidden" id="editRuleModalOverlay">
+    <div class="modal-box">
+      <div class="modal-titlebar">Alterar resposta da regra</div>
+      <div class="modal-body">
+        <p id="editRuleQuestion" style="font-weight:700; margin-bottom:14px;"></p>
+        <label style="display:block; font-size:12px; margin-bottom:4px;">Justificativa *</label>
+        <textarea class="edit-rule-textarea" id="editRuleJustificativa"></textarea>
+        <div class="edit-rule-error" id="editRuleError">Justificativa obrigatória para confirmar a alteração.</div>
+        <div class="edit-rule-warning" id="editRuleWarning">
+          Atenção: esta alteração é de sua inteira responsabilidade e ficará registrada em seu usuário. Tem certeza que deseja confirmar esta ação?
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-glossy" id="editRuleCancelBtn">Cancelar</button>
+        <button type="button" class="btn-dark" id="editRuleConfirmBtn">Salvar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var ecmModalOverlay = document.getElementById("ecmModalOverlay");
+    function showEcmModal() { ecmModalOverlay.classList.remove("hidden"); }
+    function hideEcmModal() { ecmModalOverlay.classList.add("hidden"); }
+    document.getElementById("ecmModalOkBtn").addEventListener("click", hideEcmModal);
+
+    // Regras reais por documento, extraídas da planilha
+    // "Regras de Negócio - Extração ECM.xlsx" (aba "Regras Extração Financiamento").
+    var RULES_BY_DOC = {
+      "DOCUM. DE IDENTIDADE": [
+        "Nome confere com o do sistema?",
+        "Tipo de documento está correto?",
+        "Número do RG e do CPF confere com o sistema?",
+        "Data de nascimento confere com o sistema?",
+        "Possui assinatura?",
+        "Documento legível?"
+      ],
+      "DOCUM. IDENTID. AVAL": [
+        "Nome confere com o do sistema?",
+        "Tipo de documento está correto?",
+        "Número do RG e do CPF confere com o sistema?",
+        "Data de nascimento confere com o sistema?",
+        "Possui assinatura?",
+        "Documento legível?"
+      ],
+      "CONTRATO - CCB": [
+        "Contrato está legível?",
+        "Número e dígito da CCB confere com o do sistema?",
+        "Consta assinatura do cliente semelhante ao documento de identificação / Facematch validado?",
+        "Contrato está completo (todas as páginas)?"
+      ],
+      "FICHA PROPOSTA": [
+        "Número da proposta e o dígito confere com o do sistema?",
+        "Consta assinatura do cliente semelhante ao documento de identificação / Facematch validado?",
+        "Ficha está legível?"
+      ],
+      "FICHA PROPOSTA -AVAL": [
+        "Número da proposta e o dígito confere com o do sistema?",
+        "Consta assinatura do cliente semelhante ao documento de identificação / Facematch validado?",
+        "Ficha está legível?"
+      ],
+      "ORÇAMENTO - CET": [
+        "Número da proposta e o dígito confere com o do sistema?",
+        "Consta assinatura do cliente semelhante ao documento de identificação / Facematch validado?",
+        "Está legível?"
+      ],
+      "NF VEICULOS": [
+        "Chassi confere com o sistema?",
+        "CPF confere com o do sistema?",
+        "Documento legível?",
+        "Data da emissão da NF está dentro do prazo?",
+        "Endereço confere com a ficha?",
+        "Nome confere com o do sistema?",
+        "Número da NF está correto?",
+        "O documento está de acordo com as regras de formalização?",
+        "Possui informação de alienação?",
+        "Valor da NF está igual ao sistema?"
+      ],
+      "COPIA COMPR.RESIDEN": [
+        "Comprovante está em nome do cliente ou parente?",
+        "Mês de referência dentro de 60 dias?",
+        "Endereço confere com a ficha?",
+        "Documento legível?"
+      ],
+      "COMPROVANTE RES AV": [
+        "Comprovante está em nome do cliente ou parente?",
+        "Mês de referência dentro de 60 dias?",
+        "Endereço confere com a ficha?",
+        "Documento legível?"
+      ],
+      "CP COMPR. DE RENDA": [
+        "Nome do comprovante confere com os dados da ficha?",
+        "Data do documento está dentro do prazo de 60 dias?",
+        "Valor da renda bruta comporta 3x a parcela informada no sistema?",
+        "CRC do contador está ativo?"
+      ],
+      "CP COMPR. RENDA-AVAL": [
+        "Nome do comprovante confere com os dados da ficha?",
+        "Data do documento está dentro do prazo de 60 dias?",
+        "Valor da renda bruta comporta 3x a parcela informada no sistema?",
+        "CRC do contador está ativo?"
+      ]
+    };
+
+    var DOCS_DATA = [
+      { doc: "DOCUM. DE IDENTIDADE",  tipo: "Proponente", status: "Pendente", label: "Documento de Identidade — Proponente", failedRuleIndex: 5 },
+      { doc: "CONTRATO - CCB",        tipo: "Proponente", status: "Pendente", label: "Contrato CCB", failedRuleIndex: 3 },
+      { doc: "FICHA PROPOSTA",        tipo: "Proponente", status: "Pendente", label: "Ficha Proposta", failedRuleIndex: 1 },
+      { doc: "ORÇAMENTO - CET",       tipo: "Proponente", status: "Pendente", label: "Orçamento (CET)", failedRuleIndex: 0 },
+      { doc: "NF VEICULOS",           tipo: "Proponente", status: "Ok", label: "Nota Fiscal do Veículo" },
+      { doc: "COPIA COMPR.RESIDEN",   tipo: "Proponente", status: "Ok", label: "Comprovante de Residência — Proponente" },
+      { doc: "CP COMPR. DE RENDA",    tipo: "Proponente", status: "Pendente", label: "Comprovante de Renda — Proponente", failedRuleIndex: 3 },
+      { doc: "FICHA PROPOSTA -AVAL",  tipo: "Avalista",   status: "Ok", label: "Ficha Proposta — Avalista" },
+      { doc: "DOCUM. IDENTID. AVAL",  tipo: "Avalista",   status: "Ok", label: "Documento de Identidade — Avalista" },
+      { doc: "COMPROVANTE RES AV",    tipo: "Avalista",   status: "Pendente", label: "Comprovante de Residência — Avalista", failedRuleIndex: 1 },
+      { doc: "CP COMPR. RENDA-AVAL",  tipo: "Avalista",   status: "Ok", label: "Comprovante de Renda — Avalista" }
+    ];
+
+    var ORIGINAL_DOCS_DATA = JSON.parse(JSON.stringify(DOCS_DATA));
+    var currentSelectedIndex = null;
+
+    // Rodada anterior (antes da correção/reenvio do colaborador), usada pelo botão "Histórico"
+    var HISTORICO_DATA = [
+      { doc: "DOCUM. DE IDENTIDADE",  tipo: "Proponente", status: "Pendente", label: "Documento de Identidade — Proponente", failedRuleIndex: 5 },
+      { doc: "CONTRATO - CCB",        tipo: "Proponente", status: "Pendente", label: "Contrato CCB", failedRuleIndex: 3 },
+      { doc: "FICHA PROPOSTA",        tipo: "Proponente", status: "Pendente", label: "Ficha Proposta", failedRuleIndex: 1 },
+      { doc: "ORÇAMENTO - CET",       tipo: "Proponente", status: "Pendente", label: "Orçamento (CET)", failedRuleIndex: 0 },
+      { doc: "NF VEICULOS",           tipo: "Proponente", status: "Pendente", label: "Nota Fiscal do Veículo", failedRuleIndex: 2 },
+      { doc: "COPIA COMPR.RESIDEN",   tipo: "Proponente", status: "Pendente", label: "Comprovante de Residência — Proponente", failedRuleIndex: 3 },
+      { doc: "CP COMPR. DE RENDA",    tipo: "Proponente", status: "Pendente", label: "Comprovante de Renda — Proponente", failedRuleIndex: 3 },
+      { doc: "FICHA PROPOSTA -AVAL",  tipo: "Avalista",   status: "Pendente", label: "Ficha Proposta — Avalista", failedRuleIndex: 2 },
+      { doc: "DOCUM. IDENTID. AVAL",  tipo: "Avalista",   status: "Pendente", label: "Documento de Identidade — Avalista", failedRuleIndex: 5 },
+      { doc: "COMPROVANTE RES AV",    tipo: "Avalista",   status: "Pendente", label: "Comprovante de Residência — Avalista", failedRuleIndex: 1 },
+      { doc: "CP COMPR. RENDA-AVAL",  tipo: "Avalista",   status: "Pendente", label: "Comprovante de Renda — Avalista", failedRuleIndex: 1 }
+    ];
+
+    var JUSTIFICATIVA_COLABORADOR = "Corrigi a qualidade de digitalização da Nota Fiscal do Veículo, do Comprovante " +
+      "de Residência do proponente, da Ficha Proposta e do Documento de Identidade do avalista, e atualizei o " +
+      "Comprovante de Renda do avalista com data dentro do prazo. Reenviando para nova análise.";
+
+    var historicoAtivo = false;
+    function getActiveData() { return historicoAtivo ? HISTORICO_DATA : DOCS_DATA; }
+
+    DOCS_DATA.forEach(function (item) { item.editedAnswers = {}; });
+
+    function getRuleAnswer(item, ruleIndex) {
+      if (item.editedAnswers && Object.prototype.hasOwnProperty.call(item.editedAnswers, ruleIndex)) {
+        return item.editedAnswers[ruleIndex];
+      }
+      return (ruleIndex === item.failedRuleIndex) ? "Não" : "Sim";
+    }
+
+    function isRuleEditable(item, ruleIndex) {
+      return getRuleAnswer(item, ruleIndex) === "Não";
+    }
+
+    function recomputeItemStatus(item) {
+      var regras = RULES_BY_DOC[item.doc] || [];
+      var temReprovada = regras.some(function (_, ruleIndex) { return getRuleAnswer(item, ruleIndex) === "Não"; });
+      item.status = temReprovada ? "Pendente" : "Ok";
+    }
+
+    var editMode = false;
+
+    var docsBody = document.getElementById("docsBody");
+    var analysisContent = document.getElementById("analysisContent");
+    var docPlaceholder = document.getElementById("docPlaceholder");
+
+    function updateSummary() {
+      var ok = DOCS_DATA.filter(function (i) { return i.status === "Ok"; }).length;
+      var pendente = DOCS_DATA.filter(function (i) { return i.status === "Pendente"; }).length;
+      document.getElementById("countOk").textContent = ok < 10 ? "0" + ok : ok;
+      document.getElementById("countPendente").textContent = pendente < 10 ? "0" + pendente : pendente;
+    }
+
+    function renderAnalysis(item, index) {
+      var badge = document.getElementById("analysisStatusBadge");
+      badge.style.display = "inline-block";
+      if (item.status === "Ok") {
+        badge.textContent = "Aprovado";
+        badge.className = "status-badge ok";
+      } else {
+        badge.textContent = "Reprovado";
+        badge.className = "status-badge reprovado";
+      }
+
+      var editBtn = document.getElementById("btnEditRules");
+      var regras = RULES_BY_DOC[item.doc] || [];
+      var temEditavel = regras.some(function (_, ruleIndex) { return isRuleEditable(item, ruleIndex); });
+      editBtn.style.display = "inline-block";
+      editBtn.disabled = historicoAtivo || !temEditavel;
+      editBtn.className = "ch-edit" + (editMode ? " active" : "");
+      document.getElementById("checklistHead").style.display = "flex";
+
+      var html = "";
+      regras.forEach(function (regra, ruleIndex) {
+        var resposta = getRuleAnswer(item, ruleIndex);
+        var reprovada = resposta === "Não";
+        var editavelAgora = editMode && !historicoAtivo && isRuleEditable(item, ruleIndex);
+        var editadaManualmente = historicoAtivo && manualEditLog[index] === ruleIndex;
+        var rowClass = reprovada ? " linha-reprovada" : "";
+        if (editavelAgora) rowClass += " editavel";
+        var respostaClass = reprovada ? " resposta-nao" : "";
+        var respostaHtml = (editavelAgora || editadaManualmente)
+          ? '<span class="rl-resposta rl-resposta-editable' + respostaClass + '">' +
+              '<span class="rl-edit-icon" title="Regra alterada manualmente">&#9998;</span><span class="rl-resposta-text">' + resposta + '</span>' +
+            '</span>'
+          : '<span class="rl-resposta' + respostaClass + '">' + resposta + '</span>';
+        var ruleAttr = editavelAgora ? ' data-rule-index="' + ruleIndex + '"' : '';
+        html += '<div class="rule-row-lab' + rowClass + '"' + ruleAttr + '>' +
+          '<span class="rl-regra">' + regra + '</span>' +
+          respostaHtml +
+          '<span class="rl-data">13/05/2026<br>18:01:46</span>' +
+        '</div>';
+      });
+
+      if (item.status === "Pendente") {
+        html += '<div class="pendencia-note">Este documento está pendente devido à regra reprovada acima. ' +
+          'Clique no botão de conclusão no topo da tela para registrar esta pendência — a proposta retorna para o colaborador ' +
+          'refazer o anexo dos documentos e reenviar para uma nova análise de OCR. Se a correção for aceita, ' +
+          'o status muda para "Ok" automaticamente.</div>';
+      }
+
+      analysisContent.innerHTML = html;
+
+      analysisContent.querySelectorAll(".rule-row-lab.editavel").forEach(function (row) {
+        row.addEventListener("click", function () {
+          var ruleIndex = parseInt(row.getAttribute("data-rule-index"), 10);
+          openEditRuleModal(item, index, ruleIndex, regras[ruleIndex]);
+        });
+      });
+    }
+
+    function selectDoc(dataIndex, pos) {
+      currentSelectedIndex = dataIndex;
+      editMode = false;
+      var rows = docsBody.querySelectorAll("tr");
+      rows.forEach(function (r) { r.classList.remove("selected"); });
+      rows[pos].classList.add("selected");
+
+      var item = getActiveData()[dataIndex];
+      docPlaceholder.textContent = item.label;
+      renderAnalysis(item, dataIndex);
+    }
+
+    function refreshDocRows() {
+      var rows = docsBody.querySelectorAll("tr");
+      DOCS_DATA.forEach(function (item, i) {
+        var statusCell = rows[i].children[2];
+        statusCell.textContent = item.status;
+        statusCell.className = (item.status === "Ok") ? "status-ok" : "status-pendente";
+      });
+    }
+
+    function applyAllOk() {
+      if (historicoAtivo) return;
+      DOCS_DATA.forEach(function (item) {
+        item.editedAnswers = {};
+        if (item.failedRuleIndex !== undefined) item.editedAnswers[item.failedRuleIndex] = "Sim";
+        recomputeItemStatus(item);
+      });
+      refreshDocRows();
+      updateSummary();
+      updateConcluirButton();
+      if (currentSelectedIndex !== null) renderAnalysis(DOCS_DATA[currentSelectedIndex], currentSelectedIndex);
+    }
+
+    function resetToOriginal() {
+      if (historicoAtivo) return;
+      DOCS_DATA.forEach(function (item, i) {
+        item.editedAnswers = {};
+        item.failedRuleIndex = ORIGINAL_DOCS_DATA[i].failedRuleIndex;
+        recomputeItemStatus(item);
+      });
+      refreshDocRows();
+      updateSummary();
+      updateConcluirButton();
+      if (currentSelectedIndex !== null) renderAnalysis(DOCS_DATA[currentSelectedIndex], currentSelectedIndex);
+    }
+
+    // No Histórico ativado só pela edição manual (1ª Análise, sem Reanálise), a lista
+    // mostra apenas os documentos com alguma regra alterada manualmente — não o histórico completo.
+    function getDocsListEntries() {
+      if (historicoAtivo && !isReanalise) {
+        return Object.keys(manualEditLog)
+          .map(function (k) { return parseInt(k, 10); })
+          .sort(function (a, b) { return a - b; })
+          .map(function (i) { return { item: HISTORICO_DATA[i], dataIndex: i }; });
+      }
+      return getActiveData().map(function (item, i) { return { item: item, dataIndex: i }; });
+    }
+
+    function renderDocsList() {
+      docsBody.innerHTML = "";
+      getDocsListEntries().forEach(function (entry, pos) {
+        var item = entry.item;
+        var tr = document.createElement("tr");
+
+        var tdDoc = document.createElement("td");
+        tdDoc.textContent = item.doc;
+        tr.appendChild(tdDoc);
+
+        var tdTipo = document.createElement("td");
+        tdTipo.textContent = item.tipo;
+        tr.appendChild(tdTipo);
+
+        var tdStatus = document.createElement("td");
+        tdStatus.textContent = item.status;
+        tdStatus.className = (item.status === "Ok") ? "status-ok" : "status-pendente";
+        tr.appendChild(tdStatus);
+
+        tr.addEventListener("click", function () { selectDoc(entry.dataIndex, pos); });
+        docsBody.appendChild(tr);
+      });
+    }
+
+    renderDocsList();
+    updateSummary();
+
+    function updateConcluirButton() {
+      var pendentes = DOCS_DATA.filter(function (item) { return item.status === "Pendente"; }).length;
+      var btn = document.getElementById("btnConcluirFormalizacao");
+      btn.textContent = (pendentes > 0) ? "Concluir Análise" : "Concluir Formalização";
+    }
+    updateConcluirButton();
+
+    document.querySelector(".summary-card.ok").addEventListener("click", applyAllOk);
+    document.querySelector(".summary-card.pendente").addEventListener("click", resetToOriginal);
+
+    // Badge de rodada da proposta (1ª Análise / Reanálise) e botão Histórico
+    var roundBadge = document.getElementById("roundBadge");
+    var btnHistorico = document.getElementById("btnHistorico");
+    var historicoBanner = document.getElementById("historicoBanner");
+    var isReanalise = false;
+    // Segunda condição de ativação do Histórico: uma regra reprovada corrigida
+    // manualmente (edição + Confirmar) também libera o botão, além da Reanálise.
+    // Mapa dataIndex -> ruleIndex da regra que foi alterada manualmente naquele documento.
+    var manualEditLog = {};
+    function hasAnyManualEdit() { return Object.keys(manualEditLog).length > 0; }
+
+    function resetAnalysisPanel() {
+      analysisContent.innerHTML = '<div class="analysis-empty">Selecione um documento na lista acima.</div>';
+      document.getElementById("analysisStatusBadge").style.display = "none";
+      document.getElementById("checklistHead").style.display = "none";
+      document.getElementById("btnEditRules").style.display = "none";
+      docPlaceholder.innerHTML = "Selecione um documento na lista à direita<br>para visualizá-lo aqui";
+    }
+
+    function setHistoricoAtivo(ativo) {
+      historicoAtivo = ativo;
+      editMode = false;
+      btnHistorico.textContent = historicoAtivo ? "Voltar" : "Histórico";
+      // O aviso de reenvio do colaborador só existe quando há uma Reanálise real;
+      // quando o Histórico foi liberado apenas por edição manual (1ª Análise), não aparece.
+      historicoBanner.style.display = (historicoAtivo && isReanalise) ? "block" : "none";
+      if (historicoAtivo && isReanalise) {
+        document.getElementById("historicoJustificativaText").textContent = JUSTIFICATIVA_COLABORADOR;
+      }
+      currentSelectedIndex = null;
+      renderDocsList();
+      resetAnalysisPanel();
+    }
+
+    // Edição de regras: alterna o modo de edição e controla o popup de justificativa.
+    // A confirmação ocorre em 2 etapas: "Salvar" valida a justificativa e exibe o aviso
+    // de responsabilidade; só ao clicar em "Confirmar" a resposta da regra é efetivamente alterada.
+    var editRuleModalOverlay = document.getElementById("editRuleModalOverlay");
+    var editRuleWarning = document.getElementById("editRuleWarning");
+    var editRuleConfirmBtn = document.getElementById("editRuleConfirmBtn");
+    var pendingEdit = null;
+    var editRuleStageConfirm = false;
+
+    function resetEditRuleStage() {
+      editRuleStageConfirm = false;
+      editRuleWarning.style.display = "none";
+      editRuleConfirmBtn.textContent = "Salvar";
+    }
+
+    function showEditRuleModal() { editRuleModalOverlay.classList.remove("hidden"); }
+    function hideEditRuleModal() {
+      editRuleModalOverlay.classList.add("hidden");
+      document.getElementById("editRuleJustificativa").value = "";
+      document.getElementById("editRuleError").style.display = "none";
+      resetEditRuleStage();
+      pendingEdit = null;
+    }
+
+    function openEditRuleModal(item, index, ruleIndex, regraTexto) {
+      var respostaAtual = getRuleAnswer(item, ruleIndex);
+      var novaResposta = respostaAtual === "Sim" ? "Não" : "Sim";
+      pendingEdit = { item: item, index: index, ruleIndex: ruleIndex, novaResposta: novaResposta };
+      document.getElementById("editRuleQuestion").innerHTML =
+        regraTexto + '<span style="font-weight:400;"> - Nova resposta: </span>' + novaResposta;
+      resetEditRuleStage();
+      showEditRuleModal();
+    }
+
+    document.getElementById("editRuleCancelBtn").addEventListener("click", function () {
+      hideEditRuleModal();
+      // Cancelar devolve a lista ao estado inicial, como se o modo de edição
+      // nunca tivesse sido ativado para este documento.
+      editMode = false;
+      if (currentSelectedIndex !== null) renderAnalysis(getActiveData()[currentSelectedIndex], currentSelectedIndex);
+    });
+
+    editRuleConfirmBtn.addEventListener("click", function () {
+      var justificativa = document.getElementById("editRuleJustificativa").value.trim();
+      if (!justificativa) {
+        document.getElementById("editRuleError").style.display = "block";
+        return;
+      }
+      document.getElementById("editRuleError").style.display = "none";
+
+      if (!editRuleStageConfirm) {
+        editRuleStageConfirm = true;
+        editRuleWarning.style.display = "block";
+        editRuleConfirmBtn.textContent = "Confirmar";
+        return;
+      }
+
+      var item = pendingEdit.item;
+      var index = pendingEdit.index;
+      var ruleIndex = pendingEdit.ruleIndex;
+      item.editedAnswers[ruleIndex] = pendingEdit.novaResposta;
+      recomputeItemStatus(item);
+
+      // Segunda condição do Histórico: a regra de origem negada, agora corrigida
+      // manualmente, passa a constar no Histórico e o botão fica liberado.
+      HISTORICO_DATA[index].failedRuleIndex = ruleIndex;
+      HISTORICO_DATA[index].status = "Pendente";
+      manualEditLog[index] = ruleIndex;
+      btnHistorico.disabled = false;
+
+      hideEditRuleModal();
+      refreshDocRows();
+      updateSummary();
+      updateConcluirButton();
+      renderAnalysis(item, index);
+    });
+
+    document.getElementById("btnEditRules").addEventListener("click", function () {
+      if (historicoAtivo || currentSelectedIndex === null) return;
+      editMode = !editMode;
+      renderAnalysis(getActiveData()[currentSelectedIndex], currentSelectedIndex);
+    });
+
+    function updateRoundBadge() {
+      if (isReanalise) {
+        roundBadge.textContent = "Reanálise";
+        roundBadge.className = "round-badge reanalise";
+      } else {
+        roundBadge.textContent = "1ª Análise";
+        roundBadge.className = "round-badge primeira";
+      }
+      btnHistorico.disabled = !isReanalise && !hasAnyManualEdit();
+      if (btnHistorico.disabled && historicoAtivo) {
+        setHistoricoAtivo(false);
+      } else if (historicoAtivo) {
+        // O conteúdo do Histórico depende de isReanalise (visão completa x. só os editados manualmente).
+        historicoBanner.style.display = isReanalise ? "block" : "none";
+        currentSelectedIndex = null;
+        renderDocsList();
+        resetAnalysisPanel();
+      }
+    }
+
+    roundBadge.addEventListener("click", function () {
+      isReanalise = !isReanalise;
+      updateRoundBadge();
+    });
+
+    btnHistorico.addEventListener("click", function () {
+      if (btnHistorico.disabled) return;
+      setHistoricoAtivo(!historicoAtivo);
+    });
+
+    var formTabs = document.getElementById("formTabs");
+    formTabs.querySelectorAll("button").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        formTabs.querySelectorAll("button").forEach(function (b) { b.classList.remove("active"); });
+        btn.classList.add("active");
+        var alvo = btn.getAttribute("data-tab");
+        document.querySelectorAll(".tab-panel").forEach(function (panel) {
+          panel.style.display = (panel.getAttribute("data-panel") === alvo) ? "block" : "none";
+        });
+      });
+    });
+
+    document.getElementById("btnConcluirFormalizacao").addEventListener("click", function () {
+      var pendentes = DOCS_DATA.filter(function (item) { return item.status === "Pendente"; }).length;
+      if (pendentes > 0) {
+        document.getElementById("ecmModalMessage").textContent =
+          pendentes + " documento(s) pendente(s) identificado(s). Ao confirmar, a proposta retornará para o " +
+          "colaborador refazer o anexo dos documentos pendentes e reenviar para uma nova análise de OCR.";
+        showEcmModal();
+      }
+    });
+
+    // Relógio em tempo real (mock visual, só para parecer funcional)
+    (function () {
+      var clockEl = document.getElementById("liveClock");
+      function pad(n) { return n < 10 ? "0" + n : "" + n; }
+      function tick() {
+        var d = new Date();
+        clockEl.textContent = pad(d.getHours()) + ":" + pad(d.getMinutes()) + ":" + pad(d.getSeconds());
+      }
+      tick();
+      setInterval(tick, 1000);
+    })();
+  </script>
+
+</body>
+</html>
