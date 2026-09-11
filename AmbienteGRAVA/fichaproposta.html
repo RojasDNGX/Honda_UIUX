@@ -127,6 +127,35 @@
     font-size: 12px; font-weight: 700; flex: 0 0 auto;
   }
 
+  /* Etapa já concluída (recolhida): o cabeçalho de seção volta a ser um
+     nav-item simples, sem caixa nem subitens, igual às demais etapas. */
+  .nav-section.collapsed {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    margin-bottom: 8px;
+  }
+  .nav-section.collapsed .nav-item {
+    background: var(--bg-chip);
+    border-radius: 8px;
+    color: var(--text-gray-light);
+    font-weight: 400;
+    cursor: pointer;
+  }
+  .nav-section.collapsed .nav-subitems { display: none; }
+
+  /* Etapa atualmente ativa: caixa destacada, sem cadeado, seta para a esquerda. */
+  .nav-item.active-step {
+    background: var(--bg-chip);
+    border: 1.5px solid var(--border-light);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    color: #222;
+    font-weight: 700;
+    cursor: default;
+  }
+  .nav-item.active-step .nav-icon { color: #222; }
+  .nav-item.active-step .nav-shield { display: none; }
+
   /* ---------- Formulário ---------- */
   .fp-section-chip {
     background: var(--bg-chip);
@@ -235,6 +264,19 @@
   .bank-label { font-weight: 700; color: #222; font-size: 15px; }
 
   .footer-note { margin-top: 26px; font-size: 12px; color: #999; }
+
+  /* ---------- Utilitários genéricos de formulário (reutilizáveis em qualquer etapa) ---------- */
+  .fp-row-aux { display: flex; gap: 24px; align-items: center; margin: -8px 0 22px 0; }
+  .fp-row-aux > * { flex: 1; min-width: 0; }
+  .fp-link-action { color: var(--info-blue); font-size: 14px; text-decoration: underline; cursor: pointer; background: none; border: none; font-family: inherit; padding: 0; }
+  .fp-link-action:hover { color: var(--red); }
+  .fp-checkbox-inline { display: flex; align-items: center; justify-content: flex-end; gap: 8px; font-size: 14px; color: #222; cursor: pointer; white-space: nowrap; }
+  .fp-checkbox-inline input[type="checkbox"] { accent-color: var(--red); width: 17px; height: 17px; cursor: pointer; }
+
+  .fp-bottom-row { display: flex; gap: 24px; align-items: center; }
+  .fp-bottom-row > .cb, .fp-bottom-row > .tf { flex: 1; min-width: 0; }
+  .fp-bottom-row .fp-spacer { flex: 1; }
+  .fp-bottom-row .btn-continuar { flex: 0 0 auto; }
 
   .fp-actions { display: flex; justify-content: flex-end; margin-top: 24px; }
   .btn-continuar {
@@ -404,22 +446,24 @@
           <span class="nav-chevron">&rsaquo;</span>
         </div>
 
-        <div class="nav-section">
+        <div class="nav-section" id="navSectionDadosCliente">
           <div class="nav-item">
             <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg></span>
             <span class="nav-label">Dados do Cliente</span>
-            <span class="nav-chevron">&#9662;</span>
+            <span class="nav-chevron" id="navChevronDadosCliente">&#9662;</span>
           </div>
-          <div class="nav-subitem"><span class="step-circle">1</span><span>Dados Pessoais</span></div>
-          <div class="nav-subitem"><span class="step-circle">2</span><span>Contato</span></div>
-          <div class="nav-subitem"><span class="step-circle">3</span><span>Dados Bancários</span></div>
+          <div class="nav-subitems" id="navSubitemsDadosCliente">
+            <div class="nav-subitem"><span class="step-circle">1</span><span>Dados Pessoais</span></div>
+            <div class="nav-subitem"><span class="step-circle">2</span><span>Contato</span></div>
+            <div class="nav-subitem"><span class="step-circle">3</span><span>Dados Bancários</span></div>
+          </div>
         </div>
 
-        <div class="nav-item">
+        <div class="nav-item" id="navItemEndereco">
           <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s7-6.4 7-11.5A7 7 0 0 0 5 9.5C5 14.6 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.3"/></svg></span>
           <span class="nav-label">Endereço do Cliente</span>
-          <span class="nav-shield"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l8 3.5v6C20 17 16.5 20.5 12 22c-4.5-1.5-8-5-8-10.5v-6L12 2z"/></svg></span>
-          <span class="nav-chevron">&rsaquo;</span>
+          <span class="nav-shield" id="navShieldEndereco"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l8 3.5v6C20 17 16.5 20.5 12 22c-4.5-1.5-8-5-8-10.5v-6L12 2z"/></svg></span>
+          <span class="nav-chevron" id="navChevronEndereco">&rsaquo;</span>
         </div>
         <div class="nav-item">
           <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></span>
@@ -447,6 +491,8 @@
       </div>
 
       <div class="fp-col-main">
+
+        <div class="fp-step" id="stepDadosCliente">
 
         <div class="fp-section-chip">Dados Pessoais</div>
 
@@ -597,6 +643,84 @@
           <button type="button" class="btn-continuar" id="btnContinuarFicha">Continuar</button>
         </div>
 
+        </div>
+
+        <div class="fp-step" id="stepEndereco" style="display:none;">
+
+        <div class="fp-section-chip">Endereço do Cliente</div>
+
+        <div class="fp-row-fields">
+          <div class="tf">
+            <div class="field">
+              <input type="text" id="fpCep" placeholder=" " maxlength="9">
+              <label for="fpCep">CEP *</label>
+            </div>
+          </div>
+          <div class="tf">
+            <div class="field">
+              <input type="text" id="fpEndereco" placeholder=" ">
+              <label for="fpEndereco">Endereço *</label>
+            </div>
+          </div>
+          <div class="tf">
+            <div class="field">
+              <input type="text" id="fpNumero" placeholder=" ">
+              <label for="fpNumero">Número *</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="fp-row-aux">
+          <button type="button" class="fp-link-action" id="linkSemCep">Não sei meu CEP</button>
+          <div></div>
+          <label class="fp-checkbox-inline">
+            <input type="checkbox" id="chkSemNumero">
+            <span>Endereço s/ número</span>
+          </label>
+        </div>
+
+        <div class="fp-row-fields">
+          <div class="tf">
+            <div class="field">
+              <input type="text" id="fpComplemento" placeholder=" ">
+              <label for="fpComplemento">Complemento</label>
+            </div>
+          </div>
+          <div class="tf">
+            <div class="field">
+              <input type="text" id="fpBairro" placeholder=" ">
+              <label for="fpBairro">Bairro *</label>
+            </div>
+          </div>
+          <div class="cb" data-cb="uf">
+            <div class="field">
+              <input type="text" id="cbUf" placeholder=" " autocomplete="off">
+              <label for="cbUf">UF *</label>
+              <button type="button" class="cb-clear" tabindex="-1">&times;</button>
+              <span class="cb-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span>
+            </div>
+            <div class="cb-panel" hidden></div>
+          </div>
+        </div>
+
+        <div class="fp-bottom-row">
+          <div class="cb" data-cb="cidade">
+            <div class="field">
+              <input type="text" id="cbCidade" placeholder=" " autocomplete="off">
+              <label for="cbCidade">Cidade *</label>
+              <button type="button" class="cb-clear" tabindex="-1">&times;</button>
+              <span class="cb-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span>
+            </div>
+            <div class="cb-panel" hidden></div>
+          </div>
+          <div class="fp-spacer"></div>
+          <button type="button" class="btn-continuar" id="btnContinuarEndereco">Continuar</button>
+        </div>
+
+        <div class="footer-note">* Preenchimento obrigatório.</div>
+
+        </div>
+
       </div>
     </div>
 
@@ -663,7 +787,16 @@
         nomeMae: "LADIS PERINI ROJAS",
         nomePai: "DANIEL ROJAS",
         escolaridade: "SUPERIOR",
-        email: "THIAGO@GMAIL.COM"
+        email: "THIAGO@GMAIL.COM",
+        endereco: {
+          cep: "09230-770",
+          logradouro: "R BENJAMIN CONSTANT",
+          numero: "151",
+          complemento: "",
+          bairro: "JARDIM UTINGA",
+          uf: "SP",
+          cidade: "SANTO ANDRE"
+        }
       },
       "55409660315": {
         nome: "MARIA SALOMÉ DOS SANTOS",
@@ -676,7 +809,16 @@
         nomeMae: "LADIS PERINI ROJAS",
         nomePai: "DANIEL ROJAS",
         escolaridade: "SUPERIOR",
-        email: "THIAGO@GMAIL.COM"
+        email: "THIAGO@GMAIL.COM",
+        endereco: {
+          cep: "09230-770",
+          logradouro: "R BENJAMIN CONSTANT",
+          numero: "151",
+          complemento: "",
+          bairro: "JARDIM UTINGA",
+          uf: "SP",
+          cidade: "SANTO ANDRE"
+        }
       }
     };
 
@@ -700,6 +842,13 @@
       document.getElementById("fpNomePai").value = dados.nomePai;
       document.getElementById("cbEscolaridade").value = dados.escolaridade;
       document.getElementById("fpEmail").value = dados.email;
+
+      document.getElementById("fpCep").value = dados.endereco.cep;
+      document.getElementById("fpEndereco").value = dados.endereco.logradouro;
+      document.getElementById("fpNumero").value = dados.endereco.numero;
+      document.getElementById("fpBairro").value = dados.endereco.bairro;
+      document.getElementById("cbUf").value = dados.endereco.uf;
+      document.getElementById("cbCidade").value = dados.endereco.cidade;
     })();
 
     // Máscara de data (dd/mm/aaaa) para o campo Nascimento.
@@ -727,6 +876,42 @@
       telResidencialInput.value = maskPhoneFixoBR(telResidencialInput.value.replace(/\D/g, ""));
     });
 
+    // Máscara de CEP (00000-000).
+    function maskCepBR(digits) {
+      digits = digits.slice(0, 8);
+      if (digits.length > 5) return digits.replace(/(\d{5})(\d{1,3})/, "$1-$2");
+      return digits;
+    }
+    var cepInput = document.getElementById("fpCep");
+    cepInput.addEventListener("input", function () {
+      cepInput.value = maskCepBR(cepInput.value.replace(/\D/g, ""));
+    });
+
+    // "Não sei meu CEP": dispensa o campo (fica em branco e desabilitado) para que o
+    // endereço seja preenchido manualmente nos demais campos, sem exigir o CEP.
+    var enderecoInput = document.getElementById("fpEndereco");
+    document.getElementById("linkSemCep").addEventListener("click", function () {
+      cepInput.value = "";
+      cepInput.readOnly = true;
+      cepInput.closest(".field").classList.add("light");
+      cepInput.closest(".tf").querySelector("label").textContent = "CEP";
+      enderecoInput.focus();
+    });
+
+    // "Endereço s/ número": desabilita e limpa o campo "Número".
+    var numeroInput = document.getElementById("fpNumero");
+    document.getElementById("chkSemNumero").addEventListener("change", function (e) {
+      if (e.target.checked) {
+        numeroInput.value = "";
+        numeroInput.readOnly = true;
+        numeroInput.closest(".field").classList.add("light");
+      } else {
+        numeroInput.readOnly = false;
+        numeroInput.closest(".field").classList.remove("light");
+        numeroInput.focus();
+      }
+    });
+
     // Todo texto digitado no formulário fica em caixa alta, mesmo que o usuário
     // digite em minúsculas (mantém a posição do cursor).
     function forceUppercase(input) {
@@ -738,7 +923,7 @@
         try { input.setSelectionRange(pos, pos); } catch (e) {}
       }
     }
-    ["fpNome", "fpNaturalidade", "fpCpfConjuge", "fpNumeroDoc", "fpNomeMae", "fpNomePai", "fpEmail"].forEach(function (id) {
+    ["fpNome", "fpNaturalidade", "fpCpfConjuge", "fpNumeroDoc", "fpNomeMae", "fpNomePai", "fpEmail", "fpEndereco", "fpComplemento", "fpBairro"].forEach(function (id) {
       var input = document.getElementById(id);
       input.addEventListener("input", function () { forceUppercase(input); });
     });
@@ -879,90 +1064,171 @@
       "FUNDAMENTAL", "MEDIO", "NÃO ALFABETIZADO", "SUPERIOR INCOMPLETO", "SUPERIOR"
     ]);
 
-    // CPF já cadastrado (com histórico): "Continuar" exige confirmação explícita de que
-    // os dados foram revisados, evitando que o usuário só clique direto sem checar nada.
-    (function () {
-      var confirmOverlay = document.getElementById("confirmDadosOverlay");
-      var confirmCheckbox = document.getElementById("confirmDadosCheckbox");
-      var confirmCheckboxLabel = document.getElementById("confirmCheckboxLabel");
-      var confirmChangesBox = document.getElementById("confirmChangesBox");
-      var confirmChangesList = document.getElementById("confirmChangesList");
-      var btnConfirmarContinuar = document.getElementById("btnConfirmarContinuar");
-      var btnRevisarDados = document.getElementById("btnRevisarDados");
+    initCombobox("uf", [
+      "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG",
+      "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"
+    ]);
 
-      // Campos que vêm do autopreenchimento (HISTORICO_FICHA) e que, se alterados pelo
-      // colaborador, devem ser explicitados no popup de confirmação antes de prosseguir.
-      var CAMPOS_HISTORICO = [
-        { id: "fpNome", chave: "nome", label: "Nome" },
-        { id: "fpNascimento", chave: "nascimento", label: "Nascimento" },
-        { id: "cbGenero", chave: "genero", label: "Gênero" },
-        { id: "fpNaturalidade", chave: "naturalidade", label: "Naturalidade" },
-        { id: "cbEstadoCivil", chave: "estadoCivil", label: "Estado Civil" },
-        { id: "cbTipoDoc", chave: "tipoDoc", label: "Tipo de Doc." },
-        { id: "fpNumeroDoc", chave: "numeroDoc", label: "Número do Doc." },
-        { id: "fpNomeMae", chave: "nomeMae", label: "Nome da Mãe" },
-        { id: "fpNomePai", chave: "nomePai", label: "Nome do Pai" },
-        { id: "cbEscolaridade", chave: "escolaridade", label: "Escolaridade" },
-        { id: "fpEmail", chave: "email", label: "E-mail" }
-      ];
+    initCombobox("cidade", [
+      "SANTO ANDRE", "SAO BERNARDO DO CAMPO", "SAO CAETANO DO SUL", "DIADEMA", "MAUA",
+      "SAO PAULO", "GUARULHOS", "OSASCO", "CAMPINAS", "SANTOS",
+      "RIO DE JANEIRO", "BELO HORIZONTE", "CURITIBA", "PORTO ALEGRE", "SALVADOR",
+      "BRASILIA", "FORTALEZA", "RECIFE", "MANAUS", "BELEM"
+    ]);
 
-      function calcularAlteracoes(cpf) {
-        var original = HISTORICO_FICHA[cpf];
-        if (!original) return [];
-        var alteracoes = [];
-        CAMPOS_HISTORICO.forEach(function (campo) {
-          var atual = document.getElementById(campo.id).value.trim();
-          var anterior = original[campo.chave];
-          if (atual !== anterior) {
-            alteracoes.push({ label: campo.label, de: anterior, para: atual });
-          }
-        });
-        return alteracoes;
-      }
+    // Popup de confirmação de dados: reutilizado em TODA etapa com autopreenchimento.
+    // Regra: sempre que a tela tiver dados vindos do histórico (HISTORICO_FICHA), o
+    // botão que leva à etapa seguinte deve abrir este popup, listando qualquer campo
+    // que o colaborador tenha alterado em relação ao cadastro anterior. Sem histórico
+    // para o CPF, ou nada para confirmar, o fluxo segue direto para a próxima etapa.
+    var confirmOverlay = document.getElementById("confirmDadosOverlay");
+    var confirmCheckbox = document.getElementById("confirmDadosCheckbox");
+    var confirmCheckboxLabel = document.getElementById("confirmCheckboxLabel");
+    var confirmChangesBox = document.getElementById("confirmChangesBox");
+    var confirmChangesList = document.getElementById("confirmChangesList");
+    var btnConfirmarContinuar = document.getElementById("btnConfirmarContinuar");
+    var btnRevisarDados = document.getElementById("btnRevisarDados");
+    var acaoAposConfirmar = null;
 
-      function irParaProximaEtapa() {
-        // Próxima tela ainda não definida.
-      }
+    // Campos autopreenchidos de cada etapa e onde encontrar o valor "original" dentro
+    // do registro de HISTORICO_FICHA (direto no objeto, ou aninhado em "endereco" etc.).
+    var CAMPOS_DADOS_CLIENTE = [
+      { id: "fpNome", chave: "nome", label: "Nome" },
+      { id: "fpNascimento", chave: "nascimento", label: "Nascimento" },
+      { id: "cbGenero", chave: "genero", label: "Gênero" },
+      { id: "fpNaturalidade", chave: "naturalidade", label: "Naturalidade" },
+      { id: "cbEstadoCivil", chave: "estadoCivil", label: "Estado Civil" },
+      { id: "cbTipoDoc", chave: "tipoDoc", label: "Tipo de Doc." },
+      { id: "fpNumeroDoc", chave: "numeroDoc", label: "Número do Doc." },
+      { id: "fpNomeMae", chave: "nomeMae", label: "Nome da Mãe" },
+      { id: "fpNomePai", chave: "nomePai", label: "Nome do Pai" },
+      { id: "cbEscolaridade", chave: "escolaridade", label: "Escolaridade" },
+      { id: "fpEmail", chave: "email", label: "E-mail" }
+    ];
+    var CAMPOS_ENDERECO = [
+      { id: "fpCep", chave: "cep", label: "CEP" },
+      { id: "fpEndereco", chave: "logradouro", label: "Endereço" },
+      { id: "fpNumero", chave: "numero", label: "Número" },
+      { id: "fpComplemento", chave: "complemento", label: "Complemento" },
+      { id: "fpBairro", chave: "bairro", label: "Bairro" },
+      { id: "cbUf", chave: "uf", label: "UF" },
+      { id: "cbCidade", chave: "cidade", label: "Cidade" }
+    ];
 
-      function abrirConfirmacao(cpf) {
-        var alteracoes = calcularAlteracoes(cpf);
-        if (alteracoes.length) {
-          confirmChangesList.innerHTML = alteracoes.map(function (a) {
-            return "<li><strong>" + a.label + ":</strong> \"" + a.de + "\" &rarr; \"" + a.para + "\"</li>";
-          }).join("");
-          confirmChangesBox.style.display = "";
-          confirmCheckboxLabel.textContent = "Confirmo que revisei os dados acima, inclusive as alterações listadas, e que estão atualizados e corretos.";
-        } else {
-          confirmChangesBox.style.display = "none";
-          confirmCheckboxLabel.textContent = "Confirmo que revisei os dados acima e que estão atualizados e corretos.";
-        }
-        confirmCheckbox.checked = false;
-        btnConfirmarContinuar.disabled = true;
-        confirmOverlay.classList.remove("hidden");
-      }
-      function fecharConfirmacao() {
-        confirmOverlay.classList.add("hidden");
-      }
-
-      confirmCheckbox.addEventListener("change", function () {
-        btnConfirmarContinuar.disabled = !confirmCheckbox.checked;
-      });
-      btnRevisarDados.addEventListener("click", fecharConfirmacao);
-      btnConfirmarContinuar.addEventListener("click", function () {
-        fecharConfirmacao();
-        irParaProximaEtapa();
-      });
-
-      document.getElementById("btnContinuarFicha").addEventListener("click", function () {
-        var cpf = "";
-        try { cpf = localStorage.getItem("kta_cpf") || ""; } catch (e) {}
-        if (HISTORICO_FICHA.hasOwnProperty(cpf)) {
-          abrirConfirmacao(cpf);
-        } else {
-          irParaProximaEtapa();
+    // Compara o valor atual de cada campo com o valor original do histórico (campos
+    // que nunca vieram preenchidos, como Complemento, contam como "Vazio"). Detecta
+    // tanto edições quanto preenchimentos de campos que antes estavam em branco.
+    function calcularAlteracoes(cpf, campos, getOrigem) {
+      var dadosCpf = HISTORICO_FICHA[cpf];
+      if (!dadosCpf) return [];
+      var origem = getOrigem(dadosCpf);
+      var alteracoes = [];
+      campos.forEach(function (campo) {
+        var atual = document.getElementById(campo.id).value.trim();
+        var anterior = origem[campo.chave] || "";
+        if (atual !== anterior) {
+          alteracoes.push({ label: campo.label, de: anterior, para: atual });
         }
       });
-    })();
+      return alteracoes;
+    }
+
+    function abrirConfirmacao(alteracoes, onConfirmar) {
+      if (alteracoes.length) {
+        confirmChangesList.innerHTML = alteracoes.map(function (a) {
+          var de = a.de === "" ? "Vazio" : a.de;
+          var para = a.para === "" ? "Vazio" : a.para;
+          return "<li><strong>" + a.label + ":</strong> \"" + de + "\" &rarr; \"" + para + "\"</li>";
+        }).join("");
+        confirmChangesBox.style.display = "";
+        confirmCheckboxLabel.textContent = "Confirmo que revisei os dados acima, inclusive as alterações listadas, e que estão atualizados e corretos.";
+      } else {
+        confirmChangesBox.style.display = "none";
+        confirmCheckboxLabel.textContent = "Confirmo que revisei os dados acima e que estão atualizados e corretos.";
+      }
+      confirmCheckbox.checked = false;
+      btnConfirmarContinuar.disabled = true;
+      acaoAposConfirmar = onConfirmar;
+      confirmOverlay.classList.remove("hidden");
+    }
+    function fecharConfirmacao() {
+      confirmOverlay.classList.add("hidden");
+    }
+
+    confirmCheckbox.addEventListener("change", function () {
+      btnConfirmarContinuar.disabled = !confirmCheckbox.checked;
+    });
+    btnRevisarDados.addEventListener("click", fecharConfirmacao);
+    btnConfirmarContinuar.addEventListener("click", function () {
+      fecharConfirmacao();
+      var acao = acaoAposConfirmar;
+      acaoAposConfirmar = null;
+      if (acao) acao();
+    });
+
+    // Ponto único usado por toda etapa com autopreenchimento: com histórico, sempre
+    // passa pelo popup (com o diff, se houver); sem histórico, segue direto.
+    function continuarComVerificacao(campos, getOrigem, proximaEtapa) {
+      var cpf = "";
+      try { cpf = localStorage.getItem("kta_cpf") || ""; } catch (e) {}
+      if (HISTORICO_FICHA.hasOwnProperty(cpf)) {
+        abrirConfirmacao(calcularAlteracoes(cpf, campos, getOrigem), proximaEtapa);
+      } else {
+        proximaEtapa();
+      }
+    }
+
+    // Registro central das etapas do wizard: cada chave aponta para seu conteúdo
+    // (.fp-step) e seu item na barra lateral. goToStep() usa esse registro para
+    // colapsar a etapa de origem e ativar a de destino — ao construir uma nova tela,
+    // basta cadastrá-la aqui, sem repetir a lógica de troca de etapa.
+    var WIZARD_STEPS = {
+      dadosCliente: {
+        content: document.getElementById("stepDadosCliente"),
+        nav: document.getElementById("navSectionDadosCliente"),
+        chevron: document.getElementById("navChevronDadosCliente"),
+        hasSubitems: true
+      },
+      endereco: {
+        content: document.getElementById("stepEndereco"),
+        nav: document.getElementById("navItemEndereco"),
+        chevron: document.getElementById("navChevronEndereco")
+      }
+      // Próximas etapas (dadosProfissionais, avalista, observacoes, resumo) entram
+      // aqui conforme forem construídas.
+    };
+
+    function goToStep(fromKey, toKey) {
+      var from = WIZARD_STEPS[fromKey];
+      var to = WIZARD_STEPS[toKey];
+
+      if (from) {
+        if (from.content) from.content.style.display = "none";
+        if (from.hasSubitems) from.nav.classList.add("collapsed");
+        else from.nav.classList.remove("active-step");
+        if (from.chevron) from.chevron.innerHTML = "&rsaquo;";
+      }
+
+      if (to) {
+        if (to.content) to.content.style.display = "";
+        to.nav.classList.add("active-step");
+        if (to.chevron) to.chevron.innerHTML = "&lsaquo;";
+      }
+
+      window.scrollTo(0, 0);
+    }
+
+    document.getElementById("btnContinuarFicha").addEventListener("click", function () {
+      continuarComVerificacao(CAMPOS_DADOS_CLIENTE, function (d) { return d; }, function () {
+        goToStep("dadosCliente", "endereco");
+      });
+    });
+
+    document.getElementById("btnContinuarEndereco").addEventListener("click", function () {
+      continuarComVerificacao(CAMPOS_ENDERECO, function (d) { return d.endereco; }, function () {
+        // Próxima etapa (Dados Profissionais) ainda não definida.
+      });
+    });
   </script>
 
 </body>
