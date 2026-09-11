@@ -833,6 +833,14 @@
         whatsappEscolha = btn.getAttribute("data-value");
       });
     });
+    // Usado quando o autopreenchimento é autorizado: reflete no switch desta proposta
+    // a preferência de Whatsapp que já constava no cadastro anterior do proponente.
+    function setWhatsappToggle(value) {
+      whatsappToggle.querySelectorAll("button").forEach(function (b) {
+        b.classList.toggle("selected", b.getAttribute("data-value") === value);
+      });
+      whatsappEscolha = value;
+    }
 
     // Campos de texto obrigatórios: valida ao sair do campo (blur) e mostra "Campo Obrigatório".
     document.querySelectorAll(".tf input[required]").forEach(function (input) {
@@ -949,7 +957,7 @@
       var digits = cpfCnpjInput.value.replace(/\D/g, "").slice(0, 11);
       cpfCnpjInput.value = maskCPF(digits);
       updateCpfState(false);
-      if (digits !== CPF_COM_HISTORICO[0] && authAlreadyHandled) {
+      if (!HISTORICO_PROPONENTES.hasOwnProperty(digits) && authAlreadyHandled) {
         authAlreadyHandled = false;
         unlockCelularForManualEntry();
       }
@@ -957,16 +965,23 @@
     cpfCnpjInput.addEventListener("blur", function () {
       updateCpfState(true);
       var digits = cpfCnpjInput.value.replace(/\D/g, "");
-      if (digits === CPF_COM_HISTORICO[0] && !authAlreadyHandled) {
+      if (HISTORICO_PROPONENTES.hasOwnProperty(digits) && !authAlreadyHandled) {
         authAlreadyHandled = true;
-        showAuthModal();
+        showAuthModal(digits);
       }
     });
 
+    // Cadastro histórico (demo) de proponentes já conhecidos do sistema: telefone
+    // registrado e se o contato optou por Whatsapp na proposta anterior. Usado tanto
+    // pelo popup de propostas existentes quanto pelo popup de autorização via SMS.
+    var HISTORICO_PROPONENTES = {
+      "31166758800": { telefone: "11987654321", whatsapp: "Sim" },
+      "55409660315": { telefone: "11987654321", whatsapp: "Não" }
+    };
     // Popup de propostas existentes: dispara ao clicar em "Enviar" (só possível com o
     // formulário completo) quando o CPF já possui histórico de cadastro. Os demais CPFs
     // seguem para a próxima tela (a definir).
-    var CPF_COM_HISTORICO = ["31166758800"];
+    var CPF_COM_HISTORICO = Object.keys(HISTORICO_PROPONENTES);
     var propostaOverlay = document.getElementById("propostaModalOverlay");
     var btnEditarProposta = document.getElementById("btnEditarProposta");
     var btnSubstituirProposta = document.getElementById("btnSubstituirProposta");
@@ -999,7 +1014,8 @@
     // Autorização (LGPD) de reaproveitamento de dados via SMS: ao sair do campo CPF com
     // um CPF já cadastrado, pergunta se deve solicitar ao proponente (por SMS, no celular
     // já registrado) autorização para reaproveitar os dados pessoais da proposta anterior.
-    var REGISTERED_PHONE_DIGITS = "11987654321";
+    var authCurrentPhone = "";
+    var authCurrentWhatsapp = "";
     function maskPhoneHidden(digits) {
       return "(" + digits.slice(0, 2) + ") " + digits.charAt(2) + "****-**" + digits.slice(9, 11);
     }
@@ -1020,14 +1036,15 @@
     var authWaitTimer = null;
     var authAlreadyHandled = false;
 
-    // Se o proponente optou por Whatsapp, a mensagem de autorização é enviada
-    // pelos dois canais (Whatsapp e SMS); caso contrário, apenas por SMS.
+    // O canal usado para a autorização reflete a preferência de Whatsapp que o
+    // proponente já tinha registrada no cadastro anterior (não o switch "Whatsapp"
+    // desta nova proposta, que é uma escolha independente para o registro atual).
     function authChannelLabel() {
-      return whatsappEscolha === "Sim" ? "WhatsApp e SMS" : "SMS";
+      return authCurrentWhatsapp === "Sim" ? "WhatsApp e SMS" : "SMS";
     }
 
     function lockCelularAsHidden() {
-      celularInput.value = maskPhoneHidden(REGISTERED_PHONE_DIGITS);
+      celularInput.value = maskPhoneHidden(authCurrentPhone);
       celularInput.readOnly = true;
       celularInput.closest(".field").classList.add("light");
       checkFormComplete();
@@ -1041,13 +1058,16 @@
     }
 
     function revealRealPhone() {
-      celularInput.value = maskPhoneBR(REGISTERED_PHONE_DIGITS);
+      celularInput.value = maskPhoneBR(authCurrentPhone);
       checkFormComplete();
     }
 
-    function showAuthModal() {
+    function showAuthModal(cpfDigits) {
+      var registro = HISTORICO_PROPONENTES[cpfDigits];
+      authCurrentPhone = registro.telefone;
+      authCurrentWhatsapp = registro.whatsapp;
       var canal = authChannelLabel();
-      authAskText.innerHTML = "Este CPF já possui dados pessoais registrados em uma proposta anterior. Deseja solicitar autorização do proponente, via " + canal + " para o número <strong>" + maskPhoneHidden(REGISTERED_PHONE_DIGITS) + "</strong>, para reaproveitar os dados já cadastrados?";
+      authAskText.innerHTML = "Este CPF já possui dados pessoais registrados em uma proposta anterior. Deseja solicitar autorização do proponente, via " + canal + " para o número <strong>" + maskPhoneHidden(authCurrentPhone) + "</strong>, para reaproveitar os dados já cadastrados?";
       authEnviarCaption.textContent = "*Envia uma mensagem de autorização ao proponente por " + canal + ". Se autorizado, os dados já cadastrados serão reaproveitados automaticamente nas próximas telas.";
       authStateAsk.style.display = "";
       authStateWaiting.style.display = "none";
@@ -1081,6 +1101,7 @@
       authWaitingCaption.textContent = "*O proponente autorizou o reaproveitamento dos dados já cadastrados.";
       document.getElementById("authDemoRow").style.display = "none";
       revealRealPhone();
+      setWhatsappToggle(authCurrentWhatsapp);
       setTimeout(closeAuthModal, 2800);
     }
 

@@ -273,6 +273,18 @@
   .confirm-modal-title { color: var(--red); font-weight: 700; font-size: 18px; }
   .confirm-modal-body { padding: 22px 26px 6px 26px; }
   .confirm-modal-text { font-size: 14px; color: #333; line-height: 1.6; margin-bottom: 18px; }
+  .confirm-changes-box {
+    background: #FFF6E5;
+    border: 1px solid #F0C36D;
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 18px;
+  }
+  .confirm-changes-title { font-size: 13px; font-weight: 700; color: #8a5a00; margin-bottom: 8px; }
+  .confirm-changes-list { list-style: none; padding: 0; margin: 0; }
+  .confirm-changes-list li { font-size: 13px; color: #5c3d00; padding: 5px 0; }
+  .confirm-changes-list li + li { border-top: 1px dashed #F0C36D; }
+  .confirm-changes-list strong { color: #333; }
   .confirm-checkbox-row {
     display: flex;
     align-items: flex-start;
@@ -602,14 +614,17 @@
       </div>
       <div class="confirm-modal-body">
         <p class="confirm-modal-text">
-          Este CPF já possui cadastro no sistema. Antes de continuar, revise atentamente todos os dados
-          preenchidos acima. Ao confirmar, você declara que leu as informações e que elas estão atualizadas
-          e corretas — a responsabilidade por eventuais divergências ou dados desatualizados deste
-          proponente será sua.
+          Antes de continuar, revise atentamente todos os dados preenchidos acima. Ao confirmar, você declara
+          que leu as informações e que elas estão atualizadas e corretas — a responsabilidade por eventuais
+          divergências ou dados desatualizados deste proponente será sua.
         </p>
+        <div class="confirm-changes-box" id="confirmChangesBox" style="display:none;">
+          <div class="confirm-changes-title">Os seguintes dados foram alterados em relação ao cadastro anterior:</div>
+          <ul class="confirm-changes-list" id="confirmChangesList"></ul>
+        </div>
         <label class="confirm-checkbox-row">
           <input type="checkbox" id="confirmDadosCheckbox">
-          <span>Confirmo que revisei os dados acima e que estão atualizados e corretos.</span>
+          <span id="confirmCheckboxLabel">Confirmo que revisei os dados acima e que estão atualizados e corretos.</span>
         </label>
       </div>
       <div class="confirm-modal-actions">
@@ -634,25 +649,57 @@
       document.getElementById("fpTelefone").value = celular;
     })();
 
+    // Cadastro histórico (demo) de proponentes já conhecidos do sistema: dados pessoais
+    // e de contato de propostas anteriores, usados no autopreenchimento abaixo.
+    var HISTORICO_FICHA = {
+      "31166758800": {
+        nome: "THIAGO ROJAS",
+        nascimento: "25/01/1983",
+        genero: "MASCULINO",
+        naturalidade: "SÃO CAETANO DO SUL",
+        estadoCivil: "SOLTEIRO",
+        tipoDoc: "REGISTRO GERAL",
+        numeroDoc: "426467164",
+        nomeMae: "LADIS PERINI ROJAS",
+        nomePai: "DANIEL ROJAS",
+        escolaridade: "SUPERIOR",
+        email: "THIAGO@GMAIL.COM"
+      },
+      "55409660315": {
+        nome: "MARIA SALOMÉ DOS SANTOS",
+        nascimento: "25/01/1983",
+        genero: "FEMININO",
+        naturalidade: "SÃO CAETANO DO SUL",
+        estadoCivil: "SOLTEIRO",
+        tipoDoc: "REGISTRO GERAL",
+        numeroDoc: "426467164",
+        nomeMae: "LADIS PERINI ROJAS",
+        nomePai: "DANIEL ROJAS",
+        escolaridade: "SUPERIOR",
+        email: "THIAGO@GMAIL.COM"
+      }
+    };
+
     // Autopreenchimento: CPF já cadastrado (com histórico) traz os dados pessoais e
     // de contato prontos. Qualquer outro CPF segue com a tela vazia. O Telefone não
     // entra aqui — ele sempre espelha o "Celular" digitado na tela de Ambiente.
     (function () {
       var cpf = "";
       try { cpf = localStorage.getItem("kta_cpf") || ""; } catch (e) {}
-      if (cpf !== "31166758800") return;
+      if (!HISTORICO_FICHA.hasOwnProperty(cpf)) return;
+      var dados = HISTORICO_FICHA[cpf];
 
-      document.getElementById("fpNome").value = "THIAGO ROJAS";
-      document.getElementById("fpNascimento").value = "25/01/1983";
-      document.getElementById("cbGenero").value = "MASCULINO";
-      document.getElementById("fpNaturalidade").value = "SÃO CAETANO DO SUL";
-      document.getElementById("cbEstadoCivil").value = "SOLTEIRO";
-      document.getElementById("cbTipoDoc").value = "REGISTRO GERAL";
-      document.getElementById("fpNumeroDoc").value = "426467164";
-      document.getElementById("fpNomeMae").value = "LADIS PERINI ROJAS";
-      document.getElementById("fpNomePai").value = "DANIEL ROJAS";
-      document.getElementById("cbEscolaridade").value = "SUPERIOR";
-      document.getElementById("fpEmail").value = "THIAGO@GMAIL.COM";
+      document.getElementById("fpNome").value = dados.nome;
+      document.getElementById("fpNascimento").value = dados.nascimento;
+      document.getElementById("cbGenero").value = dados.genero;
+      document.getElementById("fpNaturalidade").value = dados.naturalidade;
+      document.getElementById("cbEstadoCivil").value = dados.estadoCivil;
+      document.getElementById("cbTipoDoc").value = dados.tipoDoc;
+      document.getElementById("fpNumeroDoc").value = dados.numeroDoc;
+      document.getElementById("fpNomeMae").value = dados.nomeMae;
+      document.getElementById("fpNomePai").value = dados.nomePai;
+      document.getElementById("cbEscolaridade").value = dados.escolaridade;
+      document.getElementById("fpEmail").value = dados.email;
     })();
 
     // Máscara de data (dd/mm/aaaa) para o campo Nascimento.
@@ -837,14 +884,58 @@
     (function () {
       var confirmOverlay = document.getElementById("confirmDadosOverlay");
       var confirmCheckbox = document.getElementById("confirmDadosCheckbox");
+      var confirmCheckboxLabel = document.getElementById("confirmCheckboxLabel");
+      var confirmChangesBox = document.getElementById("confirmChangesBox");
+      var confirmChangesList = document.getElementById("confirmChangesList");
       var btnConfirmarContinuar = document.getElementById("btnConfirmarContinuar");
       var btnRevisarDados = document.getElementById("btnRevisarDados");
+
+      // Campos que vêm do autopreenchimento (HISTORICO_FICHA) e que, se alterados pelo
+      // colaborador, devem ser explicitados no popup de confirmação antes de prosseguir.
+      var CAMPOS_HISTORICO = [
+        { id: "fpNome", chave: "nome", label: "Nome" },
+        { id: "fpNascimento", chave: "nascimento", label: "Nascimento" },
+        { id: "cbGenero", chave: "genero", label: "Gênero" },
+        { id: "fpNaturalidade", chave: "naturalidade", label: "Naturalidade" },
+        { id: "cbEstadoCivil", chave: "estadoCivil", label: "Estado Civil" },
+        { id: "cbTipoDoc", chave: "tipoDoc", label: "Tipo de Doc." },
+        { id: "fpNumeroDoc", chave: "numeroDoc", label: "Número do Doc." },
+        { id: "fpNomeMae", chave: "nomeMae", label: "Nome da Mãe" },
+        { id: "fpNomePai", chave: "nomePai", label: "Nome do Pai" },
+        { id: "cbEscolaridade", chave: "escolaridade", label: "Escolaridade" },
+        { id: "fpEmail", chave: "email", label: "E-mail" }
+      ];
+
+      function calcularAlteracoes(cpf) {
+        var original = HISTORICO_FICHA[cpf];
+        if (!original) return [];
+        var alteracoes = [];
+        CAMPOS_HISTORICO.forEach(function (campo) {
+          var atual = document.getElementById(campo.id).value.trim();
+          var anterior = original[campo.chave];
+          if (atual !== anterior) {
+            alteracoes.push({ label: campo.label, de: anterior, para: atual });
+          }
+        });
+        return alteracoes;
+      }
 
       function irParaProximaEtapa() {
         // Próxima tela ainda não definida.
       }
 
-      function abrirConfirmacao() {
+      function abrirConfirmacao(cpf) {
+        var alteracoes = calcularAlteracoes(cpf);
+        if (alteracoes.length) {
+          confirmChangesList.innerHTML = alteracoes.map(function (a) {
+            return "<li><strong>" + a.label + ":</strong> \"" + a.de + "\" &rarr; \"" + a.para + "\"</li>";
+          }).join("");
+          confirmChangesBox.style.display = "";
+          confirmCheckboxLabel.textContent = "Confirmo que revisei os dados acima, inclusive as alterações listadas, e que estão atualizados e corretos.";
+        } else {
+          confirmChangesBox.style.display = "none";
+          confirmCheckboxLabel.textContent = "Confirmo que revisei os dados acima e que estão atualizados e corretos.";
+        }
         confirmCheckbox.checked = false;
         btnConfirmarContinuar.disabled = true;
         confirmOverlay.classList.remove("hidden");
@@ -865,8 +956,8 @@
       document.getElementById("btnContinuarFicha").addEventListener("click", function () {
         var cpf = "";
         try { cpf = localStorage.getItem("kta_cpf") || ""; } catch (e) {}
-        if (cpf === "31166758800") {
-          abrirConfirmacao();
+        if (HISTORICO_FICHA.hasOwnProperty(cpf)) {
+          abrirConfirmacao(cpf);
         } else {
           irParaProximaEtapa();
         }
