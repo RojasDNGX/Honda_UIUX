@@ -413,6 +413,79 @@
     margin: 6px 0 18px 4px;
   }
   .proposta-caption:last-child { margin-bottom: 0; }
+
+  /* Popup de autorização de reaproveitamento de dados (LGPD) via SMS */
+  .auth-ask-text {
+    text-align: left;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 1.55;
+    color: #333;
+    margin-bottom: 22px;
+  }
+
+  .auth-waiting-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: var(--bg-chip);
+    color: var(--text-gray);
+    border: 1.5px solid var(--border-light);
+    cursor: default;
+  }
+  .auth-waiting-btn.success { background: #fff; color: #1e8e3e; border-color: #1e8e3e; }
+  .auth-waiting-btn.denied { background: #fff; color: var(--red); border-color: var(--red); }
+
+  .auth-dots { display: inline-flex; gap: 4px; }
+  .auth-dots span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0.3;
+    animation: authDotPulse 1.2s ease-in-out infinite;
+  }
+  .auth-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .auth-dots span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes authDotPulse {
+    0%, 80%, 100% { opacity: 0.3; transform: scale(0.85); }
+    40% { opacity: 1; transform: scale(1.1); }
+  }
+
+  .auth-warning-box {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: #FFF6E5;
+    border: 1px solid #F0C36D;
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-bottom: 20px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #8a5a00;
+  }
+
+  .auth-demo-row {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px dashed var(--border-light);
+    text-align: center;
+  }
+  .auth-demo-row span { font-size: 11px; color: #bbb; margin-right: 8px; }
+  .auth-demo-link {
+    font-size: 11px;
+    color: #999;
+    text-decoration: underline;
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-family: inherit;
+    margin: 0 6px;
+    padding: 0;
+  }
+  .auth-demo-link:hover { color: var(--red); }
 </style>
 </head>
 <body>
@@ -657,6 +730,63 @@
     </div>
   </div>
 
+  <div class="proposta-overlay hidden" id="authModalOverlay">
+    <div class="proposta-modal-box">
+      <button type="button" class="proposta-modal-close" id="authModalClose">&times;</button>
+      <div class="proposta-modal-header">
+        <svg width="46" height="42" viewBox="0 0 24 22" fill="none" stroke="#D6001C" stroke-width="1.6">
+          <path d="M12 1.5L23 20.5H1L12 1.5Z" stroke-linejoin="round" stroke-linecap="round"/>
+          <rect x="11.15" y="7.5" width="1.7" height="6.5" fill="#D6001C" stroke="none"/>
+          <rect x="11.15" y="16" width="1.7" height="1.8" fill="#D6001C" stroke="none"/>
+        </svg>
+        <div class="proposta-modal-title">CPF já possui cadastro na HONDA</div>
+      </div>
+      <div class="proposta-modal-body">
+        <div class="auth-ask-text">
+          Este CPF já possui dados pessoais registrados em uma proposta anterior. Deseja solicitar autorização do proponente, via SMS para o número <strong id="authModalPhone">(11) 9****-**21</strong>, para reaproveitar os dados já cadastrados?
+        </div>
+
+        <div id="authStateAsk">
+          <button type="button" class="proposta-action-btn proposta-action-continuar" id="btnAuthEnviar">Enviar</button>
+          <div class="proposta-caption">*Envia um SMS de autorização ao proponente. Se autorizado, os dados já cadastrados serão reaproveitados automaticamente nas próximas telas.</div>
+
+          <button type="button" class="proposta-action-btn proposta-action-continuar" id="btnAuthNaoEnviar">Não Enviar</button>
+          <div class="proposta-caption">*Segue sem solicitar autorização; os dados deverão ser preenchidos manualmente e substituirão o cadastro anterior.</div>
+        </div>
+
+        <div id="authStateWaiting" style="display:none;">
+          <button type="button" class="proposta-action-btn proposta-action-continuar auth-waiting-btn" id="btnAuthWaiting" disabled>
+            <span id="authWaitingLabel">AGUARDANDO AUTORIZAÇÃO</span>
+            <span class="auth-dots" id="authDots"><span></span><span></span><span></span></span>
+          </button>
+          <div class="proposta-caption" id="authWaitingCaption">*Aguardando resposta do proponente por SMS. Isso pode levar alguns instantes.</div>
+
+          <div class="auth-demo-row" id="authDemoRow">
+            <span>Ambiente de demonstração:</span>
+            <button type="button" class="auth-demo-link" id="demoRecusa">simular recusa</button>
+            <button type="button" class="auth-demo-link" id="demoFalha">simular falha de rede</button>
+          </div>
+        </div>
+
+        <div id="authStateFailure" style="display:none;">
+          <div class="auth-warning-box">
+            <svg width="18" height="18" viewBox="0 0 24 22" fill="none" stroke="#8a5a00" stroke-width="1.8" style="flex-shrink:0;">
+              <path d="M12 1.5L23 20.5H1L12 1.5Z" stroke-linejoin="round" stroke-linecap="round"/>
+              <rect x="11.15" y="7.5" width="1.7" height="6.5" fill="#8a5a00" stroke="none"/>
+              <rect x="11.15" y="16" width="1.7" height="1.8" fill="#8a5a00" stroke="none"/>
+            </svg>
+            <span>Não foi possível enviar o SMS de autorização. O proponente pode estar sem conexão de dados móveis no momento.</span>
+          </div>
+          <button type="button" class="proposta-action-btn proposta-action-continuar" id="btnAuthTentarNovamente">Tentar Novamente</button>
+          <div class="proposta-caption">*Reenvia a solicitação de autorização ao mesmo número.</div>
+
+          <button type="button" class="proposta-action-btn proposta-action-continuar" id="btnAuthFalhaNaoEnviar">Continuar sem Autorização</button>
+          <div class="proposta-caption">*Segue sem autorização; os dados deverão ser preenchidos manualmente.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
     // Máscara de moeda BR (R$ 00.000,00): o usuário só digita números, o resto é automático.
     // Registrada antes de qualquer validação, para que elas já leiam o valor formatado.
@@ -819,8 +949,19 @@
       var digits = cpfCnpjInput.value.replace(/\D/g, "").slice(0, 11);
       cpfCnpjInput.value = maskCPF(digits);
       updateCpfState(false);
+      if (digits !== CPF_COM_HISTORICO[0] && authAlreadyHandled) {
+        authAlreadyHandled = false;
+        unlockCelularForManualEntry();
+      }
     });
-    cpfCnpjInput.addEventListener("blur", function () { updateCpfState(true); });
+    cpfCnpjInput.addEventListener("blur", function () {
+      updateCpfState(true);
+      var digits = cpfCnpjInput.value.replace(/\D/g, "");
+      if (digits === CPF_COM_HISTORICO[0] && !authAlreadyHandled) {
+        authAlreadyHandled = true;
+        showAuthModal();
+      }
+    });
 
     // Popup de propostas existentes: dispara ao clicar em "Enviar" (só possível com o
     // formulário completo) quando o CPF já possui histórico de cadastro. Os demais CPFs
@@ -854,6 +995,121 @@
     [btnEditarProposta, btnSubstituirProposta].forEach(function (btn) {
       btn.addEventListener("click", hidePropostaModal);
     });
+
+    // Autorização (LGPD) de reaproveitamento de dados via SMS: ao sair do campo CPF com
+    // um CPF já cadastrado, pergunta se deve solicitar ao proponente (por SMS, no celular
+    // já registrado) autorização para reaproveitar os dados pessoais da proposta anterior.
+    var REGISTERED_PHONE_DIGITS = "11987654321";
+    function maskPhoneHidden(digits) {
+      return "(" + digits.slice(0, 2) + ") " + digits.charAt(2) + "****-**" + digits.slice(9, 11);
+    }
+
+    var celularInput = document.getElementById("celular");
+    var authModalOverlay = document.getElementById("authModalOverlay");
+    var authModalPhone = document.getElementById("authModalPhone");
+    var authStateAsk = document.getElementById("authStateAsk");
+    var authStateWaiting = document.getElementById("authStateWaiting");
+    var authStateFailure = document.getElementById("authStateFailure");
+    var authWaitingLabel = document.getElementById("authWaitingLabel");
+    var authWaitingCaption = document.getElementById("authWaitingCaption");
+    var authDots = document.getElementById("authDots");
+    var btnAuthWaiting = document.getElementById("btnAuthWaiting");
+
+    var authWaitTimer = null;
+    var authAlreadyHandled = false;
+
+    function lockCelularAsHidden() {
+      celularInput.value = maskPhoneHidden(REGISTERED_PHONE_DIGITS);
+      celularInput.readOnly = true;
+      celularInput.closest(".field").classList.add("light");
+      checkFormComplete();
+    }
+
+    function unlockCelularForManualEntry() {
+      celularInput.readOnly = false;
+      celularInput.value = "";
+      celularInput.closest(".field").classList.remove("light");
+      checkFormComplete();
+    }
+
+    function revealRealPhone() {
+      celularInput.value = maskPhoneBR(REGISTERED_PHONE_DIGITS);
+      checkFormComplete();
+    }
+
+    function showAuthModal() {
+      authModalPhone.textContent = maskPhoneHidden(REGISTERED_PHONE_DIGITS);
+      authStateAsk.style.display = "";
+      authStateWaiting.style.display = "none";
+      authStateFailure.style.display = "none";
+      lockCelularAsHidden();
+      authModalOverlay.classList.remove("hidden");
+    }
+
+    function closeAuthModal() {
+      if (authWaitTimer) { clearTimeout(authWaitTimer); authWaitTimer = null; }
+      authModalOverlay.classList.add("hidden");
+    }
+
+    function startWaiting() {
+      authStateAsk.style.display = "none";
+      authStateFailure.style.display = "none";
+      authStateWaiting.style.display = "";
+      btnAuthWaiting.className = "proposta-action-btn proposta-action-continuar auth-waiting-btn";
+      authWaitingLabel.textContent = "AGUARDANDO AUTORIZAÇÃO";
+      authDots.style.display = "";
+      authWaitingCaption.textContent = "*Aguardando resposta do proponente por SMS. Isso pode levar alguns instantes.";
+      document.getElementById("authDemoRow").style.display = "";
+      authWaitTimer = setTimeout(resolveSuccess, 5000);
+    }
+
+    function resolveSuccess() {
+      authWaitTimer = null;
+      btnAuthWaiting.classList.add("success");
+      authWaitingLabel.textContent = "AUTOPREENCHIMENTO AUTORIZADO";
+      authDots.style.display = "none";
+      authWaitingCaption.textContent = "*O proponente autorizou o reaproveitamento dos dados já cadastrados.";
+      document.getElementById("authDemoRow").style.display = "none";
+      revealRealPhone();
+      setTimeout(closeAuthModal, 1000);
+    }
+
+    function resolveDenied() {
+      if (authWaitTimer) { clearTimeout(authWaitTimer); authWaitTimer = null; }
+      btnAuthWaiting.classList.add("denied");
+      authWaitingLabel.textContent = "NÃO AUTORIZADO";
+      authDots.style.display = "none";
+      authWaitingCaption.textContent = "*O proponente não autorizou. Os dados deverão ser preenchidos manualmente.";
+      document.getElementById("authDemoRow").style.display = "none";
+      setTimeout(function () {
+        unlockCelularForManualEntry();
+        closeAuthModal();
+      }, 1200);
+    }
+
+    function resolveFailure() {
+      if (authWaitTimer) { clearTimeout(authWaitTimer); authWaitTimer = null; }
+      authStateWaiting.style.display = "none";
+      authStateFailure.style.display = "";
+    }
+
+    document.getElementById("btnAuthEnviar").addEventListener("click", startWaiting);
+    document.getElementById("btnAuthNaoEnviar").addEventListener("click", function () {
+      unlockCelularForManualEntry();
+      closeAuthModal();
+    });
+    document.getElementById("btnAuthTentarNovamente").addEventListener("click", startWaiting);
+    document.getElementById("btnAuthFalhaNaoEnviar").addEventListener("click", function () {
+      unlockCelularForManualEntry();
+      closeAuthModal();
+    });
+    document.getElementById("authModalClose").addEventListener("click", function () {
+      unlockCelularForManualEntry();
+      closeAuthModal();
+    });
+    document.getElementById("demoRecusa").addEventListener("click", resolveDenied);
+    document.getElementById("demoFalha").addEventListener("click", resolveFailure);
+
     // Guarda o Celular (para o campo "Telefone" readonly) e o CPF (para o
     // autopreenchimento de CPF já cadastrado) usados na Ficha Proposta.
     function salvarDadosParaFichaProposta() {
