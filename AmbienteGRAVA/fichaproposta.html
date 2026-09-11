@@ -156,6 +156,10 @@
   .nav-item.active-step .nav-icon { color: #222; }
   .nav-item.active-step .nav-shield { display: none; }
 
+  /* Etapa já visitada e concluída (mas não mais ativa): sem cadeado, permanece
+     como um nav-item comum, igual às demais etapas já percorridas. */
+  .nav-item.completed .nav-shield { display: none; }
+
   /* ---------- Formulário ---------- */
   .fp-section-chip {
     background: var(--bg-chip);
@@ -278,6 +282,12 @@
   .fp-bottom-row .fp-spacer { flex: 1; }
   .fp-bottom-row .btn-continuar { flex: 0 0 auto; }
 
+  .flex-1 { flex: 1; min-width: 0; }
+
+  /* Duas seções lado a lado (ex.: "Bens" + "Sócio"), cada uma ocupando metade. */
+  .fp-chip-row { display: flex; gap: 24px; margin-top: 30px; margin-bottom: 22px; }
+  .fp-chip-row .fp-section-chip { margin: 0; flex: 1; }
+
   .fp-actions { display: flex; justify-content: flex-end; margin-top: 24px; }
   .btn-continuar {
     width: 278px; height: 50px;
@@ -286,6 +296,13 @@
     font-size: 16px; font-weight: 700; font-family: inherit; cursor: pointer;
   }
   .btn-continuar:hover { background: var(--red-dark); }
+
+  /* Variante "outline" (ex.: "Adicionar Avalista"), e um par de botões lado a lado
+     de largura igual, reutilizável em qualquer etapa com duas ações finais. */
+  .btn-outline { background: #fff; color: var(--red); border: 1.5px solid var(--red); }
+  .btn-outline:hover { background: #fdf0f1; }
+  .fp-actions-pair { display: flex; gap: 24px; margin-top: 24px; }
+  .fp-actions-pair .btn-continuar { width: auto; flex: 1; }
 
   /* ---------- Popup de confirmação (CPF já cadastrado) ---------- */
   .confirm-overlay {
@@ -465,11 +482,11 @@
           <span class="nav-shield" id="navShieldEndereco"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l8 3.5v6C20 17 16.5 20.5 12 22c-4.5-1.5-8-5-8-10.5v-6L12 2z"/></svg></span>
           <span class="nav-chevron" id="navChevronEndereco">&rsaquo;</span>
         </div>
-        <div class="nav-item">
+        <div class="nav-item" id="navItemDadosProfissionais">
           <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></span>
           <span class="nav-label">Dados Profissionais</span>
           <span class="nav-shield"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l8 3.5v6C20 17 16.5 20.5 12 22c-4.5-1.5-8-5-8-10.5v-6L12 2z"/></svg></span>
-          <span class="nav-chevron">&rsaquo;</span>
+          <span class="nav-chevron" id="navChevronDadosProfissionais">&rsaquo;</span>
         </div>
         <div class="nav-item">
           <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg></span>
@@ -721,6 +738,188 @@
 
         </div>
 
+        <div class="fp-step" id="stepDadosProfissionais" style="display:none;">
+
+        <div class="fp-section-chip">Dados Profissionais</div>
+
+        <div class="fp-row-fields">
+          <div class="cb" data-cb="profissao">
+            <div class="field">
+              <input type="text" id="fpProfissao" placeholder=" " autocomplete="off">
+              <label for="fpProfissao">Profissão *</label>
+              <button type="button" class="cb-clear" tabindex="-1">&times;</button>
+              <span class="cb-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span>
+            </div>
+            <div class="cb-panel" hidden></div>
+          </div>
+          <div class="tf">
+            <div class="field">
+              <input type="text" id="fpDataAdmissao" placeholder=" " maxlength="10">
+              <label for="fpDataAdmissao">Data de Admissão *</label>
+              <span class="cal-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="fp-row-fields">
+          <div class="tf">
+            <div class="field">
+              <input type="text" id="fpNomeEmpresa" placeholder=" ">
+              <label for="fpNomeEmpresa">Nome da Empresa *</label>
+            </div>
+          </div>
+          <div class="tf">
+            <div class="field light">
+              <input type="text" id="fpNaturezaOcupacao" placeholder=" " readonly>
+              <label for="fpNaturezaOcupacao">Natureza da Ocupação *</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="fp-section-chip">Renda</div>
+
+        <div class="fp-row-fields">
+          <div class="tf">
+            <div class="field light">
+              <input type="text" id="fpRendaTotal" placeholder=" " readonly>
+              <label for="fpRendaTotal">Renda Total *</label>
+            </div>
+          </div>
+          <div class="tf">
+            <div class="field">
+              <input type="text" id="fpRendaPrincipal" placeholder=" ">
+              <label for="fpRendaPrincipal">Renda Principal *</label>
+            </div>
+          </div>
+          <div class="tf">
+            <div class="field">
+              <input type="text" id="fpOutrasRendas" placeholder=" ">
+              <label for="fpOutrasRendas">Outras Rendas</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="fp-section-chip">Endereço da Empresa</div>
+
+        <div class="fp-row-fields">
+          <div class="tf">
+            <div class="field">
+              <input type="text" id="fpCepEmpresa" placeholder=" " maxlength="9">
+              <label for="fpCepEmpresa">CEP da Empresa *</label>
+            </div>
+          </div>
+          <div class="tf">
+            <div class="field">
+              <input type="text" id="fpEnderecoEmpresa" placeholder=" ">
+              <label for="fpEnderecoEmpresa">Endereço Comercial *</label>
+            </div>
+          </div>
+          <div class="tf">
+            <div class="field">
+              <input type="text" id="fpNumeroEmpresa" placeholder=" ">
+              <label for="fpNumeroEmpresa">Número *</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="fp-row-aux">
+          <button type="button" class="fp-link-action" id="linkSemCepEmpresa">Não sei meu CEP</button>
+          <div></div>
+          <label class="fp-checkbox-inline">
+            <input type="checkbox" id="chkSemNumeroEmpresa">
+            <span>Endereço s/ número</span>
+          </label>
+        </div>
+
+        <div class="fp-row-fields">
+          <div class="tf">
+            <div class="field">
+              <input type="text" id="fpComplementoEmpresa" placeholder=" ">
+              <label for="fpComplementoEmpresa">Complemento</label>
+            </div>
+          </div>
+          <div class="tf">
+            <div class="field">
+              <input type="text" id="fpBairroEmpresa" placeholder=" ">
+              <label for="fpBairroEmpresa">Bairro *</label>
+            </div>
+          </div>
+          <div class="cb" data-cb="ufEmpresa">
+            <div class="field">
+              <input type="text" id="cbUfEmpresa" placeholder=" " autocomplete="off">
+              <label for="cbUfEmpresa">UF *</label>
+              <button type="button" class="cb-clear" tabindex="-1">&times;</button>
+              <span class="cb-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span>
+            </div>
+            <div class="cb-panel" hidden></div>
+          </div>
+        </div>
+
+        <div class="fp-row-fields">
+          <div class="cb" data-cb="cidadeEmpresa">
+            <div class="field">
+              <input type="text" id="cbCidadeEmpresa" placeholder=" " autocomplete="off">
+              <label for="cbCidadeEmpresa">Cidade *</label>
+              <button type="button" class="cb-clear" tabindex="-1">&times;</button>
+              <span class="cb-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span>
+            </div>
+            <div class="cb-panel" hidden></div>
+          </div>
+          <div class="tf">
+            <div class="field">
+              <input type="text" id="fpTelEmpresa" placeholder=" " maxlength="15">
+              <label for="fpTelEmpresa">Tel. da Empresa *</label>
+            </div>
+          </div>
+          <div class="cb" data-cb="correspondencia">
+            <div class="field">
+              <input type="text" id="cbTipoCorrespondencia" placeholder=" " autocomplete="off">
+              <label for="cbTipoCorrespondencia">Tipo de Correspondência *</label>
+              <button type="button" class="cb-clear" tabindex="-1">&times;</button>
+              <span class="cb-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span>
+            </div>
+            <div class="cb-panel" hidden></div>
+          </div>
+        </div>
+
+        <div class="fp-chip-row">
+          <div class="fp-section-chip">Bens</div>
+          <div class="fp-section-chip">Sócio</div>
+        </div>
+
+        <div class="fp-row-fields">
+          <div class="cb" data-cb="patrimonio">
+            <div class="field">
+              <input type="text" id="cbPatrimonio" placeholder=" " autocomplete="off">
+              <label for="cbPatrimonio">Patrimônio *</label>
+              <button type="button" class="cb-clear" tabindex="-1">&times;</button>
+              <span class="cb-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span>
+            </div>
+            <div class="cb-panel" hidden></div>
+          </div>
+          <div class="bank-row">
+            <div class="radio-pair" id="socioToggle">
+              <label class="radio-option"><input type="radio" name="socio" value="Sim"><span>Sim</span></label>
+              <label class="radio-option selected"><input type="radio" name="socio" value="Não" checked><span>Não</span></label>
+            </div>
+            <div class="tf flex-1">
+              <div class="field light">
+                <input type="text" id="fpCnpjSocio" placeholder=" " disabled>
+                <label for="fpCnpjSocio">CNPJ *</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer-note">* Preenchimento obrigatório.</div>
+
+        <div class="fp-actions-pair">
+          <button type="button" class="btn-continuar btn-outline" id="btnAdicionarAvalista">Adicionar Avalista</button>
+          <button type="button" class="btn-continuar" id="btnContinuarDadosProfissionais">Continuar</button>
+        </div>
+
+        </div>
+
       </div>
     </div>
 
@@ -796,6 +995,25 @@
           bairro: "JARDIM UTINGA",
           uf: "SP",
           cidade: "SANTO ANDRE"
+        },
+        dadosProfissionais: {
+          profissao: "DESENHISTA INDUSTRIAL",
+          dataAdmissao: "02/02/2020",
+          nomeEmpresa: "EMPRESS",
+          rendaPrincipal: "R$ 3.500,00",
+          outrasRendas: "R$ 0,00",
+          cep: "09050-420",
+          logradouro: "R ODILON BRAGA",
+          numero: "145",
+          complemento: "",
+          bairro: "VILA SCARPELLI",
+          uf: "SP",
+          cidade: "SANTO ANDRE",
+          telefone: "(11) 97852-5852",
+          tipoCorrespondencia: "PROFISSIONAL",
+          patrimonio: "DE R$0 ATÉ R$10.000",
+          socio: "Não",
+          cnpjSocio: ""
         }
       },
       "55409660315": {
@@ -818,6 +1036,25 @@
           bairro: "JARDIM UTINGA",
           uf: "SP",
           cidade: "SANTO ANDRE"
+        },
+        dadosProfissionais: {
+          profissao: "DESENHISTA INDUSTRIAL",
+          dataAdmissao: "02/02/2020",
+          nomeEmpresa: "EMPRESS",
+          rendaPrincipal: "R$ 3.500,00",
+          outrasRendas: "R$ 0,00",
+          cep: "09050-420",
+          logradouro: "R ODILON BRAGA",
+          numero: "145",
+          complemento: "",
+          bairro: "VILA SCARPELLI",
+          uf: "SP",
+          cidade: "SANTO ANDRE",
+          telefone: "(11) 97852-5852",
+          tipoCorrespondencia: "PROFISSIONAL",
+          patrimonio: "DE R$0 ATÉ R$10.000",
+          socio: "Não",
+          cnpjSocio: ""
         }
       }
     };
@@ -849,6 +1086,31 @@
       document.getElementById("fpBairro").value = dados.endereco.bairro;
       document.getElementById("cbUf").value = dados.endereco.uf;
       document.getElementById("cbCidade").value = dados.endereco.cidade;
+
+      var prof = dados.dadosProfissionais;
+      document.getElementById("fpProfissao").value = prof.profissao;
+      document.getElementById("fpDataAdmissao").value = prof.dataAdmissao;
+      document.getElementById("fpNomeEmpresa").value = prof.nomeEmpresa;
+      document.getElementById("fpRendaPrincipal").value = prof.rendaPrincipal;
+      document.getElementById("fpOutrasRendas").value = prof.outrasRendas;
+      document.getElementById("fpCepEmpresa").value = prof.cep;
+      document.getElementById("fpEnderecoEmpresa").value = prof.logradouro;
+      document.getElementById("fpNumeroEmpresa").value = prof.numero;
+      document.getElementById("fpBairroEmpresa").value = prof.bairro;
+      document.getElementById("cbUfEmpresa").value = prof.uf;
+      document.getElementById("cbCidadeEmpresa").value = prof.cidade;
+      document.getElementById("fpTelEmpresa").value = prof.telefone;
+      document.getElementById("cbTipoCorrespondencia").value = prof.tipoCorrespondencia;
+      document.getElementById("cbPatrimonio").value = prof.patrimonio;
+    })();
+
+    // "Natureza da Ocupação" e "Renda Total" (somente leitura): vêm sempre dos mesmos
+    // inputs já preenchidos na tela inicial de Ambiente, com ou sem histórico de CPF.
+    (function () {
+      try {
+        document.getElementById("fpNaturezaOcupacao").value = localStorage.getItem("kta_naturezaOcupacao") || "";
+        document.getElementById("fpRendaTotal").value = localStorage.getItem("kta_rendaTotal") || "";
+      } catch (e) {}
     })();
 
     // Máscara de data (dd/mm/aaaa) para o campo Nascimento.
@@ -861,6 +1123,10 @@
     var nascimentoInput = document.getElementById("fpNascimento");
     nascimentoInput.addEventListener("input", function () {
       nascimentoInput.value = maskDateBR(nascimentoInput.value.replace(/\D/g, ""));
+    });
+    var dataAdmissaoInput = document.getElementById("fpDataAdmissao");
+    dataAdmissaoInput.addEventListener("input", function () {
+      dataAdmissaoInput.value = maskDateBR(dataAdmissaoInput.value.replace(/\D/g, ""));
     });
 
     // Máscara de telefone fixo (00) 0000-0000 para o Telefone Residencial.
@@ -876,40 +1142,105 @@
       telResidencialInput.value = maskPhoneFixoBR(telResidencialInput.value.replace(/\D/g, ""));
     });
 
-    // Máscara de CEP (00000-000).
+    // Máscara de CEP (00000-000) — reutilizável em qualquer campo de CEP da ficha.
     function maskCepBR(digits) {
       digits = digits.slice(0, 8);
       if (digits.length > 5) return digits.replace(/(\d{5})(\d{1,3})/, "$1-$2");
       return digits;
     }
-    var cepInput = document.getElementById("fpCep");
-    cepInput.addEventListener("input", function () {
-      cepInput.value = maskCepBR(cepInput.value.replace(/\D/g, ""));
+    function initCepMask(inputId) {
+      var input = document.getElementById(inputId);
+      input.addEventListener("input", function () {
+        input.value = maskCepBR(input.value.replace(/\D/g, ""));
+      });
+    }
+    initCepMask("fpCep");
+    initCepMask("fpCepEmpresa");
+
+    // Máscara de telefone celular ((00) 00000-0000) — reutilizável.
+    function maskPhoneBR(digits) {
+      digits = digits.slice(0, 11);
+      if (digits.length === 0) return "";
+      if (digits.length <= 2) return "(" + digits;
+      if (digits.length <= 7) return "(" + digits.slice(0, 2) + ") " + digits.slice(2);
+      return "(" + digits.slice(0, 2) + ") " + digits.slice(2, 7) + "-" + digits.slice(7);
+    }
+    var telEmpresaInput = document.getElementById("fpTelEmpresa");
+    telEmpresaInput.addEventListener("input", function () {
+      telEmpresaInput.value = maskPhoneBR(telEmpresaInput.value.replace(/\D/g, ""));
+    });
+
+    // Máscara de moeda BR (R$ 00.000,00) — reutilizável em qualquer campo de valor.
+    function maskCurrencyBR(input) {
+      var digits = input.value.replace(/\D/g, "").replace(/^0+(?=\d)/, "");
+      if (!digits) { input.value = ""; return; }
+      var reais = (parseInt(digits, 10) / 100).toFixed(2);
+      var parts = reais.split(".");
+      var intPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+      input.value = "R$ " + intPart + "," + parts[1];
+    }
+    ["fpRendaPrincipal", "fpOutrasRendas"].forEach(function (id) {
+      var input = document.getElementById(id);
+      input.addEventListener("input", function () { maskCurrencyBR(input); });
+    });
+
+    // Máscara de CNPJ (00.000.000/0000-00).
+    function maskCnpjBR(digits) {
+      digits = digits.slice(0, 14);
+      if (digits.length > 12) return digits.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{1,2})/, "$1.$2.$3/$4-$5");
+      if (digits.length > 8) return digits.replace(/(\d{2})(\d{3})(\d{3})(\d{1,4})/, "$1.$2.$3/$4");
+      if (digits.length > 5) return digits.replace(/(\d{2})(\d{3})(\d{1,3})/, "$1.$2.$3");
+      if (digits.length > 2) return digits.replace(/(\d{2})(\d{1,3})/, "$1.$2");
+      return digits;
+    }
+    var cnpjSocioInput = document.getElementById("fpCnpjSocio");
+    cnpjSocioInput.addEventListener("input", function () {
+      cnpjSocioInput.value = maskCnpjBR(cnpjSocioInput.value.replace(/\D/g, ""));
     });
 
     // "Não sei meu CEP": dispensa o campo (fica em branco e desabilitado) para que o
     // endereço seja preenchido manualmente nos demais campos, sem exigir o CEP.
-    var enderecoInput = document.getElementById("fpEndereco");
-    document.getElementById("linkSemCep").addEventListener("click", function () {
-      cepInput.value = "";
-      cepInput.readOnly = true;
-      cepInput.closest(".field").classList.add("light");
-      cepInput.closest(".tf").querySelector("label").textContent = "CEP";
-      enderecoInput.focus();
-    });
+    // Reutilizável: cada instância informa seus próprios ids de CEP/Endereço/link.
+    function initLinkSemCep(cepInputId, enderecoInputId, linkId) {
+      var cepField = document.getElementById(cepInputId);
+      var enderecoField = document.getElementById(enderecoInputId);
+      document.getElementById(linkId).addEventListener("click", function () {
+        cepField.value = "";
+        cepField.readOnly = true;
+        cepField.closest(".field").classList.add("light");
+        cepField.closest(".tf").querySelector("label").textContent = cepField.closest(".tf").querySelector("label").textContent.replace(" *", "");
+        enderecoField.focus();
+      });
+    }
+    initLinkSemCep("fpCep", "fpEndereco", "linkSemCep");
+    initLinkSemCep("fpCepEmpresa", "fpEnderecoEmpresa", "linkSemCepEmpresa");
 
-    // "Endereço s/ número": desabilita e limpa o campo "Número".
-    var numeroInput = document.getElementById("fpNumero");
-    document.getElementById("chkSemNumero").addEventListener("change", function (e) {
-      if (e.target.checked) {
-        numeroInput.value = "";
-        numeroInput.readOnly = true;
-        numeroInput.closest(".field").classList.add("light");
-      } else {
-        numeroInput.readOnly = false;
-        numeroInput.closest(".field").classList.remove("light");
-        numeroInput.focus();
-      }
+    // "Endereço s/ número": desabilita e limpa o campo "Número". Reutilizável.
+    function initCheckboxSemNumero(numeroInputId, checkboxId) {
+      var numeroField = document.getElementById(numeroInputId);
+      document.getElementById(checkboxId).addEventListener("change", function (e) {
+        if (e.target.checked) {
+          numeroField.value = "";
+          numeroField.readOnly = true;
+          numeroField.closest(".field").classList.add("light");
+        } else {
+          numeroField.readOnly = false;
+          numeroField.closest(".field").classList.remove("light");
+          numeroField.focus();
+        }
+      });
+    }
+    initCheckboxSemNumero("fpNumero", "chkSemNumero");
+    initCheckboxSemNumero("fpNumeroEmpresa", "chkSemNumeroEmpresa");
+
+    // "Sócio": só libera o CNPJ para preenchimento quando a resposta for "Sim".
+    document.querySelectorAll('input[name="socio"]').forEach(function (radio) {
+      radio.addEventListener("change", function () {
+        var habilitar = radio.value === "Sim" && radio.checked;
+        cnpjSocioInput.disabled = !habilitar;
+        cnpjSocioInput.closest(".field").classList.toggle("light", !habilitar);
+        if (!habilitar) cnpjSocioInput.value = "";
+      });
     });
 
     // Todo texto digitado no formulário fica em caixa alta, mesmo que o usuário
@@ -923,7 +1254,11 @@
         try { input.setSelectionRange(pos, pos); } catch (e) {}
       }
     }
-    ["fpNome", "fpNaturalidade", "fpCpfConjuge", "fpNumeroDoc", "fpNomeMae", "fpNomePai", "fpEmail", "fpEndereco", "fpComplemento", "fpBairro"].forEach(function (id) {
+    [
+      "fpNome", "fpNaturalidade", "fpCpfConjuge", "fpNumeroDoc", "fpNomeMae", "fpNomePai", "fpEmail",
+      "fpEndereco", "fpComplemento", "fpBairro",
+      "fpNomeEmpresa", "fpEnderecoEmpresa", "fpComplementoEmpresa", "fpBairroEmpresa"
+    ].forEach(function (id) {
       var input = document.getElementById(id);
       input.addEventListener("input", function () { forceUppercase(input); });
     });
@@ -1064,16 +1399,36 @@
       "FUNDAMENTAL", "MEDIO", "NÃO ALFABETIZADO", "SUPERIOR INCOMPLETO", "SUPERIOR"
     ]);
 
-    initCombobox("uf", [
+    // Listas compartilhadas por qualquer combobox de UF/Cidade da ficha (Endereço do
+    // Cliente, Endereço da Empresa, e as próximas telas que precisarem do mesmo dado).
+    var UF_OPTIONS = [
       "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG",
       "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"
-    ]);
-
-    initCombobox("cidade", [
+    ];
+    var CIDADE_OPTIONS = [
       "SANTO ANDRE", "SAO BERNARDO DO CAMPO", "SAO CAETANO DO SUL", "DIADEMA", "MAUA",
       "SAO PAULO", "GUARULHOS", "OSASCO", "CAMPINAS", "SANTOS",
       "RIO DE JANEIRO", "BELO HORIZONTE", "CURITIBA", "PORTO ALEGRE", "SALVADOR",
       "BRASILIA", "FORTALEZA", "RECIFE", "MANAUS", "BELEM"
+    ];
+    initCombobox("uf", UF_OPTIONS);
+    initCombobox("cidade", CIDADE_OPTIONS);
+    initCombobox("ufEmpresa", UF_OPTIONS);
+    initCombobox("cidadeEmpresa", CIDADE_OPTIONS);
+
+    initCombobox("profissao", [
+      "ANALISTA DE SISTEMAS", "ADMINISTRADOR", "ADVOGADO", "ARQUITETO",
+      "ASSISTENTE ADMINISTRATIVO", "AUXILIAR DE PRODUÇÃO", "CONTADOR",
+      "DESENHISTA INDUSTRIAL", "ELETRICISTA", "ENFERMEIRO", "ENGENHEIRO CIVIL",
+      "ESTUDANTE", "MECÂNICO", "MÉDICO", "MOTORISTA", "PEDREIRO", "PROFESSOR",
+      "TÉCNICO EM INFORMÁTICA", "VENDEDOR", "VETERINÁRIO"
+    ]);
+
+    initCombobox("correspondencia", ["RESIDENCIAL", "PROFISSIONAL", "ALTERNATIVO"]);
+
+    initCombobox("patrimonio", [
+      "DE R$0 ATÉ R$10.000", "DE R$10.001 ATÉ R$50.000",
+      "DE R$50.001 ATÉ R$100.000", "ACIMA DE R$100.000"
     ]);
 
     // Popup de confirmação de dados: reutilizado em TODA etapa com autopreenchimento.
@@ -1114,17 +1469,43 @@
       { id: "cbUf", chave: "uf", label: "UF" },
       { id: "cbCidade", chave: "cidade", label: "Cidade" }
     ];
+    var CAMPOS_DADOS_PROFISSIONAIS = [
+      { id: "fpProfissao", chave: "profissao", label: "Profissão" },
+      { id: "fpDataAdmissao", chave: "dataAdmissao", label: "Data de Admissão" },
+      { id: "fpNomeEmpresa", chave: "nomeEmpresa", label: "Nome da Empresa" },
+      { id: "fpRendaPrincipal", chave: "rendaPrincipal", label: "Renda Principal" },
+      { id: "fpOutrasRendas", chave: "outrasRendas", label: "Outras Rendas" },
+      { id: "fpCepEmpresa", chave: "cep", label: "CEP da Empresa" },
+      { id: "fpEnderecoEmpresa", chave: "logradouro", label: "Endereço Comercial" },
+      { id: "fpNumeroEmpresa", chave: "numero", label: "Número" },
+      { id: "fpComplementoEmpresa", chave: "complemento", label: "Complemento" },
+      { id: "fpBairroEmpresa", chave: "bairro", label: "Bairro" },
+      { id: "cbUfEmpresa", chave: "uf", label: "UF" },
+      { id: "cbCidadeEmpresa", chave: "cidade", label: "Cidade" },
+      { id: "fpTelEmpresa", chave: "telefone", label: "Tel. da Empresa" },
+      { id: "cbTipoCorrespondencia", chave: "tipoCorrespondencia", label: "Tipo de Correspondência" },
+      { id: "cbPatrimonio", chave: "patrimonio", label: "Patrimônio" },
+      {
+        chave: "socio", label: "Sócio",
+        getAtual: function () {
+          var checked = document.querySelector('input[name="socio"]:checked');
+          return checked ? checked.value : "";
+        }
+      },
+      { id: "fpCnpjSocio", chave: "cnpjSocio", label: "CNPJ" }
+    ];
 
     // Compara o valor atual de cada campo com o valor original do histórico (campos
     // que nunca vieram preenchidos, como Complemento, contam como "Vazio"). Detecta
-    // tanto edições quanto preenchimentos de campos que antes estavam em branco.
+    // tanto edições quanto preenchimentos de campos que antes estavam em branco. Campos
+    // que não são um simples input (ex.: um par de radio) podem informar "getAtual".
     function calcularAlteracoes(cpf, campos, getOrigem) {
       var dadosCpf = HISTORICO_FICHA[cpf];
       if (!dadosCpf) return [];
       var origem = getOrigem(dadosCpf);
       var alteracoes = [];
       campos.forEach(function (campo) {
-        var atual = document.getElementById(campo.id).value.trim();
+        var atual = campo.getAtual ? campo.getAtual() : document.getElementById(campo.id).value.trim();
         var anterior = origem[campo.chave] || "";
         if (atual !== anterior) {
           alteracoes.push({ label: campo.label, de: anterior, para: atual });
@@ -1193,9 +1574,14 @@
         content: document.getElementById("stepEndereco"),
         nav: document.getElementById("navItemEndereco"),
         chevron: document.getElementById("navChevronEndereco")
+      },
+      dadosProfissionais: {
+        content: document.getElementById("stepDadosProfissionais"),
+        nav: document.getElementById("navItemDadosProfissionais"),
+        chevron: document.getElementById("navChevronDadosProfissionais")
       }
-      // Próximas etapas (dadosProfissionais, avalista, observacoes, resumo) entram
-      // aqui conforme forem construídas.
+      // Próximas etapas (avalista, observacoes, resumo) entram aqui conforme forem
+      // construídas.
     };
 
     function goToStep(fromKey, toKey) {
@@ -1204,8 +1590,12 @@
 
       if (from) {
         if (from.content) from.content.style.display = "none";
-        if (from.hasSubitems) from.nav.classList.add("collapsed");
-        else from.nav.classList.remove("active-step");
+        if (from.hasSubitems) {
+          from.nav.classList.add("collapsed");
+        } else {
+          from.nav.classList.remove("active-step");
+          from.nav.classList.add("completed");
+        }
         if (from.chevron) from.chevron.innerHTML = "&rsaquo;";
       }
 
@@ -1226,8 +1616,18 @@
 
     document.getElementById("btnContinuarEndereco").addEventListener("click", function () {
       continuarComVerificacao(CAMPOS_ENDERECO, function (d) { return d.endereco; }, function () {
-        // Próxima etapa (Dados Profissionais) ainda não definida.
+        goToStep("endereco", "dadosProfissionais");
       });
+    });
+
+    document.getElementById("btnContinuarDadosProfissionais").addEventListener("click", function () {
+      continuarComVerificacao(CAMPOS_DADOS_PROFISSIONAIS, function (d) { return d.dadosProfissionais; }, function () {
+        // Próxima etapa (Adicionar Avalista) ainda não definida.
+      });
+    });
+
+    document.getElementById("btnAdicionarAvalista").addEventListener("click", function () {
+      // Fluxo de avalista ainda não definido.
     });
   </script>
 
