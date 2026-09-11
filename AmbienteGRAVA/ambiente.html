@@ -1110,12 +1110,16 @@
     document.getElementById("demoRecusa").addEventListener("click", resolveDenied);
     document.getElementById("demoFalha").addEventListener("click", resolveFailure);
 
-    // Guarda o Celular (para o campo "Telefone" readonly) e o CPF (para o
-    // autopreenchimento de CPF já cadastrado) usados na Ficha Proposta.
+    // Guarda o Celular (para o campo "Telefone" readonly), o CPF (para o
+    // autopreenchimento de CPF já cadastrado) e os dados profissionais (Natureza da
+    // Ocupação e Renda total, que devem reaparecer preenchidos em telas futuras do
+    // cadastro, independente de o CPF ter ou não histórico gravado).
     function salvarDadosParaFichaProposta() {
       try {
         localStorage.setItem("kta_celular", document.getElementById("celular").value);
         localStorage.setItem("kta_cpf", cpfCnpjInput.value.replace(/\D/g, ""));
+        localStorage.setItem("kta_naturezaOcupacao", naturezaInput.value);
+        localStorage.setItem("kta_rendaTotal", rendaTotalInput.value);
       } catch (e) {}
     }
 
