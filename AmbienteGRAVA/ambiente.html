@@ -742,13 +742,11 @@
         <div class="proposta-modal-title">CPF já possui cadastro na HONDA</div>
       </div>
       <div class="proposta-modal-body">
-        <div class="auth-ask-text">
-          Este CPF já possui dados pessoais registrados em uma proposta anterior. Deseja solicitar autorização do proponente, via SMS para o número <strong id="authModalPhone">(11) 9****-**21</strong>, para reaproveitar os dados já cadastrados?
-        </div>
+        <div class="auth-ask-text" id="authAskText"></div>
 
         <div id="authStateAsk">
           <button type="button" class="proposta-action-btn proposta-action-continuar" id="btnAuthEnviar">Enviar</button>
-          <div class="proposta-caption">*Envia um SMS de autorização ao proponente. Se autorizado, os dados já cadastrados serão reaproveitados automaticamente nas próximas telas.</div>
+          <div class="proposta-caption" id="authEnviarCaption">*Envia um SMS de autorização ao proponente. Se autorizado, os dados já cadastrados serão reaproveitados automaticamente nas próximas telas.</div>
 
           <button type="button" class="proposta-action-btn proposta-action-continuar" id="btnAuthNaoEnviar">Não Enviar</button>
           <div class="proposta-caption">*Segue sem solicitar autorização; os dados deverão ser preenchidos manualmente e substituirão o cadastro anterior.</div>
@@ -775,7 +773,7 @@
               <rect x="11.15" y="7.5" width="1.7" height="6.5" fill="#8a5a00" stroke="none"/>
               <rect x="11.15" y="16" width="1.7" height="1.8" fill="#8a5a00" stroke="none"/>
             </svg>
-            <span>Não foi possível enviar o SMS de autorização. O proponente pode estar sem conexão de dados móveis no momento.</span>
+            <span id="authFailureText">Não foi possível enviar o SMS de autorização. O proponente pode estar sem conexão de dados móveis no momento.</span>
           </div>
           <button type="button" class="proposta-action-btn proposta-action-continuar" id="btnAuthTentarNovamente">Tentar Novamente</button>
           <div class="proposta-caption">*Reenvia a solicitação de autorização ao mesmo número.</div>
@@ -827,10 +825,12 @@
     });
 
     var whatsappToggle = document.getElementById("whatsappToggle");
+    var whatsappEscolha = "";
     whatsappToggle.querySelectorAll("button").forEach(function (btn) {
       btn.addEventListener("click", function () {
         whatsappToggle.querySelectorAll("button").forEach(function (b) { b.classList.remove("selected"); });
         btn.classList.add("selected");
+        whatsappEscolha = btn.getAttribute("data-value");
       });
     });
 
@@ -1006,7 +1006,9 @@
 
     var celularInput = document.getElementById("celular");
     var authModalOverlay = document.getElementById("authModalOverlay");
-    var authModalPhone = document.getElementById("authModalPhone");
+    var authAskText = document.getElementById("authAskText");
+    var authEnviarCaption = document.getElementById("authEnviarCaption");
+    var authFailureText = document.getElementById("authFailureText");
     var authStateAsk = document.getElementById("authStateAsk");
     var authStateWaiting = document.getElementById("authStateWaiting");
     var authStateFailure = document.getElementById("authStateFailure");
@@ -1017,6 +1019,12 @@
 
     var authWaitTimer = null;
     var authAlreadyHandled = false;
+
+    // Se o proponente optou por Whatsapp, a mensagem de autorização é enviada
+    // pelos dois canais (Whatsapp e SMS); caso contrário, apenas por SMS.
+    function authChannelLabel() {
+      return whatsappEscolha === "Sim" ? "WhatsApp e SMS" : "SMS";
+    }
 
     function lockCelularAsHidden() {
       celularInput.value = maskPhoneHidden(REGISTERED_PHONE_DIGITS);
@@ -1038,7 +1046,9 @@
     }
 
     function showAuthModal() {
-      authModalPhone.textContent = maskPhoneHidden(REGISTERED_PHONE_DIGITS);
+      var canal = authChannelLabel();
+      authAskText.innerHTML = "Este CPF já possui dados pessoais registrados em uma proposta anterior. Deseja solicitar autorização do proponente, via " + canal + " para o número <strong>" + maskPhoneHidden(REGISTERED_PHONE_DIGITS) + "</strong>, para reaproveitar os dados já cadastrados?";
+      authEnviarCaption.textContent = "*Envia uma mensagem de autorização ao proponente por " + canal + ". Se autorizado, os dados já cadastrados serão reaproveitados automaticamente nas próximas telas.";
       authStateAsk.style.display = "";
       authStateWaiting.style.display = "none";
       authStateFailure.style.display = "none";
@@ -1058,7 +1068,7 @@
       btnAuthWaiting.className = "proposta-action-btn proposta-action-continuar auth-waiting-btn";
       authWaitingLabel.textContent = "AGUARDANDO AUTORIZAÇÃO";
       authDots.style.display = "";
-      authWaitingCaption.textContent = "*Aguardando resposta do proponente por SMS. Isso pode levar alguns instantes.";
+      authWaitingCaption.textContent = "*Aguardando resposta do proponente por " + authChannelLabel() + ". Isso pode levar alguns instantes.";
       document.getElementById("authDemoRow").style.display = "";
       authWaitTimer = setTimeout(resolveSuccess, 5000);
     }
@@ -1071,7 +1081,7 @@
       authWaitingCaption.textContent = "*O proponente autorizou o reaproveitamento dos dados já cadastrados.";
       document.getElementById("authDemoRow").style.display = "none";
       revealRealPhone();
-      setTimeout(closeAuthModal, 1000);
+      setTimeout(closeAuthModal, 2800);
     }
 
     function resolveDenied() {
@@ -1089,6 +1099,7 @@
 
     function resolveFailure() {
       if (authWaitTimer) { clearTimeout(authWaitTimer); authWaitTimer = null; }
+      authFailureText.textContent = "Não foi possível enviar a mensagem de autorização por " + authChannelLabel() + ". O proponente pode estar sem conexão de dados móveis no momento.";
       authStateWaiting.style.display = "none";
       authStateFailure.style.display = "";
     }
@@ -1120,6 +1131,7 @@
         localStorage.setItem("kta_cpf", cpfCnpjInput.value.replace(/\D/g, ""));
         localStorage.setItem("kta_naturezaOcupacao", naturezaInput.value);
         localStorage.setItem("kta_rendaTotal", rendaTotalInput.value);
+        localStorage.setItem("kta_whatsapp", whatsappEscolha || "Não");
       } catch (e) {}
     }
 
