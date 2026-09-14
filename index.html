@@ -111,6 +111,7 @@
     background: transparent;
     color: #fff;
     text-decoration: none;
+    cursor: pointer;
     transition: background 0.25s ease, color 0.25s ease, transform 0.2s ease, box-shadow 0.25s ease;
   }
   .nav-button:active { transform: scale(0.98); }
@@ -141,7 +142,7 @@
     transition: max-height 0.5s cubic-bezier(0.34, 1, 0.64, 1), opacity 0.35s ease 0.05s, padding 0.45s cubic-bezier(0.34, 1, 0.64, 1);
   }
   .link-item:hover .nav-button-details {
-    max-height: 320px;
+    max-height: 380px;
     opacity: 1;
     padding: 6px 22px 22px 22px;
   }
@@ -203,6 +204,25 @@
     margin-right: 10px;
   }
 
+  /* Link para a página de justificativa técnica de cada cenário. */
+  .nav-doc-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 14px;
+    padding: 7px 14px;
+    border-radius: 999px;
+    background: rgba(214, 0, 28, 0.08);
+    border: 1px solid rgba(214, 0, 28, 0.25);
+    color: #D6001C;
+    font-size: 12px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+  .nav-doc-link:hover { background: #D6001C; color: #fff; }
+  .nav-doc-link svg { flex-shrink: 0; }
+
   .footer {
     position: relative;
     z-index: 1;
@@ -220,7 +240,7 @@
 
     <nav class="links">
       <div class="link-item">
-        <a class="nav-button" href="OCR_KTA/kta-atual.html">
+        <div class="nav-button" data-href="OCR_KTA/kta-atual.html" role="link" tabindex="0">
           <span class="nav-button-label">
             <span class="nav-icon">
               <svg viewBox="0 0.75 42 24.5" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -237,11 +257,15 @@
               <li>Melhorias e otimização de funcionalidade para a área de histórico;</li>
               <li>Propostas de layout mais leve e opção alternativa para mais dinâmico.</li>
             </ul>
+            <a class="nav-doc-link" href="Docs/justificativa-ocr.html" target="_blank" rel="noopener">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><path d="M15 2v5h5M8 12h8M8 16h8"/></svg>
+              Ver justificativa técnica
+            </a>
           </span>
-        </a>
+        </div>
       </div>
       <div class="link-item">
-        <a class="nav-button" href="AmbienteGRAVA/ambiente.html">
+        <div class="nav-button" data-href="AmbienteGRAVA/ambiente.html" role="link" tabindex="0">
           <span class="nav-button-label">
             <span class="nav-icon">
               <svg viewBox="0 0.75 42 24.5" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -257,13 +281,35 @@
               <li>Segurança e responsabilidade na validação de dados já preenchidos;</li>
               <li>Refinamento de layout em andamento.</li>
             </ul>
+            <a class="nav-doc-link" href="Docs/justificativa-ambiente.html" target="_blank" rel="noopener">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><path d="M15 2v5h5M8 12h8M8 16h8"/></svg>
+              Ver justificativa técnica
+            </a>
           </span>
-        </a>
+        </div>
       </div>
     </nav>
   </div>
 
   <div class="footer">Processos e desenvolvimento de propostas: Thiago Rojas - DNGX Consultoria &amp; Sistemas® - 2026.</div>
+
+  <script>
+    // O card inteiro navega para o fluxo (data-href), exceto quando o clique/tecla
+    // for no link de "Ver justificativa técnica", que abre em nova aba por conta própria.
+    document.querySelectorAll(".nav-button[data-href]").forEach(function (card) {
+      card.addEventListener("click", function (e) {
+        if (e.target.closest(".nav-doc-link")) return;
+        window.location.href = card.dataset.href;
+      });
+      card.addEventListener("keydown", function (e) {
+        if (e.target.closest(".nav-doc-link")) return;
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          window.location.href = card.dataset.href;
+        }
+      });
+    });
+  </script>
 
 </body>
 </html>

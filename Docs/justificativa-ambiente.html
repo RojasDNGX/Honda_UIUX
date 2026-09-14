@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Justificativa Técnica - Ambiente (Histórico de Dados)</title>
+<style>
+  :root {
+    --red: #D6001C;
+    --red-dark: #AD0016;
+    --text-dark: #1a1a1a;
+    --text-gray: #666;
+    --bg-chip: #f4f4f4;
+    --border-light: #e6e6e6;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, Arial, Helvetica, sans-serif;
+    color: var(--text-dark);
+    background: #fff;
+  }
+  .topbar-strip { height: 4px; background: var(--red); }
+  .topbar {
+    padding: 18px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  }
+  .topbar a {
+    color: var(--red);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .topbar a:hover { text-decoration: underline; }
+  .topbar .scope { font-size: 13px; color: #999; font-weight: 600; }
+
+  .page { max-width: 880px; margin: 0 auto; padding: 48px 24px 80px 24px; }
+
+  .eyebrow {
+    color: var(--red);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  h1 { font-size: 32px; line-height: 1.25; margin-bottom: 16px; }
+  .lead {
+    color: var(--text-gray);
+    font-size: 16px;
+    line-height: 1.65;
+    margin-bottom: 44px;
+    max-width: 720px;
+  }
+
+  .item {
+    display: flex;
+    gap: 22px;
+    padding: 28px 0;
+    border-top: 1px solid var(--border-light);
+  }
+  .item:first-of-type { border-top: none; padding-top: 0; }
+
+  .item-icon {
+    flex: 0 0 auto;
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    background: var(--bg-chip);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--red);
+  }
+  .item-body h2 { font-size: 18px; margin-bottom: 10px; color: #111; }
+  .item-body p { font-size: 14.5px; line-height: 1.7; color: #333; }
+  .item-body p + p { margin-top: 10px; }
+
+  .footer {
+    text-align: center;
+    padding: 30px 0 40px 0;
+    font-size: 12px;
+    color: #999;
+  }
+</style>
+</head>
+<body>
+
+  <div class="topbar-strip"></div>
+  <div class="topbar">
+    <a href="../index.html">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D6001C" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      Voltar para Home
+    </a>
+    <span class="scope">Ambiente (Histórico de Dados)</span>
+  </div>
+
+  <div class="page">
+    <div class="eyebrow">Justificativa Técnica</div>
+    <h1>Por que reaproveitar dados de propostas anteriores desta forma</h1>
+    <p class="lead">
+      Este documento reúne o racional por trás das decisões de UX implementadas no fluxo de Ambiente
+      (Dados Básicos → Simulador → Ficha Proposta), para avaliação da equipe. Cada prática abaixo resolve
+      um risco concreto identificado ao permitir que dados de cadastros anteriores sejam reaproveitados.
+    </p>
+
+    <div class="item">
+      <div class="item-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 12h8M8 8h5M8 16h5"/></svg>
+      </div>
+      <div class="item-body">
+        <h2>Autopreenchimento condicionado ao histórico do CPF</h2>
+        <p>
+          Quando o CPF já possui uma proposta anterior, boa parte dos dados pessoais, de contato e
+          profissionais é reaproveitada automaticamente em vez de solicitada de novo ao colaborador.
+          Reduz retrabalho e o risco de divergência entre cadastros do mesmo cliente — o dado
+          "verdadeiro" passa a ser um só, atualizado incrementalmente a cada nova proposta.
+        </p>
+        <p>
+          Campos que mudam com frequência (Natureza da Ocupação, Renda) foram deliberadamente
+          excluídos do reaproveitamento automático: eles refletem a situação financeira atual do
+          cliente no momento da proposta, não um dado cadastral estável, e por isso continuam de
+          preenchimento manual em cada nova simulação.
+        </p>
+      </div>
+    </div>
+
+    <div class="item">
+      <div class="item-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l8 3.5v6C20 17 16.5 20.5 12 22c-4.5-1.5-8-5-8-10.5v-6L12 2z"/></svg>
+      </div>
+      <div class="item-body">
+        <h2>Consentimento explícito antes de reaproveitar dados pessoais (LGPD)</h2>
+        <p>
+          Antes de qualquer autopreenchimento de dados pessoais, o sistema solicita autorização do
+          próprio proponente por SMS/WhatsApp ao número já registrado. Isso atende ao princípio da
+          LGPD de que o titular do dado deve consentir com cada novo uso de sua informação — mesmo
+          quando esse uso é feito pela mesma empresa que originalmente coletou o dado.
+        </p>
+        <p>
+          O fluxo cobre os três desfechos possíveis: autorização concedida (autopreenchimento
+          liberado), recusa explícita (o botão passa a exibir "Não Autorizado" e os campos seguem em
+          branco para preenchimento manual) e falha no envio da mensagem — nenhum deles deixa o
+          colaborador sem uma ação clara a seguir.
+        </p>
+      </div>
+    </div>
+
+    <div class="item">
+      <div class="item-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+      </div>
+      <div class="item-body">
+        <h2>Mascaramento do telefone até a autorização ser confirmada</h2>
+        <p>
+          O número de celular do cadastro anterior aparece mascarado (ex.: <em>(11) 9****-**21</em>)
+          enquanto a autorização está pendente, e só é revelado por completo após o próprio
+          proponente confirmar. Isso segue o princípio de minimização de dados: o operador só precisa
+          saber que existe um contato válido para enviar a solicitação, não precisa visualizá-lo
+          integralmente antes que o titular tenha autorizado o reaproveitamento.
+        </p>
+      </div>
+    </div>
+
+    <div class="item">
+      <div class="item-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+      </div>
+      <div class="item-body">
+        <h2>Canal de envio conforme a preferência já registrada</h2>
+        <p>
+          Se o proponente já havia optado por WhatsApp em um cadastro anterior, a solicitação de
+          autorização passa a ser enviada por WhatsApp e SMS em conjunto; caso contrário, segue só
+          por SMS. Essa preferência vem do histórico do próprio cliente, não do formulário atual —
+          respeitar um canal já validado aumenta a chance real de entrega e resposta, em vez de supor
+          um canal genérico para todos os casos.
+        </p>
+      </div>
+    </div>
+
+    <div class="item">
+      <div class="item-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>
+      </div>
+      <div class="item-body">
+        <h2>Confirmação explícita com o diff de tudo que foi alterado</h2>
+        <p>
+          Sempre que uma etapa contém dados vindos do histórico, avançar para a próxima etapa passa
+          por um popup de confirmação. Sem alterações, ele só reforça a responsabilidade do
+          colaborador sobre a revisão; havendo qualquer alteração — inclusive um campo que estava em
+          branco e passou a ser preenchido —, o popup lista exatamente o que mudou, no formato
+          "valor anterior → valor novo", e exige um aceite explícito e específico sobre essas
+          alterações antes de prosseguir.
+        </p>
+        <p>
+          Isso evita duas falhas comuns em telas de autopreenchimento: (1) o colaborador editar um
+          dado por engano e isso passar despercebido, sobrescrevendo um cadastro correto; e (2) em
+          caso de divergência real, não haver nenhum registro de que a mudança foi vista e assumida
+          por alguém antes de seguir.
+        </p>
+      </div>
+    </div>
+
+    <div class="item">
+      <div class="item-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
+      </div>
+      <div class="item-body">
+        <h2>Um único mecanismo de wizard, reutilizado em cada nova etapa</h2>
+        <p>
+          A troca entre etapas (recolher a etapa concluída, destacar a etapa ativa na barra lateral)
+          e a verificação de dados alterados usam um único registro central e uma única função
+          genérica, reaproveitados por Dados do Cliente, Endereço do Cliente e Dados Profissionais.
+          Cada nova etapa do wizard herda automaticamente o mesmo comportamento de navegação e a
+          mesma regra de confirmação, sem precisar reescrever a lógica — o que reduz o risco de uma
+          tela futura ficar inconsistente com as demais.
+        </p>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer">Processos e desenvolvimento de propostas: Thiago Rojas - DNGX Consultoria &amp; Sistemas® - 2026.</div>
+
+</body>
+</html>
