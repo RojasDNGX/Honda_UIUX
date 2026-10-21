@@ -212,6 +212,13 @@ A selfie do SPF segue **o mesmo processo da selfie padrão** (2 capturas, mesmas
 **Onde se aplica:** 007 a 011.
 **Impacto no remake:** a ordem frente → verso é obrigatória (exigência do componente de validação). A forma é a principal oportunidade de melhoria: dizer a ordem na 007 e no título de cada captura ("1 de 2: frente, o lado com foto"), usar a detecção de lado que o sistema **já tem** (a revisão já identifica frente e verso) para barrar o lado errado na 1ª captura, com uma mensagem específica ("Este é o verso. Fotografe primeiro a frente."), com opção de refazer.
 
+### R12 — Pessoa jurídica (CNPJ) segue o mesmo fluxo da pessoa física
+**Regra:** qualquer parte (proponente ou avalista) pode ser **pessoa física (CPF)** ou **pessoa jurídica (CNPJ)**. No fluxo atual, a pessoa jurídica passa **exatamente pelo mesmo fluxo** da física: consentimento, selfie, documento de identificação, autorizações, termos, rubrica e avaliação. Só muda o cadastro exibido (razão social e CNPJ na lista da 001).
+- _Na réplica:_ o painel de simulação permite escolher CPF ou CNPJ para o proponente e para cada avalista.
+
+**Onde se aplica:** todo o fluxo (002 a 018); a diferença visível hoje é só na 001.
+**Impacto no remake:** ponto a tratar. Uma empresa não tem rosto nem RG: quem faz a selfie e mostra o documento é o **representante legal**. O remake deve considerar o cenário PJ, por exemplo identificando o representante (nome e CPF) antes da biometria, ajustando os textos ("Você está assinando em nome de EXEMPLO LTDA") e, se o negócio exigir, pedindo documentos da empresa.
+
 ### R10 — Falha na captura facial
 **Regra:** quando a captura facial não dá certo (004, ou 016-2 no SPF), aparece uma tela com o **mesmo layout da tela de cancelamento** (009-2: cabeçalho Honda, título "Atenção!" e texto centralizado). O texto informa que **não foi possível realizar a captura facial** e pede para **tentar novamente**.
 - _Não há print._ Na réplica, a tela é a **004-1**, com o texto "Não foi possível realizar a captura facial. Por favor, tente novamente." e um botão **"Tentar novamente"**, que volta para as dicas da selfie (003, ou 016-1 no SPF).
