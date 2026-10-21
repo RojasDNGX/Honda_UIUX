@@ -575,6 +575,23 @@
     color: #222;
   }
   .sim h2 { font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+  .sim-home {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--red);
+    background: #fff;
+    border: 1px solid rgba(214, 0, 28, 0.25);
+    border-radius: 999px;
+    padding: 5px 12px 5px 9px;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 0.2s ease;
+  }
+  .sim-home:hover { background: rgba(214, 0, 28, 0.08); }
   .sim .sim-note { font-size: 11.5px; color: #888; margin-top: 3px; line-height: 1.4; }
   .sim-now { margin-top: 14px; background: #f6f6f6; border-radius: 8px; padding: 10px 12px; }
   .sim-now .code { font-size: 22px; font-weight: 800; color: var(--red); letter-spacing: 0.5px; }
@@ -669,6 +686,10 @@
       <h2>
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D6001C" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
         Painel de simulação
+        <a class="sim-home" href="../index.html">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+          Voltar à Home
+        </a>
       </h2>
       <div class="sim-note">Fica fora do celular e não faz parte do fluxo real. Serve para escolher o cenário e forçar as ramificações.</div>
 
