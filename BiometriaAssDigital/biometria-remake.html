@@ -4,16 +4,32 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Biometria / Ass. Digital - Fluxo remodelado</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root {
     --red: #D6001C;
+    --red-dark: #AD0016;
     --text-dark: #1a1a1a;
-    --text-gray-light: #9a9a9a;
-    --border-light: #cfcfcf;
     --phone-w: 390px;
     --phone-h: 844px;
+
+    /* Linguagem visual única do remake: une as telas "Honda" e as do componente de
+       captura, que no fluxo atual têm dois padrões diferentes. */
+    --rk-text: #1f1f1f;
+    --rk-muted: #6b6b6b;
+    --rk-line: #e4e4e4;
+    --rk-soft: #f6f6f7;
+    --rk-green: #1e8e3e;
+    --rk-green-bg: #e8f5ec;
+    --rk-amber: #9a5b00;
+    --rk-amber-bg: #fff4e0;
+    --rk-blue: #1f5fbf;
+    --rk-blue-bg: #e9f0fb;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  [hidden] { display: none !important; }
   html, body { height: 100%; }
   body {
     font-family: -apple-system, "Segoe UI", Roboto, Arial, Helvetica, sans-serif;
@@ -24,15 +40,68 @@
     flex-direction: column;
     overflow: hidden;
   }
+  button { font-family: inherit; }
 
-  /* Seletor de versão (atual x remodelado): no topo da 3ª coluna do palco,
-     na mesma posição da página do fluxo atual. */
+  /* 3ª coluna: seletor de versão no topo (mesma posição do fluxo atual) e, abaixo,
+     as melhorias da tela aberta no celular. */
+  .right-col {
+    align-self: stretch;
+    min-width: 0;
+    min-height: 0;
+    margin: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
   .version-switch {
-    justify-self: end;
-    align-self: start;
-    margin: 15px 15px 0 0;
+    align-self: flex-end;
     display: flex;
     gap: 6px;
+  }
+  .notes {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.12);
+    padding: 16px 18px 18px 18px;
+    font-size: 13px;
+    color: #222;
+    line-height: 1.5;
+  }
+  .notes h2 { font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+  .notes .n-sub { font-size: 11.5px; color: #888; margin-top: 3px; }
+  .notes .n-screen { margin-top: 14px; background: #f6f6f6; border-radius: 8px; padding: 10px 12px; }
+  .notes .n-screen b { display: block; font-size: 15px; color: #111; }
+  .notes .n-screen span { font-size: 12px; color: #666; }
+  .notes h3 { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: #999; margin: 16px 0 6px 0; }
+  .notes ul { list-style: none; }
+  .notes li { position: relative; padding-left: 16px; margin-bottom: 8px; }
+  .notes li::before { content: ""; position: absolute; left: 2px; top: 7px; width: 6px; height: 6px; border-radius: 50%; background: #bbb; }
+  .notes .n-new li::before { background: var(--red); }
+  .notes .tag { display: inline-block; font-size: 10.5px; font-weight: 700; color: var(--red); background: rgba(214,0,28,0.07); border-radius: 4px; padding: 0 5px; margin-left: 4px; white-space: nowrap; }
+  .notes .tag.fb { color: #7a5200; background: #fff4e0; }
+  .notes .h3-hint { text-transform: none; letter-spacing: 0; font-weight: 400; color: #aaa; }
+  /* Itens com área na tela: ícone de alvo e destaque ao passar o mouse ou fixar. */
+  .notes .n-new li { border-radius: 8px; padding: 5px 8px 5px 24px; margin-left: -8px; transition: background 0.15s ease; }
+  .notes .n-new li::before { left: 10px; top: 12px; }
+  .notes .n-new li.has-alvo { cursor: pointer; }
+  .notes .n-new li.has-alvo::before { display: none; }
+  .notes .alvo-ic { position: absolute; left: 7px; top: 4px; color: var(--red); font-size: 13px; }
+  .notes .n-new li.lit { background: rgba(214,0,28,0.06); }
+  .notes .n-new li.pinned { background: rgba(214,0,28,0.1); box-shadow: inset 3px 0 0 var(--red); }
+  .notes .n-ver { color: #999; font-size: 12px; margin-left: 2px; white-space: nowrap; }
+
+  /* Holofote: escurece só a tela do celular, recorta a área da melhoria e pulsa em volta. */
+  .spot { position: absolute; inset: 0; z-index: 55; pointer-events: none; opacity: 0; transition: opacity 0.2s ease; }
+  .spot.on { opacity: 1; }
+  .spot svg { position: absolute; inset: 0; }
+  .spot-ring { position: absolute; border: 2px solid #ff3b4e; border-radius: 12px; animation: ringPulse 1.4s ease-out infinite; }
+  @keyframes ringPulse {
+    0% { box-shadow: 0 0 0 0 rgba(255,59,78,0.55); }
+    70% { box-shadow: 0 0 0 10px rgba(255,59,78,0); }
+    100% { box-shadow: 0 0 0 0 rgba(255,59,78,0); }
   }
   .version-tag {
     font-size: 12px;
@@ -49,9 +118,9 @@
   a.version-tag:hover { background: rgba(214, 0, 28, 0.08); }
   .version-tag.active { background: var(--red); border-color: var(--red); color: #fff; }
 
-  /* Palco em 3 colunas (33% / 34% / 33%), igual ao fluxo atual: 1ª coluna reservada
-     (painel de simulação), "celular" no meio e seletor de versão à direita. O aparelho
-     tem tamanho fixo (390x844) e é escalado via JS para caber na coluna do meio. */
+  /* Palco em 3 colunas (33% / 34% / 33%), igual ao fluxo atual: painel de simulação,
+     "celular" e seletor de versão. O aparelho tem tamanho fixo (390x844) e é escalado
+     via JS para caber na coluna do meio. */
   .stage {
     flex: 1;
     min-height: 0;
@@ -93,7 +162,7 @@
     height: 34px;
     border-radius: 20px;
     background: #111;
-    z-index: 5;
+    z-index: 60;
   }
   .status-bar {
     flex: 0 0 54px;
@@ -104,6 +173,7 @@
     font-size: 15px;
     font-weight: 600;
     color: #111;
+    background: #fff;
   }
   .status-icons { display: flex; align-items: center; gap: 6px; }
   .home-indicator {
@@ -115,36 +185,322 @@
     height: 5px;
     border-radius: 3px;
     background: #111;
-    z-index: 5;
+    z-index: 60;
   }
 
-  /* Área útil onde as telas do fluxo serão renderizadas. */
+  /* Área útil das telas: cada tela é uma <section class="scr">. A faixa inferior de 22px
+     fica livre para a barra de gestos do aparelho. */
   .screen-content {
+    position: relative;
     flex: 1;
     min-height: 0;
-    overflow-y: auto;
-    padding: 0 0 26px 0;
+    overflow: hidden;
+    background: #fff;
+    font-family: Roboto, "Segoe UI", Arial, sans-serif;
+    color: var(--rk-text);
   }
+  .scr {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 22px;
+    display: none;
+    flex-direction: column;
+    background: #fff;
+  }
+  .scr.active { display: flex; animation: scrIn 0.2s ease; }
+  @keyframes scrIn { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: none; } }
 
-  .blank-area {
-    margin: 24px 20px;
-    border: 2px dashed var(--border-light);
-    border-radius: 12px;
-    min-height: 600px;
+  /* ===== Componentes do remake ===== */
+  .rk-header {
+    flex: 0 0 52px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--text-gray-light);
+    position: relative;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .rk-logo { display: flex; flex-direction: column; align-items: center; line-height: 1; }
+  .rk-logo b {
+    font-family: "Times New Roman", Georgia, serif;
+    font-weight: 900;
+    font-size: 19px;
+    letter-spacing: 0.4px;
+    color: #e2001a;
+    -webkit-text-stroke: 0.5px #e2001a;
+    transform: scaleX(1.32);
+  }
+  .rk-logo span { font-family: Verdana, Tahoma, sans-serif; font-size: 10px; color: #777; margin-top: 3px; }
+  .rk-back {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    background: none;
+    padding: 6px;
+    cursor: pointer;
+    display: flex;
+  }
+  .rk-body { flex: 1; min-height: 0; overflow-y: auto; padding: 26px 24px 16px 24px; display: flex; flex-direction: column; }
+  .rk-foot { flex: 0 0 auto; padding: 10px 24px 14px 24px; background: #fff; }
+  .rk-eyebrow { font-size: 12.5px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: var(--red); margin-bottom: 8px; }
+  .rk-title { font-size: 24px; font-weight: 700; line-height: 1.22; letter-spacing: -0.2px; }
+  .rk-text { font-size: 15px; line-height: 1.5; color: var(--rk-muted); margin-top: 8px; }
+  .rk-text b { color: var(--rk-text); font-weight: 600; }
+  .rk-spacer { flex: 1; }
+
+  .rk-btn {
+    width: 100%;
+    height: 50px;
+    border: none;
+    border-radius: 25px;
+    background: var(--red);
+    color: #fff;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.15s ease, transform 0.1s ease;
+  }
+  .rk-btn:hover { background: var(--red-dark); }
+  .rk-btn:active { transform: scale(0.98); }
+  .rk-btn:disabled { background: #e6e6e6; color: #8a8a8a; cursor: default; transform: none; }
+  .rk-btn.ghost { background: #fff; color: var(--red); border: 1.5px solid var(--red); }
+  .rk-btn.ghost:hover { background: #fff5f6; }
+  .rk-btn.sm { height: 38px; border-radius: 19px; font-size: 14px; width: auto; padding: 0 18px; }
+  .rk-link {
+    border: none;
+    background: none;
+    color: var(--red);
     font-size: 15px;
-    text-align: center;
-    padding: 24px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 6px 0;
+  }
+  .rk-link:disabled { color: #9a9a9a; cursor: default; }
+  .rk-center { text-align: center; }
+
+  /* Código de 6 casas (input real invisível por cima das caixas). */
+  .otp { position: relative; display: flex; justify-content: space-between; gap: 8px; margin-top: 28px; }
+  .otp-box {
+    flex: 1;
+    height: 58px;
+    border: 1.5px solid #d4d4d4;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--rk-text);
+    background: #fff;
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+  .otp-box.filled { border-color: #9a9a9a; }
+  .otp.focus .otp-box.cur { border-color: var(--red); box-shadow: 0 0 0 3px rgba(214,0,28,0.12); }
+  .otp.focus .otp-box.cur::after { content: ""; width: 2px; height: 26px; background: var(--red); animation: caret 1s steps(1) infinite; }
+  @keyframes caret { 50% { opacity: 0; } }
+  .otp.err .otp-box { border-color: var(--red); background: #fff6f7; }
+  .otp.ok .otp-box { border-color: var(--rk-green); background: var(--rk-green-bg); }
+  .otp.shake { animation: shake 0.35s ease; }
+  @keyframes shake { 20%, 60% { transform: translateX(-6px); } 40%, 80% { transform: translateX(6px); } }
+  .otp input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    font-size: 16px;
+    border: none;
+    caret-color: transparent;
+    cursor: pointer;
+  }
+  .otp-msg { min-height: 22px; margin-top: 12px; font-size: 14px; line-height: 1.45; color: var(--rk-muted); }
+  .otp-msg.err { color: var(--red); font-weight: 500; }
+  .otp-msg.ok { color: var(--rk-green); font-weight: 500; }
+
+  .rk-row-link { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 14px; color: var(--rk-muted); margin-top: 18px; }
+
+  .help-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    margin-top: 26px;
+    padding: 14px 14px;
+    border: 1px solid var(--rk-line);
+    border-radius: 14px;
+    background: #fff;
+    cursor: pointer;
+    text-align: left;
+    color: var(--rk-text);
+  }
+  .help-card:hover { background: var(--rk-soft); }
+  .help-card .ic { flex: 0 0 40px; height: 40px; border-radius: 50%; background: #fff0f2; display: flex; align-items: center; justify-content: center; }
+  .help-card .t1 { font-size: 15px; font-weight: 600; }
+  .help-card .t2 { font-size: 13px; color: var(--rk-muted); margin-top: 2px; }
+
+  /* Ícone circular grande (bloqueio, sucesso). */
+  .rk-hero-ic { width: 72px; height: 72px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 18px auto 20px auto; }
+
+  .toast {
+    position: absolute;
+    left: 50%;
+    bottom: 96px;
+    transform: translateX(-50%) translateY(12px);
+    background: #222;
+    color: #fff;
+    font-size: 13.5px;
+    padding: 10px 16px;
+    border-radius: 10px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    white-space: nowrap;
+    z-index: 40;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* Boas-vindas: proposta, etapas e o que ter em mãos. */
+  .who-card { margin-top: 18px; border-radius: 14px; background: var(--rk-soft); padding: 14px 16px; }
+  .who-card .l { font-size: 12px; color: var(--rk-muted); }
+  .who-card .v { font-size: 15px; font-weight: 600; margin-top: 2px; }
+  .who-card .sep { height: 1px; background: #e8e8e8; margin: 10px 0; }
+  .pj-note { display: flex; gap: 10px; margin-top: 12px; padding: 11px 13px; border-radius: 12px; background: var(--rk-blue-bg); color: #1d3f75; font-size: 13.5px; line-height: 1.45; }
+  .steps-list { list-style: none; margin-top: 18px; }
+  .steps-list li { display: flex; align-items: center; gap: 12px; padding: 9px 0; }
+  .steps-list .n { flex: 0 0 28px; height: 28px; border-radius: 50%; border: 1.5px solid var(--red); color: var(--red); font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  .steps-list .t { flex: 1; font-size: 15px; font-weight: 500; }
+  .steps-list .m { font-size: 13px; color: var(--rk-muted); }
+  .steps-total { display: flex; align-items: center; gap: 8px; margin-top: 6px; font-size: 14px; color: var(--rk-muted); }
+  .bring { margin-top: 16px; font-size: 13.5px; color: var(--rk-muted); line-height: 1.6; }
+  .bring b { color: var(--rk-text); font-weight: 600; }
+
+  /* Lista de assinantes (001): cards com status. */
+  .prog { margin-top: 18px; }
+  .prog-top { display: flex; justify-content: space-between; font-size: 14px; }
+  .prog-top b { font-weight: 600; }
+  .prog-bar { height: 8px; border-radius: 4px; background: #ececec; margin-top: 8px; overflow: hidden; }
+  .prog-bar i { display: block; height: 100%; background: var(--rk-green); border-radius: 4px; transition: width 0.4s ease; }
+  .all-done { display: flex; gap: 10px; margin-top: 16px; padding: 12px 14px; border-radius: 12px; background: var(--rk-green-bg); color: #155d2b; font-size: 14px; line-height: 1.45; }
+  .sig-cards { margin-top: 16px; display: flex; flex-direction: column; gap: 12px; }
+  .sig-card { border: 1px solid var(--rk-line); border-radius: 16px; padding: 14px 14px 14px 14px; background: #fff; transition: box-shadow 0.3s ease, border-color 0.3s ease; }
+  .sig-card.flash { border-color: var(--rk-green); box-shadow: 0 0 0 4px rgba(30,142,62,0.15); }
+  .sig-head { display: flex; align-items: center; gap: 12px; }
+  .avatar { flex: 0 0 42px; height: 42px; border-radius: 50%; background: #f1f1f1; color: #555; font-weight: 700; font-size: 15px; display: flex; align-items: center; justify-content: center; }
+  .avatar.pj { border-radius: 12px; background: var(--rk-blue-bg); color: #1d3f75; }
+  .sig-id { flex: 1; min-width: 0; }
+  .sig-name { font-size: 15px; font-weight: 600; line-height: 1.3; }
+  .sig-meta { font-size: 13px; color: var(--rk-muted); margin-top: 2px; }
+  .pill { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 600; padding: 4px 10px; border-radius: 999px; }
+  .pill.ready { background: #fff0f2; color: var(--red); }
+  .pill.wait { background: var(--rk-amber-bg); color: var(--rk-amber); }
+  .pill.done { background: var(--rk-green-bg); color: var(--rk-green); }
+  .sig-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 12px; min-height: 38px; }
+  .sig-hint { font-size: 13px; color: var(--rk-muted); line-height: 1.45; margin-top: 8px; }
+  .mini-spin { width: 12px; height: 12px; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: spin 0.8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .refresh-row { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 16px; font-size: 13px; color: var(--rk-muted); }
+
+  /* Vídeo "Como funciona". */
+  .video { position: relative; width: 100%; aspect-ratio: 16/9; background: #111; border-radius: 14px; overflow: hidden; cursor: pointer; display: flex; align-items: center; justify-content: center; margin-top: 22px; }
+  .video .cap { position: absolute; left: 12px; top: 10px; color: #ddd; font-size: 12px; }
+  .video .bar { position: absolute; left: 0; right: 0; bottom: 0; height: 4px; background: rgba(255,255,255,0.25); }
+  .video .bar i { display: block; height: 100%; width: 0; background: var(--red); }
+
+  /* ===== Painel de simulação (fora do celular; não faz parte do fluxo real) ===== */
+  /* O painel ocupa a 1ª coluna inteira, com 15px de respiro, e rola por dentro
+     quando o conteúdo não cabe na altura. */
+  .sim {
+    align-self: stretch;
+    margin: 15px;
+    min-width: 0;
+    overflow-y: auto;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.12);
+    padding: 16px 16px 18px 16px;
+    font-size: 13px;
+    color: #222;
+  }
+  .sim h2 { font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+  .sim-home {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--red);
+    background: #fff;
+    border: 1px solid rgba(214, 0, 28, 0.25);
+    border-radius: 999px;
+    padding: 5px 12px 5px 9px;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 0.2s ease;
+  }
+  .sim-home:hover { background: rgba(214, 0, 28, 0.08); }
+  .sim .sim-note { font-size: 11.5px; color: #888; margin-top: 3px; line-height: 1.4; }
+  .sim-now { margin-top: 14px; background: #f6f6f6; border-radius: 8px; padding: 10px 12px; }
+  .sim-now .code { font-size: 22px; font-weight: 800; color: var(--red); letter-spacing: 0.5px; }
+  .sim-now .name { font-size: 12.5px; color: #444; margin-top: 2px; }
+  .sim-now .who { font-size: 11.5px; color: #888; margin-top: 5px; }
+  .sim-sec { margin-top: 16px; }
+  .sim-sec-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: #999; margin-bottom: 8px; }
+  .sim-field { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 9px; }
+  .sim-field > span { color: #333; }
+  .seg { display: inline-flex; border: 1.5px solid var(--red); border-radius: 6px; overflow: hidden; }
+  .seg button { border: none; background: #fff; color: #222; font-size: 12px; padding: 5px 10px; cursor: pointer; }
+  .seg button + button { border-left: 1.5px solid var(--red); }
+  .seg button.sel { background: var(--red); color: #fff; }
+  .sim select { font-family: inherit; font-size: 12px; padding: 4px 6px; border: 1px solid #ccc; border-radius: 5px; background: #fff; max-width: 170px; }
+  .sim-btn { width: 100%; margin-top: 4px; border: 1.5px solid var(--red); background: #fff; color: var(--red); font-weight: 700; font-size: 13px; padding: 8px 0; border-radius: 7px; cursor: pointer; }
+  .sim-btn:hover { background: rgba(214,0,28,0.06); }
+  .sim-btn + .sim-btn { margin-top: 8px; }
+  .sim-hint { background: #fff7e6; border: 1px solid #f0c36d; color: #7a5200; border-radius: 6px; padding: 7px 9px; font-size: 12px; line-height: 1.4; }
+  .sim-hint code { font-family: "Courier New", monospace; font-weight: 700; font-size: 13px; }
+  .sim-toggle { display: none; }
+
+  @media (max-width: 1000px) {
+    .stage { display: flex; align-items: center; justify-content: center; }
+    .right-col { margin: 0; }
+    .notes { display: none; }
+    .version-switch { position: fixed; top: 14px; right: 16px; margin: 0; z-index: 10; }
+    .sim {
+      position: fixed;
+      top: 56px;
+      left: 12px;
+      z-index: 70;
+      display: none;
+      width: 300px;
+      margin: 0;
+      max-height: calc(100vh - 70px);
+    }
+    .sim.open { display: block; }
+    .sim-toggle {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      position: fixed;
+      top: 14px;
+      left: 12px;
+      z-index: 71;
+      border: 1.5px solid var(--red);
+      background: #fff;
+      color: var(--red);
+      font-weight: 700;
+      font-size: 12px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    }
   }
 
   /* Em um celular de verdade, a tela do fluxo ocupa a viewport inteira, sem moldura. */
   @media (max-width: 500px) {
     .version-switch { display: none; }
-    .stage { display: block; }
-    .stage-col { display: none; }
+    .stage { display: block; padding: 0; }
     .phone-slot { width: 100% !important; height: 100% !important; }
     .phone {
       position: static;
@@ -157,53 +513,945 @@
     }
     .screen { width: 100%; height: 100%; border-radius: 0; }
     .notch, .status-bar, .home-indicator { display: none; }
-  }
-  @media (max-width: 1000px) and (min-width: 501px) {
-    .stage { display: flex; align-items: center; justify-content: center; }
-    .stage-col { display: none; }
-    .version-switch { position: fixed; top: 14px; right: 16px; margin: 0; z-index: 10; }
+    .scr { bottom: 0; }
+    .sim-toggle { top: 10px; left: 8px; padding: 8px; }
+    .sim-toggle-label { display: none; }
+    .sim { top: 50px; left: 8px; right: 8px; width: auto; }
   }
 </style>
 </head>
 <body>
 
+  <button type="button" class="sim-toggle" id="simToggle">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+    <span class="sim-toggle-label">Simulação</span>
+  </button>
+
   <div class="stage" id="stage">
-    <div class="stage-col"></div>
+
+    <!-- Painel de simulação: escolhe o cenário. Não faz parte do fluxo real. -->
+    <aside class="sim" id="sim">
+      <h2>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D6001C" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+        Painel de simulação
+        <a class="sim-home" href="../index.html">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+          Voltar à Home
+        </a>
+      </h2>
+      <div class="sim-note">Fluxo remodelado, em construção etapa por etapa. Prontas: entrada (token e lista de assinantes) e boas-vindas. Decisões D03 a D05 do REGRAS.md.</div>
+
+      <div class="sim-now">
+        <div class="code" id="simCode">—</div>
+        <div class="name" id="simName"></div>
+        <div class="who" id="simWho"></div>
+      </div>
+
+      <div class="sim-sec">
+        <div class="sim-sec-title">Cenário (mudar reinicia o fluxo)</div>
+        <div class="sim-field">
+          <span>Canal</span>
+          <div class="seg" data-key="canal">
+            <button type="button" data-v="presencial">Presencial</button>
+            <button type="button" data-v="remoto">Remoto</button>
+          </div>
+        </div>
+        <div class="sim-field">
+          <span>Proponente</span>
+          <div class="seg" data-key="tipo0">
+            <button type="button" data-v="cpf">CPF</button>
+            <button type="button" data-v="cnpj">CNPJ</button>
+          </div>
+        </div>
+        <div class="sim-field" data-tipo-row="1">
+          <span>Avalista 1</span>
+          <div class="seg" data-key="tipo1">
+            <button type="button" data-v="cpf">CPF</button>
+            <button type="button" data-v="cnpj">CNPJ</button>
+          </div>
+        </div>
+        <div class="sim-field" data-tipo-row="2">
+          <span>Avalista 2</span>
+          <div class="seg" data-key="tipo2">
+            <button type="button" data-v="cpf">CPF</button>
+            <button type="button" data-v="cnpj">CNPJ</button>
+          </div>
+        </div>
+        <div class="sim-field">
+          <span>Quantidade de avalistas</span>
+          <div class="seg" data-key="avalistas">
+            <button type="button" data-v="0">0</button>
+            <button type="button" data-v="1">1</button>
+            <button type="button" data-v="2">2</button>
+          </div>
+        </div>
+        <div class="sim-field">
+          <span>SPF contratado</span>
+          <div class="seg" data-key="spf">
+            <button type="button" data-v="sim">Sim</button>
+            <button type="button" data-v="nao">Não</button>
+          </div>
+        </div>
+        <div class="sim-field" id="fieldAguarde">
+          <span>Avalista aguardando liberação</span>
+          <div class="seg" data-key="aguarde">
+            <button type="button" data-v="sim">Sim</button>
+            <button type="button" data-v="nao">Não</button>
+          </div>
+        </div>
+        <div class="sim-field" id="fieldParte">
+          <span>Link aberto por</span>
+          <select id="simParte"></select>
+        </div>
+        <button type="button" class="sim-btn" id="simRestart">Reiniciar fluxo</button>
+      </div>
+
+      <div class="sim-sec" id="tokenHint">
+        <div class="sim-hint">Token válido desta simulação: <code>846504</code>. Qualquer outro código conta como tentativa errada (limite de 5).</div>
+        <button type="button" class="sim-btn" id="simSms" style="margin-top:8px">Simular SMS chegando (preenchimento automático)</button>
+        <button type="button" class="sim-btn" id="simUnlock">Encerrar bloqueio agora</button>
+      </div>
+
+      <div class="sim-sec" id="listHint">
+        <div class="sim-hint">Na lista de assinantes, a parte em "Aguardando liberação" é liberada na próxima atualização (automática a cada 15 s ou manual).</div>
+      </div>
+
+      <div class="sim-sec">
+        <div class="sim-sec-title">Ir para a tela</div>
+        <select id="simJump" style="max-width:none;width:100%"></select>
+      </div>
+    </aside>
 
     <div class="phone-slot" id="phoneSlot">
-    <div class="phone" id="phone">
-      <div class="screen">
-        <div class="notch"></div>
-        <div class="status-bar">
-          <span id="clock">9:41</span>
-          <span class="status-icons">
-            <svg width="18" height="12" viewBox="0 0 18 12" fill="#111"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
-            <svg width="16" height="12" viewBox="0 0 16 12" fill="#111"><path d="M8 2.2c2.4 0 4.6.9 6.2 2.5l1.3-1.3A10.6 10.6 0 0 0 8 .4 10.6 10.6 0 0 0 .5 3.4l1.3 1.3A8.8 8.8 0 0 1 8 2.2zm0 3.6c1.4 0 2.7.5 3.7 1.5L13 6A7 7 0 0 0 8 4a7 7 0 0 0-5 2l1.3 1.3c1-1 2.3-1.5 3.7-1.5zM8 9.4l-2.4 2.4L8 12l2.4-2.2z"/></svg>
-            <svg width="27" height="13" viewBox="0 0 27 13"><rect x="0.5" y="0.5" width="23" height="12" rx="3.5" fill="none" stroke="#111" opacity="0.4"/><rect x="2" y="2" width="20" height="9" rx="2" fill="#111"/><path d="M25 4.5v4c.8-.3 1.3-1.1 1.3-2s-.5-1.7-1.3-2z" fill="#111" opacity="0.4"/></svg>
-          </span>
-        </div>
+      <div class="phone" id="phone">
+        <div class="screen">
+          <div class="notch"></div>
+          <div class="status-bar">
+            <span id="clock">9:41</span>
+            <span class="status-icons">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="#111"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="#111"><path d="M8 2.2c2.4 0 4.6.9 6.2 2.5l1.3-1.3A10.6 10.6 0 0 0 8 .4 10.6 10.6 0 0 0 .5 3.4l1.3 1.3A8.8 8.8 0 0 1 8 2.2zm0 3.6c1.4 0 2.7.5 3.7 1.5L13 6A7 7 0 0 0 8 4a7 7 0 0 0-5 2l1.3 1.3c1-1 2.3-1.5 3.7-1.5zM8 9.4l-2.4 2.4L8 12l2.4-2.2z"/></svg>
+              <svg width="27" height="13" viewBox="0 0 27 13"><rect x="0.5" y="0.5" width="23" height="12" rx="3.5" fill="none" stroke="#111" opacity="0.4"/><rect x="2" y="2" width="20" height="9" rx="2" fill="#111"/><path d="M25 4.5v4c.8-.3 1.3-1.1 1.3-2s-.5-1.7-1.3-2z" fill="#111" opacity="0.4"/></svg>
+            </span>
+          </div>
 
-        <div class="screen-content" id="screenContent">
-          <div class="blank-area">Fluxo remodelado de Biometria / Assinatura Digital — a ser construído com as melhorias.</div>
-        </div>
+          <div class="screen-content" id="screenContent">
 
-        <div class="home-indicator"></div>
+            <!-- Holofote das melhorias (controlado pela 3ª coluna; não faz parte do fluxo) -->
+            <div class="spot" id="spot"></div>
+
+            <!-- 000 · Token (remoto) -->
+            <section class="scr" id="s-token">
+              <div class="rk-header"><span class="rk-logo"><b>HONDA</b><span>Serviços Financeiros</span></span></div>
+              <div class="rk-body">
+                <div class="rk-eyebrow">Assinatura digital</div>
+                <h1 class="rk-title">Confirme que é você</h1>
+                <p class="rk-text">Digite o código de 6 dígitos que enviamos por SMS para <b id="tokenPhone">(11) 9••••-••00</b>.</p>
+                <div class="otp" id="otp">
+                  <span class="otp-box"></span><span class="otp-box"></span><span class="otp-box"></span>
+                  <span class="otp-box"></span><span class="otp-box"></span><span class="otp-box"></span>
+                  <input id="otpInput" inputmode="numeric" autocomplete="one-time-code" maxlength="6" aria-label="Código de 6 dígitos">
+                </div>
+                <div class="otp-msg" id="otpMsg"></div>
+                <div class="rk-row-link">
+                  Não recebeu?
+                  <button type="button" class="rk-link" id="resendBtn" disabled>Reenviar em 0:30</button>
+                </div>
+                <button type="button" class="help-card" id="howBtn">
+                  <span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="#D6001C"><path d="M8 5v14l11-7z"/></svg></span>
+                  <span><span class="t1" style="display:block">Ver como funciona</span><span class="t2" style="display:block">Vídeo de 1 minuto sobre a assinatura</span></span>
+                </button>
+                <div class="rk-spacer"></div>
+              </div>
+              <div class="rk-foot"><button type="button" class="rk-btn" id="tokenGo" disabled>Continuar</button></div>
+              <div class="toast" id="toast"></div>
+            </section>
+
+            <!-- 000-B · Bloqueio após 5 tentativas -->
+            <section class="scr" id="s-lock">
+              <div class="rk-header"><span class="rk-logo"><b>HONDA</b><span>Serviços Financeiros</span></span></div>
+              <div class="rk-body" style="text-align:center">
+                <div class="rk-hero-ic" style="background:#fff0f2">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#D6001C" stroke-width="2"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15.5" r="1.3" fill="#D6001C"/></svg>
+                </div>
+                <h1 class="rk-title">Acesso bloqueado por segurança</h1>
+                <p class="rk-text">O código foi digitado errado 5 vezes. Você pode tentar de novo em <b id="lockTimer">5:00</b> ou pedir um novo código agora.</p>
+                <div class="rk-spacer"></div>
+              </div>
+              <div class="rk-foot">
+                <button type="button" class="rk-btn" id="lockNew">Enviar novo código</button>
+              </div>
+            </section>
+
+            <!-- 000-V · Vídeo "Como funciona" -->
+            <section class="scr" id="s-video">
+              <div class="rk-header">
+                <button type="button" class="rk-back" id="videoBack" aria-label="Voltar"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+                <span class="rk-logo"><b>HONDA</b><span>Serviços Financeiros</span></span>
+              </div>
+              <div class="rk-body">
+                <h1 class="rk-title">Como funciona</h1>
+                <p class="rk-text">Em cerca de 5 minutos você confirma sua identidade e assina o contrato, sem sair de casa.</p>
+                <div class="video" id="videoBox">
+                  <span class="cap">Assinatura digital Honda · 1:00</span>
+                  <svg id="videoPlay" width="58" height="58" viewBox="0 0 58 58"><circle cx="29" cy="29" r="28" fill="rgba(255,255,255,0.18)" stroke="#fff" stroke-width="2"/><path d="M23 18l17 11-17 11z" fill="#fff"/></svg>
+                  <span class="bar"><i id="videoBar"></i></span>
+                </div>
+                <div class="rk-spacer"></div>
+              </div>
+              <div class="rk-foot"><button type="button" class="rk-btn" id="videoOk">Entendi</button></div>
+            </section>
+
+            <!-- 001 · Assinaturas da proposta (presencial) -->
+            <section class="scr" id="s-lista">
+              <div class="rk-header"><span class="rk-logo"><b>HONDA</b><span>Serviços Financeiros</span></span></div>
+              <div class="rk-body">
+                <div class="rk-eyebrow">Proposta nº 1000000001-1</div>
+                <h1 class="rk-title">Assinaturas da proposta</h1>
+                <p class="rk-text" id="listaSub">Cada pessoa assina por vez, neste aparelho. Toque em "Iniciar" na pessoa que vai assinar agora.</p>
+                <div class="prog">
+                  <div class="prog-top"><span id="progText"><b>0 de 2</b> assinaturas concluídas</span></div>
+                  <div class="prog-bar"><i id="progBar" style="width:0"></i></div>
+                </div>
+                <div class="all-done" id="allDone" hidden>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1e8e3e" stroke-width="2.4" style="flex-shrink:0"><circle cx="12" cy="12" r="10"/><path d="M7.5 12.5l3 3 6-6.5"/></svg>
+                  <span>Todas as assinaturas foram concluídas. A concessionária vai seguir com a formalização do contrato.</span>
+                </div>
+                <div class="sig-cards" id="sigCards"></div>
+                <div class="refresh-row" id="refreshRow">
+                  <span id="refreshText">Atualizado agora</span> ·
+                  <button type="button" class="rk-link" id="refreshBtn" style="font-size:13px;padding:0">Atualizar</button>
+                </div>
+              </div>
+              <div class="toast" id="toastLista"></div>
+            </section>
+
+            <!-- BV · Boas-vindas: quem assina, proposta, etapas e tempo -->
+            <section class="scr" id="s-welcome">
+              <div class="rk-header">
+                <button type="button" class="rk-back" id="welcomeBack" aria-label="Voltar"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+                <span class="rk-logo"><b>HONDA</b><span>Serviços Financeiros</span></span>
+              </div>
+              <div class="rk-body">
+                <div class="rk-eyebrow" id="wEyebrow">Olá!</div>
+                <div class="who-card" style="margin-top:4px">
+                  <div class="l" id="wWhoLabel">Assinando como</div>
+                  <div class="v" id="wWho">JOÃO DA SILVA SANTOS</div>
+                  <div class="sep"></div>
+                  <div class="l">Proposta nº 1000000001-1</div>
+                  <div class="v">Honda XRE 190 Adventure · Moto Clube Exemplo</div>
+                </div>
+                <div class="pj-note" id="wPj" hidden>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1d3f75" stroke-width="2" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><path d="M12 11v6M12 7.5v.5"/></svg>
+                  <span id="wPjText"></span>
+                </div>
+                <ol class="steps-list" id="wSteps"></ol>
+                <div class="steps-total">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6b6b6b" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+                  <span id="wTime">Cerca de 5 minutos</span>
+                </div>
+                <div class="bring"><b>Tenha em mãos:</b> seu documento de identificação (RG, CNH, CIN ou a CNH Digital) e procure um lugar bem iluminado.</div>
+              </div>
+              <div class="rk-foot"><button type="button" class="rk-btn" id="welcomeGo">Começar</button></div>
+            </section>
+
+            <!-- Próximas etapas: ainda em construção no remake -->
+            <section class="scr" id="s-next">
+              <div class="rk-header"><span class="rk-logo"><b>HONDA</b><span>Serviços Financeiros</span></span></div>
+              <div class="rk-body" style="text-align:center">
+                <div class="rk-hero-ic" style="background:var(--rk-soft)">
+                  <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#6b6b6b" stroke-width="2"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z"/></svg>
+                </div>
+                <h1 class="rk-title">Próximas etapas em construção</h1>
+                <p class="rk-text">Selfie, documento, autorizações, contrato e avaliação do remake serão desenhados nas próximas rodadas.</p>
+                <div class="rk-spacer"></div>
+              </div>
+              <div class="rk-foot">
+                <button type="button" class="rk-btn" id="nextDone">Simular conclusão desta assinatura</button>
+                <button type="button" class="rk-link" id="nextRestart" style="width:100%;margin-top:6px">Voltar ao início</button>
+              </div>
+            </section>
+
+          </div>
+
+          <div class="home-indicator"></div>
+        </div>
       </div>
     </div>
-    </div>
 
-    <nav class="version-switch">
-      <a class="version-tag" href="biometria-atual.html">Fluxo atual</a>
-      <span class="version-tag active">Fluxo remodelado</span>
-    </nav>
+    <div class="right-col">
+      <nav class="version-switch">
+        <a class="version-tag" href="biometria-atual.html">Fluxo atual</a>
+        <span class="version-tag active">Fluxo remodelado</span>
+      </nav>
+
+      <!-- Melhorias da tela aberta no celular: o que era problema e o que mudou. -->
+      <aside class="notes" id="notes">
+        <h2>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D6001C" stroke-width="2"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.6 10.8c.8.6 1.1 1.4 1.1 2.2h5c0-.8.4-1.6 1.1-2.2A6 6 0 0 0 12 3z"/></svg>
+          Melhorias desta tela
+        </h2>
+        <div class="n-sub">Muda conforme a tela aberta no celular.</div>
+        <div id="notesBody"></div>
+      </aside>
+    </div>
   </div>
 
   <script>
-    // Escala o aparelho para caber inteiro na coluna do meio (sem nunca ampliar
-    // além do tamanho real), mantendo as telas desenhadas em 390x844 px.
-    var stage = document.getElementById("stage");
-    var phone = document.getElementById("phone");
-    var slot = document.getElementById("phoneSlot");
+    // ================================================================
+    // Fluxo remodelado de Biometria / Assinatura Digital (em construção).
+    // Decisões: BiometriaAssDigital/REGRAS.md (D01 a D05).
+    // Todos os nomes, CPFs, CNPJs e telefones são fictícios.
+    // ================================================================
+
+    var VALID_TOKEN = "846504";
+    var MAX_TENTATIVAS = 5;
+    var BLOQUEIO_S = 300;
+    var REENVIO_S = 30;
+    var AUTO_REFRESH_S = 15;
+
+    var PESSOAS = [
+      { papel: "Proponente", fone: "(11) 9••••-••00",
+        cpf: { nome: "JOÃO DA SILVA SANTOS", doc: "123.456.789-09" },
+        cnpj: { nome: "EXEMPLO COMÉRCIO DE VEÍCULOS LTDA", doc: "12.345.678/0001-95", rep: "JOÃO DA SILVA SANTOS" } },
+      { papel: "Avalista 1", fone: "(11) 9••••-••21",
+        cpf: { nome: "MARIA OLIVEIRA SOUZA", doc: "987.654.321-00" },
+        cnpj: { nome: "SOUZA SERVIÇOS ADMINISTRATIVOS LTDA", doc: "98.765.432/0001-10", rep: "MARIA OLIVEIRA SOUZA" } },
+      { papel: "Avalista 2", fone: "(11) 9••••-••47",
+        cpf: { nome: "CARLOS PEREIRA LIMA", doc: "111.444.777-35" },
+        cnpj: { nome: "LIMA TRANSPORTES LTDA", doc: "11.222.333/0001-81", rep: "CARLOS PEREIRA LIMA" } }
+    ];
+
+    var NOMES = {
+      "000": "Token: digitar o código", "000-E": "Token: código incorreto (tentativas restantes)",
+      "000-OK": "Token: código confirmado", "000-B": "Token: bloqueado após 5 tentativas",
+      "000-V": "Vídeo \"Como funciona\"", "001": "Assinaturas da proposta",
+      "001-A": "Assinaturas: parte aguardando liberação", "001-C": "Assinaturas: todas concluídas",
+      "BV": "Boas-vindas: quem assina, etapas e tempo", "PRÓX": "Próximas etapas (em construção)"
+    };
+
+    // Melhorias de cada tela, exibidas na 3ª coluna: o problema no fluxo atual e o que
+    // mudou. Tags: decisões (D0x) e regras (R0x) do REGRAS.md; "Feedback" = FEEDBACK.md.
+    // Cada item de "O que mudou" pode ter:
+    //   alvo: seletor(es) da área da tela que o holofote destaca;
+    //   ver:  como levar o celular ao estado em que essa área aparece (quando não está visível).
+    var NOTAS = {
+      token: {
+        titulo: "000 · Token de acesso", sub: "Só no envio remoto (SMS, e-mail ou WhatsApp)",
+        antes: [
+          "Campo de texto solto, e o \"Continuar\" fica liberado com qualquer coisa digitada.",
+          "O erro só aparece depois do toque (000-1 \"código incorreto\" e 000-2 \"token com menos de 6 dígitos\").",
+          "Não há limite de tentativas. <span class='tag'>R01</span>",
+          "A pessoa não sabe para onde o código foi enviado. <span class='tag fb'>Feedback: \"o código tem que ser mais claro\"</span>",
+          "Nada diz quantas etapas o processo tem nem quanto tempo leva. <span class='tag fb'>Feedback: processo longo</span>"
+        ],
+        depois: [
+          { t: "Campo de 6 casas, com teclado numérico e preenchimento automático do código do SMS. <span class='tag'>D03</span>", alvo: "#otp" },
+          { t: "\"Continuar\" só libera com os 6 dígitos, então o erro de token incompleto deixa de existir.", alvo: "#tokenGo" },
+          { t: "A tela mostra o celular para onde o código foi enviado, mascarado, e libera \"Reenviar código\" depois de 30 s.", alvo: "#tokenPhone, #s-token .rk-row-link" },
+          { t: "Código errado: as casas ficam vermelhas e a mensagem mostra quantas tentativas restam.", alvo: "#otp, #otpMsg",
+            visivel: function () { return $("otp").classList.contains("err"); },
+            ver: function () { forcarCanal("remoto"); openToken(); otpInput.value = "111111"; checkToken(); } },
+          { t: "\"Ver como funciona\" fica em destaque (vídeo de 1 minuto).", alvo: "#howBtn" },
+          { t: "Um único padrão visual. Hoje o fluxo mistura as telas \"Honda\" com as do componente de captura." }
+        ]
+      },
+      lock: {
+        titulo: "000-B · Bloqueio por tentativas", sub: "Tela nova",
+        antes: ["Não existe: dá para tentar códigos sem limite. <span class='tag'>R01</span>"],
+        depois: [
+          { t: "Depois de 5 tentativas erradas, o acesso fica bloqueado por 5 minutos, com contagem regressiva. <span class='tag'>D03</span>", alvo: "#s-lock .rk-text" },
+          { t: "\"Enviar novo código\" libera na hora e zera as tentativas, para a pessoa não ficar presa.", alvo: "#lockNew" },
+          { t: "O texto explica o motivo (segurança) sem culpar o usuário.", alvo: "#s-lock .rk-title" }
+        ]
+      },
+      video: {
+        titulo: "000-V · Como funciona", sub: "Vídeo tutorial",
+        antes: ["O botão \"CLIQUE AQUI E CONFIRA\" não diz o que vai abrir.", "Só dá para voltar pelo botão \"Entendi\"."],
+        depois: [
+          { t: "Uma frase de contexto: o processo leva cerca de 5 minutos, sem sair de casa.", alvo: "#s-video .rk-text" },
+          { t: "Vídeo com título e duração visíveis.", alvo: "#videoBox" },
+          { t: "Seta de voltar no topo, além do botão \"Entendi\".", alvo: "#videoBack, #videoOk" },
+          { t: "Aberto pelo card \"Ver como funciona · vídeo de 1 minuto\" na tela do token (só no acesso remoto), que diz o que abre e quanto tempo leva." }
+        ]
+      },
+      lista: {
+        titulo: "001 · Assinaturas da proposta", sub: "Só no presencial (QR Code)",
+        antes: [
+          "Tabela de 3 colunas, apertada na tela do celular.",
+          "O status \"Aguarde\" não explica nada, e a lista só atualiza tocando no botão. <span class='tag'>R04</span>",
+          "Quem já assinou fica sem link, mas sem nenhum sinal de que concluiu. <span class='tag'>R03</span>",
+          "O CPF/CNPJ completo de todas as partes aparece no mesmo aparelho."
+        ],
+        depois: [
+          { t: "Um card por parte, com iniciais, nome, papel e documento mascarado (empresas têm ícone próprio). <span class='tag'>D04</span>", alvo: "#sigCards .sig-card" },
+          { t: "Selo de status claro: Pronto para assinar (com o botão \"Iniciar\"), Aguardando liberação (com explicação) ou Concluído ✓.", alvo: "#sigCards .sig-foot" },
+          { t: "Progresso no topo (\"1 de 2 assinaturas concluídas\").", alvo: "#s-lista .prog" },
+          { t: "Atualização automática a cada 15 s, com o botão manual como reserva. O card liberado fica destacado.", alvo: "#refreshRow",
+            ver: function () { forcarCanal("presencial"); start(); } },
+          { t: "Mensagem final quando todos assinam.", alvo: "#allDone",
+            ver: function () { forcarCanal("presencial"); st.signers.forEach(function (s) { s.status = "concluido"; }); openLista(); } }
+        ]
+      },
+      welcome: {
+        titulo: "BV · Boas-vindas", sub: "Tela nova, nos dois canais",
+        antes: [
+          "A pessoa cai direto no termo da captura da foto, sem saber quantas etapas faltam. <span class='tag fb'>Feedback: \"muito burocrático\", \"mais explicação\"</span>",
+          "No presencial, não fica claro de quem é a vez de assinar.",
+          "Pessoa jurídica segue o mesmo fluxo da física, sem dizer quem faz a selfie. <span class='tag'>R12</span>"
+        ],
+        depois: [
+          { t: "Mostra quem está assinando (nome e papel) e a proposta (número, moto e concessionária). <span class='tag'>D05</span>", alvo: "#s-welcome .rk-eyebrow, #s-welcome .who-card" },
+          { t: "Lista as etapas com o tempo estimado de cada uma e o total.", alvo: "#wSteps, #s-welcome .steps-total" },
+          { t: "Sem a rubrica. <span class='tag'>D01</span> O termo do SPF só aparece para o proponente que contratou. <span class='tag'>R06</span>", alvo: "#wSteps" },
+          { t: "Para CNPJ, avisa que a selfie e o documento são do representante legal. <span class='tag'>R12</span>", alvo: "#wPj",
+            ver: function () { cenario["tipo" + st.cur] = "cnpj"; salvarCenario(); pintarPainel(); var cur = st.cur; start(); st.cur = cur; openWelcome(); } },
+          { t: "Diz o que ter em mãos (documento e local iluminado) antes de começar.", alvo: "#s-welcome .bring" }
+        ]
+      },
+      next: {
+        titulo: "Próximas etapas", sub: "Em construção",
+        antes: [],
+        depois: [{ t: "Consentimento e selfie, documento, autorizações, contrato (D02) e avaliação serão desenhados nas próximas rodadas." }]
+      }
+    };
+    var NOTA_POR_CODIGO = {
+      "000": "token", "000-E": "token", "000-OK": "token", "000-B": "lock", "000-V": "video",
+      "001": "lista", "001-A": "lista", "001-C": "lista", "BV": "welcome", "PRÓX": "next"
+    };
+
+    var notaAtual = null;   // grupo de notas exibido
+    var fixado = -1;        // índice do item fixado por clique (-1 = nenhum)
+
+    function renderNotas(code) {
+      var n = NOTAS[NOTA_POR_CODIGO[code]];
+      if (!n) return;
+      if (n !== notaAtual) {
+        notaAtual = n;
+        fixado = -1;
+        // Se o usuário navegou para outra tela por conta própria, o estado guardado
+        // deixa de valer (só vale enquanto o clique na nota está aplicando a mudança).
+        if (!aplicandoVer) snapshot = null;
+        apagarHolofote();
+        var antes = n.antes.map(function (i) { return "<li>" + i + "</li>"; }).join("");
+        var depois = n.depois.map(function (d, i) {
+          return '<li data-i="' + i + '"' + (d.alvo ? ' class="has-alvo"' : "") + ">" +
+            (d.alvo ? '<span class="alvo-ic" aria-hidden="true">◎</span>' : "") + d.t +
+            (d.ver ? ' <span class="n-ver" data-ver="' + i + '">(clique para ver na tela)</span>' : "") + "</li>";
+        }).join("");
+        $("notesBody").innerHTML =
+          '<div class="n-screen"><b>' + n.titulo + "</b><span>" + n.sub + "</span></div>" +
+          (antes ? "<h3>Problema no fluxo atual</h3><ul>" + antes + "</ul>" : "") +
+          '<h3>O que mudou <span class="h3-hint">(passe o mouse na descrição para destacar)</span></h3>' +
+          '<div class="n-new"><ul>' + depois + "</ul></div>";
+      }
+      // Depois de cada troca de estado: atualiza quais itens precisam do "ver na tela"
+      // e reposiciona o holofote fixado (a área pode ter mudado de lugar).
+      requestAnimationFrame(function () {
+        atualizarVer();
+        if (fixado >= 0) acenderHolofote(fixado); else apagarHolofote();
+      });
+    }
+
+    // ---------- Holofote: escurece a tela do celular e recorta a área da melhoria ----------
+    function alvosVisiveis(item) {
+      if (!item || !item.alvo) return [];
+      if (item.visivel && !item.visivel()) return [];
+      return [].filter.call(document.querySelectorAll(item.alvo), function (el) {
+        return el.offsetParent !== null && el.offsetWidth > 0 && el.offsetHeight > 0 && el.closest(".scr.active");
+      });
+    }
+    function atualizarVer() {
+      if (!notaAtual) return;
+      document.querySelectorAll("#notesBody [data-ver]").forEach(function (b) {
+        var item = notaAtual.depois[parseInt(b.getAttribute("data-ver"), 10)];
+        b.hidden = alvosVisiveis(item).length > 0;
+      });
+    }
+    function acenderHolofote(i) {
+      var item = notaAtual && notaAtual.depois[i];
+      var els = alvosVisiveis(item);
+      var spot = $("spot");
+      document.querySelectorAll("#notesBody li.lit").forEach(function (li) { li.classList.remove("lit"); });
+      if (!els.length) { apagarHolofote(true); return; }
+      var li = document.querySelector('#notesBody li[data-i="' + i + '"]');
+      if (li) li.classList.add("lit");
+      // Garante que a área esteja visível dentro da tela (ex.: itens no fim de uma lista rolável).
+      els[0].scrollIntoView({ block: "nearest" });
+      var base = $("screenContent").getBoundingClientRect();
+      var esc = base.width / $("screenContent").offsetWidth; // o aparelho está escalado
+      var W = $("screenContent").offsetWidth, H = $("screenContent").offsetHeight, PAD = 6;
+      var buracos = "", contornos = "";
+      els.forEach(function (el) {
+        var r = el.getBoundingClientRect();
+        var x = Math.max(4, (r.left - base.left) / esc - PAD), y = Math.max(4, (r.top - base.top) / esc - PAD);
+        var w = Math.min(W - 4, (r.right - base.left) / esc + PAD) - x, h = Math.min(H - 4, (r.bottom - base.top) / esc + PAD) - y;
+        buracos += '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="12" fill="#000"/>';
+        contornos += '<span class="spot-ring" style="left:' + x + "px;top:" + y + "px;width:" + w + "px;height:" + h + 'px"></span>';
+      });
+      spot.innerHTML =
+        '<svg width="' + W + '" height="' + H + '"><defs><mask id="spotMask"><rect width="100%" height="100%" fill="#fff"/>' + buracos +
+        '</mask></defs><rect width="100%" height="100%" fill="rgba(0,0,0,0.55)" mask="url(#spotMask)"/></svg>' + contornos;
+      spot.classList.add("on");
+    }
+    // Estado do celular antes de um clique que muda a tela (ex.: forçar o erro do token).
+    // Ao desfixar o item, o celular volta exatamente para onde estava.
+    var snapshot = null, aplicandoVer = false;
+    function guardarEstado() {
+      snapshot = { cenario: JSON.parse(JSON.stringify(cenario)), st: JSON.parse(JSON.stringify(st)), code: st.code };
+    }
+    function restaurarEstado() {
+      if (!snapshot) return;
+      var s = snapshot;
+      snapshot = null;
+      cenario = s.cenario; salvarCenario(); pintarPainel();
+      st = s.st;
+      var reabrir = {
+        "000": openToken, "000-E": openToken, "000-OK": openToken, "000-B": openLock,
+        "000-V": function () { openVideo(st.videoFrom); },
+        "001": function () { openLista(); }, "001-A": function () { openLista(); }, "001-C": function () { openLista(); },
+        "BV": openWelcome, "PRÓX": function () { show("s-next", "PRÓX"); }
+      }[s.code];
+      if (reabrir) reabrir(); else start();
+    }
+
+    var hoverIdx = -1; // item sob o mouse (evita redesenhar o holofote a cada movimento)
+    function apagarHolofote(manterLit) {
+      hoverIdx = -1;
+      $("spot").classList.remove("on");
+      if (!manterLit) document.querySelectorAll("#notesBody li.lit").forEach(function (li) { li.classList.remove("lit"); });
+    }
+    $("notesBody").addEventListener("mouseover", function (e) {
+      var li = e.target.closest("li[data-i]");
+      if (!li || fixado >= 0) return;
+      var i = parseInt(li.getAttribute("data-i"), 10);
+      if (i === hoverIdx) return;
+      acenderHolofote(i);
+      hoverIdx = i;
+    });
+    $("notesBody").addEventListener("mouseleave", function () { if (fixado < 0) apagarHolofote(); });
+    $("notesBody").addEventListener("mouseout", function (e) {
+      var li = e.target.closest("li[data-i]");
+      if (li && !li.contains(e.relatedTarget) && fixado < 0) apagarHolofote();
+    });
+    // Clique no item fixa o destaque (útil ao apresentar); clicar de novo solta.
+    // Se a área ainda não existe no estado atual, o clique também leva o celular até
+    // esse estado (o hover não faz isso, para não mudar a tela só de passar o mouse).
+    $("notesBody").addEventListener("click", function (e) {
+      var li = e.target.closest("li[data-i]");
+      if (!li) return;
+      var i = parseInt(li.getAttribute("data-i"), 10);
+      var item = notaAtual.depois[i];
+      document.querySelectorAll("#notesBody li.pinned").forEach(function (x) { x.classList.remove("pinned"); });
+      if (fixado === i) { fixado = -1; apagarHolofote(); restaurarEstado(); return; }
+      if (!item.alvo) return;
+      // Trocar de item fixado: primeiro volta o celular ao estado original, se o item
+      // anterior tinha mudado algo.
+      if (fixado >= 0 && snapshot) { fixado = -1; restaurarEstado(); }
+      fixado = i;
+      li.classList.add("pinned");
+      if (item.ver && !alvosVisiveis(item).length) {
+        guardarEstado();
+        aplicandoVer = true;
+        item.ver();
+        aplicandoVer = false;
+        setTimeout(function () {
+          fixado = i; // a ação pode ter reiniciado o fluxo e recriado a lista de notas
+          var liNovo = document.querySelector('#notesBody li[data-i="' + i + '"]');
+          if (liNovo) liNovo.classList.add("pinned");
+          atualizarVer();
+          acenderHolofote(i);
+        }, 450);
+        return;
+      }
+      acenderHolofote(i);
+    });
+
+    var cenario = { canal: "presencial", tipo0: "cpf", tipo1: "cpf", tipo2: "cpf", avalistas: "1", spf: "sim", aguarde: "sim", parte: "0" };
+    try {
+      var salvo = JSON.parse(localStorage.getItem("bio_remake_cenario") || "null");
+      if (salvo) Object.keys(cenario).forEach(function (k) { if (salvo[k] != null) cenario[k] = String(salvo[k]); });
+    } catch (e) {}
+
+    var st = {};
+    var timers = [];
+    function later(fn, ms) { var t = setTimeout(fn, ms); timers.push(t); return t; }
+    function every(fn, ms) { var t = setInterval(fn, ms); timers.push(t); return t; }
+    function clearTimers() { timers.forEach(function (t) { clearTimeout(t); clearInterval(t); }); timers = []; }
+    function $(id) { return document.getElementById(id); }
+    function isRemoto() { return cenario.canal === "remoto"; }
+    function signer() { return st.signers[st.cur]; }
+    function mmss(s) { return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); }
+
+    // Documento mascarado (D04): mostra só o começo e o fim.
+    function mascara(doc) {
+      if (doc.indexOf("/") !== -1) return doc.slice(0, 2) + ".•••.•••/" + doc.slice(-7);
+      return doc.slice(0, 3) + ".•••.•••-" + doc.slice(-2);
+    }
+    function iniciais(nome) {
+      var p = nome.split(" ").filter(function (w) { return w.length > 2; });
+      return (p[0][0] + (p[1] ? p[1][0] : "")).toUpperCase();
+    }
+    function primeiroNome(nome) {
+      var n = nome.split(" ")[0].toLowerCase();
+      return n.charAt(0).toUpperCase() + n.slice(1);
+    }
+
+    function toast(id, msg) {
+      var t = $(id);
+      t.textContent = msg;
+      t.classList.add("show");
+      clearTimeout(t._h);
+      t._h = setTimeout(function () { t.classList.remove("show"); }, 2600);
+    }
+
+    // ---------- Navegação ----------
+    function show(sectionId, code) {
+      clearTimers();
+      document.querySelectorAll(".scr.active").forEach(function (s) { s.classList.remove("active"); });
+      $(sectionId).classList.add("active");
+      setCode(code);
+    }
+    function setCode(code) {
+      st.code = code;
+      $("simCode").textContent = code;
+      $("simName").textContent = NOMES[code] || "";
+      renderNotas(code);
+      var s = st.signers && st.signers[st.cur];
+      $("simWho").textContent = s ? "Assinando: " + s.papel + " (" + s.tipo.toUpperCase() + ") · " + s.nome : "";
+      var jump = $("simJump");
+      if ([].some.call(jump.options, function (o) { return o.value === code; })) jump.value = code;
+    }
+
+    function start() {
+      // Reiniciar por conta própria (painel) descarta o estado guardado pelas notas.
+      if (!aplicandoVer) snapshot = null;
+      var n = 1 + parseInt(cenario.avalistas, 10);
+      st = { signers: [], cur: 0, tentativas: 0, code: "" };
+      for (var i = 0; i < n; i++) {
+        var t = cenario["tipo" + i], d = PESSOAS[i][t];
+        st.signers.push({
+          papel: PESSOAS[i].papel, fone: PESSOAS[i].fone, tipo: t,
+          nome: d.nome, doc: d.doc, rep: d.rep || null,
+          status: (i > 0 && cenario.aguarde === "sim") ? "aguarde" : "pronto"
+        });
+      }
+      if (isRemoto()) {
+        st.cur = Math.min(parseInt(cenario.parte, 10) || 0, n - 1);
+        openToken();
+      } else {
+        openLista();
+      }
+    }
+
+    // ---------- 000 · Token (D03) ----------
+    var otp = $("otp"), otpInput = $("otpInput");
+    function renderOtp() {
+      var v = otpInput.value;
+      otp.querySelectorAll(".otp-box").forEach(function (b, i) {
+        b.textContent = v[i] || "";
+        b.classList.toggle("filled", !!v[i]);
+        b.classList.toggle("cur", i === Math.min(v.length, 5) && document.activeElement === otpInput);
+      });
+      $("tokenGo").disabled = v.length !== 6;
+    }
+    function setOtpMsg(text, kind) {
+      var m = $("otpMsg");
+      m.textContent = text || "";
+      m.className = "otp-msg" + (kind ? " " + kind : "");
+    }
+    function openToken() {
+      otpInput.value = "";
+      otp.className = "otp";
+      setOtpMsg("");
+      $("tokenPhone").textContent = signer().fone;
+      renderOtp();
+      show("s-token", "000");
+      startResendCountdown();
+      later(function () { otpInput.focus(); renderOtp(); }, 150);
+    }
+    function startResendCountdown() {
+      var left = REENVIO_S, btn = $("resendBtn");
+      btn.disabled = true;
+      btn.textContent = "Reenviar em " + mmss(left);
+      clearInterval(st.resendTimer);
+      st.resendTimer = setInterval(function () {
+        left--;
+        if (left <= 0) { clearInterval(st.resendTimer); btn.disabled = false; btn.textContent = "Reenviar código"; }
+        else btn.textContent = "Reenviar em " + mmss(left);
+      }, 1000);
+    }
+    otp.addEventListener("click", function () { otpInput.focus(); });
+    otpInput.addEventListener("focus", function () { otp.classList.add("focus"); renderOtp(); });
+    otpInput.addEventListener("blur", function () { otp.classList.remove("focus"); renderOtp(); });
+    otpInput.addEventListener("input", function () {
+      otpInput.value = otpInput.value.replace(/\D/g, "").slice(0, 6);
+      if (otp.classList.contains("err")) { otp.classList.remove("err"); setOtpMsg(""); setCode("000"); }
+      renderOtp();
+    });
+    otpInput.addEventListener("keydown", function (e) { if (e.key === "Enter" && otpInput.value.length === 6) checkToken(); });
+    $("tokenGo").addEventListener("click", checkToken);
+
+    function checkToken() {
+      var v = otpInput.value;
+      if (v.length !== 6) return;
+      if (v === VALID_TOKEN) {
+        otp.className = "otp ok";
+        setOtpMsg("Código confirmado.", "ok");
+        setCode("000-OK");
+        $("tokenGo").disabled = true;
+        st.tentativas = 0;
+        clearInterval(st.resendTimer);
+        return later(openWelcome, 700);
+      }
+      st.tentativas++;
+      var restam = MAX_TENTATIVAS - st.tentativas;
+      if (restam <= 0) return openLock();
+      otp.className = "otp err";
+      void otp.offsetWidth;
+      otp.classList.add("shake");
+      setOtpMsg("Código incorreto. Confira o SMS e tente de novo. " + (restam === 1 ? "Resta 1 tentativa." : "Restam " + restam + " tentativas."), "err");
+      otpInput.value = "";
+      renderOtp();
+      otpInput.focus();
+      setCode("000-E");
+    }
+    $("resendBtn").addEventListener("click", function () {
+      toast("toast", "Código reenviado para " + signer().fone);
+      startResendCountdown();
+    });
+    $("howBtn").addEventListener("click", function () { openVideo("token"); });
+
+    // ---------- 000-B · Bloqueio ----------
+    function openLock() {
+      clearInterval(st.resendTimer);
+      show("s-lock", "000-B");
+      var left = BLOQUEIO_S;
+      $("lockTimer").textContent = mmss(left);
+      every(function () {
+        left--;
+        $("lockTimer").textContent = mmss(Math.max(left, 0));
+        if (left <= 0) unlock(false);
+      }, 1000);
+    }
+    function unlock(novoCodigo) {
+      st.tentativas = 0;
+      openToken();
+      if (novoCodigo) toast("toast", "Novo código enviado para " + signer().fone);
+    }
+    $("lockNew").addEventListener("click", function () { unlock(true); });
+
+    // ---------- 000-V · Vídeo ----------
+    function openVideo(origem) {
+      st.videoFrom = origem;
+      $("videoBar").style.transition = "none";
+      $("videoBar").style.width = "0";
+      $("videoPlay").style.display = "";
+      show("s-video", "000-V");
+    }
+    $("videoBox").addEventListener("click", function () {
+      $("videoPlay").style.display = "none";
+      var bar = $("videoBar");
+      bar.style.transition = "none"; bar.style.width = "0";
+      requestAnimationFrame(function () { bar.style.transition = "width 12s linear"; bar.style.width = "100%"; });
+    });
+    // O vídeo só existe no acesso remoto, a partir do token (000).
+    function closeVideo() { openToken(); }
+    $("videoOk").addEventListener("click", closeVideo);
+    $("videoBack").addEventListener("click", closeVideo);
+
+    // ---------- 001 · Assinaturas da proposta (D04) ----------
+    function openLista(flashIdx) {
+      renderLista(flashIdx);
+      var algumAguarde = st.signers.some(function (s) { return s.status === "aguarde"; });
+      var todas = st.signers.every(function (s) { return s.status === "concluido"; });
+      show("s-lista", todas ? "001-C" : (algumAguarde ? "001-A" : "001"));
+      // Atualização automática a cada 15 s (D04); o contador "Atualizado há X s" corre a cada segundo.
+      st.lastRefresh = Date.now();
+      every(function () {
+        var s = Math.round((Date.now() - st.lastRefresh) / 1000);
+        $("refreshText").textContent = s < 3 ? "Atualizado agora" : "Atualizado há " + s + " s";
+        if (s >= AUTO_REFRESH_S) refreshLista();
+      }, 1000);
+    }
+    function renderLista(flashIdx) {
+      var total = st.signers.length;
+      var feitas = st.signers.filter(function (s) { return s.status === "concluido"; }).length;
+      $("progText").innerHTML = "<b>" + feitas + " de " + total + "</b> " + (total === 1 ? "assinatura concluída" : "assinaturas concluídas");
+      $("progBar").style.width = (feitas / total * 100) + "%";
+      $("allDone").hidden = feitas !== total;
+      $("listaSub").textContent = feitas === total
+        ? "Todas as pessoas desta proposta já assinaram."
+        : "Cada pessoa assina por vez, neste aparelho. Toque em \"Iniciar\" na pessoa que vai assinar agora.";
+      $("refreshRow").hidden = feitas === total;
+      var box = $("sigCards");
+      box.innerHTML = "";
+      st.signers.forEach(function (s, i) {
+        var card = document.createElement("div");
+        card.className = "sig-card" + (i === flashIdx ? " flash" : "");
+        var pill, acao = "", foot = "";
+        if (s.status === "pronto") {
+          pill = '<span class="pill ready"><svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#D6001C"/></svg>Pronto para assinar</span>';
+          // Botão na mesma linha do status, alinhado à direita.
+          acao = '<button type="button" class="rk-btn sm" data-start="' + i + '">Iniciar</button>';
+        } else if (s.status === "aguarde") {
+          pill = '<span class="pill wait"><span class="mini-spin"></span>Aguardando liberação</span>';
+          foot = '<div class="sig-hint">A proposta está sendo processada para esta assinatura. Isso leva alguns minutos e a lista atualiza sozinha.</div>';
+        } else {
+          pill = '<span class="pill done"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#1e8e3e" stroke-width="3.2"><path d="M5 12.5l4.5 4.5L19 7"/></svg>Concluído</span>';
+        }
+        card.innerHTML =
+          '<div class="sig-head"><span class="avatar' + (s.tipo === "cnpj" ? " pj" : "") + '">' + iniciais(s.nome) + "</span>" +
+          '<span class="sig-id"><span class="sig-name" style="display:block">' + s.nome + "</span>" +
+          '<span class="sig-meta" style="display:block">' + s.papel + " · " + s.tipo.toUpperCase() + " " + mascara(s.doc) + "</span></span></div>" +
+          '<div class="sig-foot">' + pill + acao + "</div>" + foot;
+        box.appendChild(card);
+      });
+    }
+    // Simula a sincronização do banco de propostas: quem estava aguardando é liberado (R04).
+    function refreshLista() {
+      st.lastRefresh = Date.now();
+      $("refreshText").textContent = "Atualizado agora";
+      var liberado = -1;
+      st.signers.forEach(function (s, i) { if (s.status === "aguarde") { s.status = "pronto"; if (liberado < 0) liberado = i; } });
+      renderLista(liberado);
+      if (liberado >= 0) {
+        toast("toastLista", st.signers[liberado].papel + " liberado para assinar");
+        setCode("001");
+      }
+    }
+    $("refreshBtn").addEventListener("click", refreshLista);
+    $("sigCards").addEventListener("click", function (e) {
+      var b = e.target.closest("[data-start]");
+      if (!b) return;
+      st.cur = parseInt(b.getAttribute("data-start"), 10);
+      openWelcome();
+    });
+
+    // ---------- BV · Boas-vindas (D05) ----------
+    function openWelcome() {
+      var s = signer();
+      var pessoa = s.tipo === "cnpj" ? s.rep : s.nome;
+      // Sem título: o card logo abaixo já diz quem está assinando e de qual proposta.
+      $("wEyebrow").textContent = isRemoto() ? "Olá, " + primeiroNome(pessoa) + "!" : s.papel;
+      $("wWhoLabel").textContent = s.tipo === "cnpj" ? "Assinando em nome da empresa" : "Assinando como " + s.papel.toLowerCase();
+      $("wWho").textContent = s.nome;
+      $("wPj").hidden = s.tipo !== "cnpj";
+      $("wPjText").innerHTML = "Como a assinatura é em nome de uma empresa, a selfie e o documento são do <b>representante legal</b> (" + pessoa + ").";
+      // Etapas: sem rubrica (D01); termo do SPF só para o proponente que contratou (R06).
+      var etapas = [["Selfie", "1 min"], ["Documento de identificação", "2 min"], ["Autorizações e contrato", "2 min"]];
+      var comSpf = st.cur === 0 && cenario.spf === "sim";
+      if (comSpf) etapas.push(["Termo do Seguro Proteção Financeira", "1 min"]);
+      etapas.push(["Avaliação", "opcional"]);
+      $("wSteps").innerHTML = etapas.map(function (e, i) {
+        return '<li><span class="n">' + (i + 1) + '</span><span class="t">' + e[0] + '</span><span class="m">' + e[1] + "</span></li>";
+      }).join("");
+      $("wTime").textContent = "Cerca de " + (comSpf ? 6 : 5) + " minutos no total";
+      $("welcomeBack").hidden = isRemoto();
+      show("s-welcome", "BV");
+    }
+    $("welcomeBack").addEventListener("click", function () { openLista(); });
+    $("welcomeGo").addEventListener("click", function () { show("s-next", "PRÓX"); });
+
+    // ---------- Próximas etapas (placeholder) ----------
+    $("nextDone").addEventListener("click", function () {
+      if (isRemoto()) { start(); return; }
+      signer().status = "concluido";
+      openLista();
+    });
+    $("nextRestart").addEventListener("click", start);
+
+    // ================================================================
+    // Painel de simulação
+    // ================================================================
+    function salvarCenario() {
+      try { localStorage.setItem("bio_remake_cenario", JSON.stringify(cenario)); } catch (e) {}
+    }
+    function pintarPainel() {
+      document.querySelectorAll(".seg[data-key]").forEach(function (seg) {
+        var key = seg.getAttribute("data-key");
+        seg.querySelectorAll("button").forEach(function (b) {
+          b.classList.toggle("sel", b.getAttribute("data-v") === cenario[key]);
+        });
+      });
+      var remoto = isRemoto(), temAval = cenario.avalistas !== "0";
+      $("fieldAguarde").style.display = (!remoto && temAval) ? "" : "none";
+      $("fieldParte").style.display = (remoto && temAval) ? "" : "none";
+      $("tokenHint").style.display = remoto ? "" : "none";
+      $("listHint").style.display = (!remoto && temAval) ? "" : "none";
+      document.querySelectorAll("[data-tipo-row]").forEach(function (row) {
+        row.style.display = parseInt(row.getAttribute("data-tipo-row"), 10) <= parseInt(cenario.avalistas, 10) ? "" : "none";
+      });
+      var sel = $("simParte");
+      sel.innerHTML = "";
+      for (var i = 0; i <= parseInt(cenario.avalistas, 10); i++) {
+        var o = document.createElement("option");
+        o.value = String(i);
+        o.textContent = PESSOAS[i].papel;
+        sel.appendChild(o);
+      }
+      if (parseInt(cenario.parte, 10) > parseInt(cenario.avalistas, 10)) cenario.parte = "0";
+      sel.value = cenario.parte;
+    }
+    document.querySelectorAll(".seg[data-key]").forEach(function (seg) {
+      seg.addEventListener("click", function (e) {
+        var b = e.target.closest("button");
+        if (!b) return;
+        cenario[seg.getAttribute("data-key")] = b.getAttribute("data-v");
+        salvarCenario(); pintarPainel(); start();
+      });
+    });
+    $("simParte").addEventListener("change", function () { cenario.parte = this.value; salvarCenario(); start(); });
+    $("simRestart").addEventListener("click", start);
+    $("simToggle").addEventListener("click", function () { $("sim").classList.toggle("open"); });
+    // Simula o preenchimento automático do código vindo do SMS (autocomplete="one-time-code").
+    $("simSms").addEventListener("click", function () {
+      if (st.code === "000-B") unlock(false);
+      if (!$("s-token").classList.contains("active")) return;
+      otpInput.value = VALID_TOKEN;
+      otp.classList.remove("err");
+      setOtpMsg("");
+      renderOtp();
+      setCode("000");
+    });
+    $("simUnlock").addEventListener("click", function () { if (st.code === "000-B") unlock(false); });
+
+    function forcarCanal(canal) {
+      if (cenario.canal === canal) return;
+      cenario.canal = canal; salvarCenario(); pintarPainel(); start();
+    }
+    var ATALHOS = [
+      ["000", "000 · Token", function () { forcarCanal("remoto"); openToken(); }],
+      ["000-E", "000-E · Token: código incorreto", function () { forcarCanal("remoto"); openToken(); otpInput.value = "111111"; checkToken(); }],
+      ["000-B", "000-B · Token: bloqueado", function () { forcarCanal("remoto"); openLock(); }],
+      ["000-V", "000-V · Vídeo \"Como funciona\"", function () { openVideo("token"); }],
+      ["001", "001 · Assinaturas da proposta", function () { forcarCanal("presencial"); openLista(); }],
+      ["001-C", "001-C · Assinaturas: todas concluídas", function () {
+        forcarCanal("presencial"); st.signers.forEach(function (s) { s.status = "concluido"; }); openLista();
+      }],
+      ["BV", "BV · Boas-vindas", openWelcome]
+    ];
+    (function montarAtalhos() {
+      var sel = $("simJump");
+      var o0 = document.createElement("option");
+      o0.value = ""; o0.textContent = "Escolha uma tela…";
+      sel.appendChild(o0);
+      ATALHOS.forEach(function (a) {
+        var o = document.createElement("option");
+        o.value = a[0]; o.textContent = a[1];
+        sel.appendChild(o);
+      });
+      sel.addEventListener("change", function () {
+        var a = ATALHOS.filter(function (x) { return x[0] === sel.value; })[0];
+        snapshot = null;
+        if (a) a[2]();
+      });
+    })();
+
+    // ================================================================
+    // Escala do aparelho e relógio
+    // ================================================================
+    var stage = $("stage"), phone = $("phone"), slot = $("phoneSlot");
     function fitPhone() {
       if (window.innerWidth <= 500) { slot.style.width = ""; slot.style.height = ""; return; }
       var w = phone.offsetWidth, h = phone.offsetHeight;
@@ -214,15 +1462,18 @@
       slot.style.height = (h * scale) + "px";
     }
     window.addEventListener("resize", fitPhone);
-    fitPhone();
 
     // Relógio da barra de status com a hora real do computador (só estético).
     function tickClock() {
       var d = new Date();
-      document.getElementById("clock").textContent = d.getHours() + ":" + String(d.getMinutes()).padStart(2, "0");
+      $("clock").textContent = d.getHours() + ":" + String(d.getMinutes()).padStart(2, "0");
     }
     tickClock();
     setInterval(tickClock, 10000);
+
+    pintarPainel();
+    fitPhone();
+    start();
   </script>
 
 </body>

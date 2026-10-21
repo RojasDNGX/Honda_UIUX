@@ -245,6 +245,70 @@ Modelo por regra:
 **Impacto no remake:** <obrigatória (legal/segurança/integração) | ajustável | oportunidade de melhoria> — <comentário>
 -->
 
+## Decisões para o remake
+
+> Decisões do usuário, tomadas a partir do [FEEDBACK.md](FEEDBACK.md). Valem **só para o remake** (`biometria-remake.html`); a réplica do fluxo atual continua igual.
+
+### D01 — Retirar a rubrica
+A rubrica (016 e 016-5) **sai do remake**, também no presencial e no SPF.
+**Motivo:** ela não precisa ser igual a nenhuma assinatura oficial de documento de identidade, e a selfie e a captura do documento já garantem a identificação. Era a crítica nº 1 do feedback (73 menções, 33%) e já não era obrigatória no fluxo atual (R09).
+**Efeito no fluxo:** depois do aceite dos termos vem a próxima etapa direto (SPF, se houver, ou a avaliação). A R05 (rubrica só no presencial) deixa de valer no remake.
+
+### D02 — Contrato em texto, com aceite liberado ao fim da rolagem
+- **Ordem mantida:** o contrato continua no mesmo ponto do fluxo, **depois** da biometria e do documento. A ideia de ler antes não será adotada.
+- **Formato novo:** o contrato deixa de ser um PDF num visualizador pequeno e passa a ser **reescrito como texto** legível no celular, no estilo dos termos de instalação de jogos e aplicativos.
+- **Aceite:** o botão **"Aceito"** só fica liberado para toque depois que a pessoa **rolar o texto até o fim**.
+
+**Motivo:** a leitura do contrato foi a crítica nº 2 (41 menções, 18%): letras pequenas e falta de zoom.
+**A definir no desenvolvimento:**
+- como mostrar os dois documentos (Proposta e Orçamento CDC) e o termo do SPF;
+- se o resumo dos valores principais fica no topo.
+
+### D03 — Entrada remota (000): token mais claro e seguro
+- **Campo de 6 casas**, com teclado numérico e preenchimento automático do código do SMS. "Continuar" só libera com os 6 dígitos, então o erro "token incompleto" (000-2) deixa de existir.
+- A tela mostra **para onde o código foi enviado** (telefone mascarado), com **"Reenviar código"** liberado depois de 30 s.
+- **Limite de 5 tentativas.** A cada erro, a tela mostra quantas restam. Na 5ª, o acesso fica **bloqueado por 5 minutos**, com a opção de **solicitar um novo código** na hora, o que zera as tentativas.
+- O vídeo tutorial continua, agora como "Ver como funciona".
+
+### D04 — Lista de assinantes (001, presencial): cards com status claro
+- **Um card por parte**, com nome, papel, documento **mascarado** e um selo de status: **Pronto para assinar** (com o botão "Iniciar"), **Aguardando liberação** (com explicação) ou **Concluído ✓**.
+- **Progresso no topo** ("1 de 2 assinaturas concluídas").
+- **Atualização automática a cada 15 s**, com o botão manual como reserva e destaque no card que acabou de ser liberado.
+
+### D05 — Tela de boas-vindas antes da selfie (nos dois canais)
+Depois do token (remoto) ou do "Iniciar" (presencial), uma tela mostra:
+- **quem está assinando**: nome, papel e, para CNPJ, a empresa em nome da qual o representante assina (R12);
+- **a proposta** de que se trata;
+- **as etapas do processo** com o tempo estimado (o termo do SPF só aparece para o proponente com SPF);
+- o que ter em mãos.
+
+**Motivo:** críticas de processo longo e burocrático e de falta de explicação (FEEDBACK.md, temas 6 e 9).
+
+## Cenários futuros (só para conhecimento)
+
+> Ainda **não entram** na réplica nem no remake. Ficam registrados para quando o usuário pedir.
+
+### F01 — Menor Conduz: assinatura de 1 ou mais avalistas
+Fonte: história do P.O. da Plataforma F&I e de Formalização (print enviado pelo usuário).
+
+- **Objetivo:** incluir e habilitar a assinatura digital de 1 ou mais avalistas na proposta, para formalizar conforme as regras do negócio (Menor Conduz, Tutela/Curatela) e evitar retrabalho e pendências.
+- **Regras de alto nível:**
+  - **Menor Conduz** → mínimo de **1 avalista obrigatório**.
+  - **Possui Tutela/Curatela** → mínimo de **2 responsáveis obrigatórios**.
+- **Etapas impactadas** (na abertura da proposta): Subtipo → Ficha Proposta → Pré-análise → Simulador → Dados do Cliente → **novo campo TUTELA** → Dados do Avalista → **Incluir Novo Avalista** → Formalização → Documentos Obrigatórios.
+- **Documentos:** laudo médico (quando aplicável), documento do proponente, documento do avalista 1/2, termo de tutela/curatela (se houver), comprovante de endereço, comprovante de óbito (se houver).
+- **Valor de negócio:** reduz reprovação por ausência de responsáveis, garante conformidade regulatória e acelera o TTF (Time-to-Formalize).
+
+**Proposta técnica "Fluxo 1"** (anotação do time; mantém a estrutura de hoje):
+- Assinatura do proponente: aceite da captura da selfie → captura da selfie → envio do documento → aceite dos opt-ins → aceite dos termos → rubrica.
+- Passos necessários:
+  - **ignorar a selfie do proponente** na assinatura dos documentos no Ábaris;
+  - armazenar a selfie e o documento de identidade do **avalista 2**;
+  - assinatura da **Ficha Aval 2**;
+  - ajustar o retorno dos documentos assinados pelo serviço **EnviaDocsAss**.
+
+**Relação com o que já está mapeado:** o fluxo de cada avalista é o mesmo do proponente (R03), e a réplica já simula até 2 avalistas. O que muda no Menor Conduz é a **obrigatoriedade** (mínimo de avalistas/responsáveis) e o tratamento da selfie do proponente, que é ignorada na assinatura.
+
 ## Pontos em aberto
 
 > As dúvidas se acumulam aqui e o usuário responde **todas de uma vez**, quando terminar de enviar os prints. Até lá, a réplica segue o que aparece nos prints. A cada novo lote de prints (sobretudo ramificações `-1`, `-2`…), as dúvidas que os próprios prints já respondem são riscadas e indicam qual print as respondeu.
@@ -252,6 +316,7 @@ Modelo por regra:
 ### Dúvidas abertas
 
 18. **011-1 (ordem invertida):** o aviso genérico de baixa qualidade tem botão para tentar de novo, ou o processo trava ali? _(O usuário vai verificar; na réplica, sem retorno.)_
+19. **Feedback dos usuários:** a planilha se chama "assinatura_remota", mas 73 comentários criticam a rubrica, que pela R05 só existe no presencial. "Assinatura Remota" é o nome do produto (como no menu do Painel KTA) e a planilha inclui avaliações dos dois canais? _(Ver FEEDBACK.md.)_
 
 ### Prints prometidos pelo usuário
 
