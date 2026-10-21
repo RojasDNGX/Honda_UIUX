@@ -81,20 +81,22 @@
     50% { text-shadow: 0 0 26px rgba(255,255,255,0.6); }
   }
 
+  /* Grade de 4 cards lado a lado; em telas mais estreitas vira 2x2. */
   .links {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: flex-start;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    align-items: start;
     gap: 20px;
-    width: 980px;
-    max-width: 94vw;
+    width: 1240px;
+    max-width: 96vw;
     opacity: 0;
     animation: riseIn 0.6s ease 0.32s forwards;
   }
+  @media (max-width: 1180px) {
+    .links { grid-template-columns: repeat(2, 1fr); width: 680px; }
+  }
   .link-item {
-    flex: 1 1 280px;
+    min-width: 0;
     display: flex;
   }
 
@@ -126,8 +128,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 16px 24px;
-    font-size: 17px;
+    padding: 16px 16px;
+    font-size: 16px;
     font-weight: 600;
     white-space: nowrap;
   }
@@ -162,6 +164,7 @@
   }
   .link-item:nth-child(2) .nav-button::before { animation-delay: 1.4s; }
   .link-item:nth-child(3) .nav-button::before { animation-delay: 2.8s; }
+  .link-item:nth-child(4) .nav-button::before { animation-delay: 4.2s; }
   @keyframes shineSweep {
     0%, 35% { left: -60%; }
     55%, 100% { left: 130%; }
@@ -200,6 +203,7 @@
   .nav-icon svg { width: 20px; height: 14px; flex-shrink: 0; display: block; }
   .nav-icon-grid svg { width: 17px; height: 17px; }
   .nav-icon-doc svg { width: 15px; height: 18px; }
+  .nav-icon-face svg { width: 18px; height: 18px; }
   .link-item:hover .nav-icon {
     width: 22px;
     opacity: 1;
@@ -303,6 +307,33 @@
               </svg>
             </span>
             <span>Painel KTA</span>
+          </span>
+          <span class="nav-button-details">
+            <ul class="tooltip-list">
+              <li>Em construção: melhoria do fluxo e do visual do painel e de todas as suas telas;</li>
+              <li>Propostas baseadas em otimização e melhorias de UX.</li>
+            </ul>
+          </span>
+        </div>
+      </div>
+      <div class="link-item">
+        <div class="nav-button" data-href="BiometriaAssDigital/biometria-atual.html" role="link" tabindex="0">
+          <span class="nav-button-label">
+            <span class="nav-icon nav-icon-face">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+                <path d="M3 8V5a2 2 0 0 1 2-2h3M16 3h3a2 2 0 0 1 2 2v3M21 16v3a2 2 0 0 1-2 2h-3M8 21H5a2 2 0 0 1-2-2v-3"/>
+                <path d="M9 9.5v1M15 9.5v1M12 9.5v3.5h-1M9 16c1.7 1.3 4.3 1.3 6 0"/>
+              </svg>
+            </span>
+            <span>Biometria / Ass.Digital</span>
+          </span>
+          <span class="nav-button-details">
+            <ul class="tooltip-list">
+              <li>Réplica navegável do fluxo atual de biometria facial e assinatura digital, em formato mobile;</li>
+              <li>Mapeamento das regras de negócio, ramificações e falhas conhecidas do processo;</li>
+              <li>Painel de simulação de cenários: presencial ou remoto, avalistas, SPF e falhas de captura;</li>
+              <li>Fluxo remodelado com melhorias de UX em andamento.</li>
+            </ul>
           </span>
         </div>
       </div>

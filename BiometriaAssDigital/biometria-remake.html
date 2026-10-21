@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Biometria / Ass. Digital - Fluxo remodelado</title>
+<style>
+  :root {
+    --red: #D6001C;
+    --text-dark: #1a1a1a;
+    --text-gray-light: #9a9a9a;
+    --border-light: #cfcfcf;
+    --phone-w: 390px;
+    --phone-h: 844px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, Arial, Helvetica, sans-serif;
+    font-size: 15px;
+    color: var(--text-dark);
+    background: #f1f1f1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* Seletor de versão (atual x remodelado): no topo da 3ª coluna do palco,
+     na mesma posição da página do fluxo atual. */
+  .version-switch {
+    justify-self: end;
+    align-self: start;
+    margin: 15px 15px 0 0;
+    display: flex;
+    gap: 6px;
+  }
+  .version-tag {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--red);
+    background: #fff;
+    border: 1px solid rgba(214, 0, 28, 0.25);
+    border-radius: 999px;
+    padding: 5px 12px;
+    white-space: nowrap;
+    text-decoration: none;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+  a.version-tag:hover { background: rgba(214, 0, 28, 0.08); }
+  .version-tag.active { background: var(--red); border-color: var(--red); color: #fff; }
+
+  /* Palco em 3 colunas (33% / 34% / 33%), igual ao fluxo atual: 1ª coluna reservada
+     (painel de simulação), "celular" no meio e seletor de versão à direita. O aparelho
+     tem tamanho fixo (390x844) e é escalado via JS para caber na coluna do meio. */
+  .stage {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: 33% 34% 33%;
+    grid-template-rows: minmax(0, 1fr);
+    align-items: center;
+    overflow: hidden;
+  }
+  .phone-slot { justify-self: center; position: relative; }
+  .phone {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: calc(var(--phone-w) + 24px);
+    height: calc(var(--phone-h) + 24px);
+    padding: 12px;
+    border-radius: 56px;
+    background: #111;
+    box-shadow: 0 0 0 2px #2c2c2c, 0 24px 60px rgba(0,0,0,0.28);
+    transform-origin: top left;
+  }
+  .screen {
+    position: relative;
+    width: var(--phone-w);
+    height: var(--phone-h);
+    border-radius: 44px;
+    overflow: hidden;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+  }
+  .notch {
+    position: absolute;
+    top: 11px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 122px;
+    height: 34px;
+    border-radius: 20px;
+    background: #111;
+    z-index: 5;
+  }
+  .status-bar {
+    flex: 0 0 54px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 30px 0 34px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #111;
+  }
+  .status-icons { display: flex; align-items: center; gap: 6px; }
+  .home-indicator {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 134px;
+    height: 5px;
+    border-radius: 3px;
+    background: #111;
+    z-index: 5;
+  }
+
+  /* Área útil onde as telas do fluxo serão renderizadas. */
+  .screen-content {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 0 0 26px 0;
+  }
+
+  .blank-area {
+    margin: 24px 20px;
+    border: 2px dashed var(--border-light);
+    border-radius: 12px;
+    min-height: 600px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-gray-light);
+    font-size: 15px;
+    text-align: center;
+    padding: 24px;
+  }
+
+  /* Em um celular de verdade, a tela do fluxo ocupa a viewport inteira, sem moldura. */
+  @media (max-width: 500px) {
+    .version-switch { display: none; }
+    .stage { display: block; }
+    .stage-col { display: none; }
+    .phone-slot { width: 100% !important; height: 100% !important; }
+    .phone {
+      position: static;
+      width: 100%;
+      height: 100%;
+      padding: 0;
+      border-radius: 0;
+      box-shadow: none;
+      transform: none !important;
+    }
+    .screen { width: 100%; height: 100%; border-radius: 0; }
+    .notch, .status-bar, .home-indicator { display: none; }
+  }
+  @media (max-width: 1000px) and (min-width: 501px) {
+    .stage { display: flex; align-items: center; justify-content: center; }
+    .stage-col { display: none; }
+    .version-switch { position: fixed; top: 14px; right: 16px; margin: 0; z-index: 10; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="stage" id="stage">
+    <div class="stage-col"></div>
+
+    <div class="phone-slot" id="phoneSlot">
+    <div class="phone" id="phone">
+      <div class="screen">
+        <div class="notch"></div>
+        <div class="status-bar">
+          <span>9:41</span>
+          <span class="status-icons">
+            <svg width="18" height="12" viewBox="0 0 18 12" fill="#111"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
+            <svg width="16" height="12" viewBox="0 0 16 12" fill="#111"><path d="M8 2.2c2.4 0 4.6.9 6.2 2.5l1.3-1.3A10.6 10.6 0 0 0 8 .4 10.6 10.6 0 0 0 .5 3.4l1.3 1.3A8.8 8.8 0 0 1 8 2.2zm0 3.6c1.4 0 2.7.5 3.7 1.5L13 6A7 7 0 0 0 8 4a7 7 0 0 0-5 2l1.3 1.3c1-1 2.3-1.5 3.7-1.5zM8 9.4l-2.4 2.4L8 12l2.4-2.2z"/></svg>
+            <svg width="27" height="13" viewBox="0 0 27 13"><rect x="0.5" y="0.5" width="23" height="12" rx="3.5" fill="none" stroke="#111" opacity="0.4"/><rect x="2" y="2" width="20" height="9" rx="2" fill="#111"/><path d="M25 4.5v4c.8-.3 1.3-1.1 1.3-2s-.5-1.7-1.3-2z" fill="#111" opacity="0.4"/></svg>
+          </span>
+        </div>
+
+        <div class="screen-content" id="screenContent">
+          <div class="blank-area">Fluxo remodelado de Biometria / Assinatura Digital — a ser construído com as melhorias.</div>
+        </div>
+
+        <div class="home-indicator"></div>
+      </div>
+    </div>
+    </div>
+
+    <nav class="version-switch">
+      <a class="version-tag" href="biometria-atual.html">Fluxo atual</a>
+      <span class="version-tag active">Fluxo remodelado</span>
+    </nav>
+  </div>
+
+  <script>
+    // Escala o aparelho para caber inteiro na coluna do meio (sem nunca ampliar
+    // além do tamanho real), mantendo as telas desenhadas em 390x844 px.
+    var stage = document.getElementById("stage");
+    var phone = document.getElementById("phone");
+    var slot = document.getElementById("phoneSlot");
+    function fitPhone() {
+      if (window.innerWidth <= 500) { slot.style.width = ""; slot.style.height = ""; return; }
+      var w = phone.offsetWidth, h = phone.offsetHeight;
+      var colW = window.innerWidth > 1000 ? stage.clientWidth * 0.34 : stage.clientWidth;
+      var scale = Math.min(1, (stage.clientHeight - 32) / h, (colW - 32) / w);
+      phone.style.transform = "scale(" + scale + ")";
+      slot.style.width = (w * scale) + "px";
+      slot.style.height = (h * scale) + "px";
+    }
+    window.addEventListener("resize", fitPhone);
+    fitPhone();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,2025 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Biometria / Ass. Digital - Fluxo atual</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #D6001C;
+    --text-dark: #1a1a1a;
+    --phone-w: 390px;
+    --phone-h: 844px;
+
+    /* Paleta das telas "Honda" (Bootstrap) e do componente de captura, medida nos prints. */
+    --hp-bg: #ececec;
+    --hp-text: #212529;
+    --hp-red: #dc3545;
+    --hp-blue: #0d6efd;
+    --hp-blue-off: #6ea8fe;
+    --cp-red: #da1a2a;
+    --cp-text: #3a3a3a;
+    --cam-green: #1db262;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  [hidden] { display: none !important; }
+  html, body { height: 100%; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, Arial, Helvetica, sans-serif;
+    font-size: 15px;
+    color: var(--text-dark);
+    background: #f1f1f1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  button { font-family: inherit; }
+
+  /* Seletor de versão (atual x remodelado): no topo da 3ª coluna do palco. */
+  .version-switch {
+    justify-self: end;
+    align-self: start;
+    margin: 15px 15px 0 0;
+    display: flex;
+    gap: 6px;
+  }
+  .version-tag {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--red);
+    background: #fff;
+    border: 1px solid rgba(214, 0, 28, 0.25);
+    border-radius: 999px;
+    padding: 5px 12px;
+    white-space: nowrap;
+    text-decoration: none;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+  a.version-tag:hover { background: rgba(214, 0, 28, 0.08); }
+  .version-tag.active { background: var(--red); border-color: var(--red); color: #fff; }
+
+  /* Palco em 3 colunas (33% / 34% / 33%): painel de simulação, "celular" e seletor de versão.
+     O aparelho tem tamanho fixo de um smartphone em retrato (390x844) e é escalado via JS
+     para caber na coluna do meio. */
+  .stage {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: 33% 34% 33%;
+    grid-template-rows: minmax(0, 1fr);
+    align-items: center;
+    overflow: hidden;
+  }
+  .phone-slot { justify-self: center; position: relative; }
+  .phone {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: calc(var(--phone-w) + 24px);
+    height: calc(var(--phone-h) + 24px);
+    padding: 12px;
+    border-radius: 56px;
+    background: #111;
+    box-shadow: 0 0 0 2px #2c2c2c, 0 24px 60px rgba(0,0,0,0.28);
+    transform-origin: top left;
+  }
+  .screen {
+    position: relative;
+    width: var(--phone-w);
+    height: var(--phone-h);
+    border-radius: 44px;
+    overflow: hidden;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+  }
+  .notch {
+    position: absolute;
+    top: 11px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 122px;
+    height: 34px;
+    border-radius: 20px;
+    background: #111;
+    z-index: 60;
+  }
+  .status-bar {
+    flex: 0 0 54px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 30px 0 34px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #111;
+    background: #fff;
+  }
+  .status-icons { display: flex; align-items: center; gap: 6px; }
+  .home-indicator {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 134px;
+    height: 5px;
+    border-radius: 3px;
+    background: #111;
+    z-index: 60;
+  }
+
+  /* Área útil onde as telas do fluxo são renderizadas: cada tela é uma <section class="scr">. */
+  /* A faixa inferior de 22px fica livre para a barra de gestos do aparelho. */
+  .screen-content {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    background: #fff;
+    font-family: Roboto, "Segoe UI", Arial, sans-serif;
+  }
+  .scr {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 22px;
+    display: none;
+    flex-direction: column;
+    background: #fff;
+  }
+  .scr.active { display: flex; animation: scrIn 0.18s ease; }
+  @keyframes scrIn { from { opacity: 0; } to { opacity: 1; } }
+  .scr-body { flex: 1; min-height: 0; overflow-y: auto; position: relative; }
+
+  .app-footer {
+    flex: 0 0 26px;
+    line-height: 26px;
+    text-align: center;
+    font-size: 10.5px;
+    color: #222;
+    background: #f3f3f5;
+    padding-bottom: 0;
+  }
+
+  /* ===== Telas "Honda" (Bootstrap): cabeçalho com logo, fundo cinza, botões retos ===== */
+  .hp { background: var(--hp-bg); color: var(--hp-text); }
+  .hp-header {
+    flex: 0 0 60px;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .hp-logo {
+    font-family: "Times New Roman", Georgia, serif;
+    font-weight: 900;
+    font-size: 22px;
+    line-height: 1;
+    letter-spacing: 0.4px;
+    color: #e2001a;
+    -webkit-text-stroke: 0.6px #e2001a;
+    transform: scaleX(1.32);
+  }
+  .hp-logo-sub {
+    margin-top: 3px;
+    font-family: Verdana, Tahoma, sans-serif;
+    font-size: 12px;
+    color: #6b6b6b;
+    letter-spacing: 0.2px;
+  }
+  .hp .scr-body { padding: 8px 11px 18px 11px; }
+  .hp-title { font-size: 20.5px; font-weight: 500; line-height: 1.2; margin: 2px 0 14px 0; }
+  .hp-title.center { text-align: center; }
+  .hp-text { font-size: 15px; line-height: 1.5; }
+  .hp-text.center { text-align: center; }
+  .hp-error { color: var(--hp-red); font-size: 15px; margin: -4px 0 14px 18px; }
+  .hp-error li { padding-left: 2px; }
+  .hp-center { text-align: center; }
+
+  .hbtn {
+    display: inline-block;
+    border: none;
+    border-radius: 4px;
+    background: var(--hp-red);
+    color: #fff;
+    font-size: 15px;
+    line-height: 1.5;
+    padding: 6px 12px;
+    cursor: pointer;
+  }
+  .hbtn:hover { background: #bb2d3b; }
+  .hbtn:disabled { opacity: 0.65; cursor: default; background: var(--hp-red); }
+  .hbtn.lg { padding: 7px 16px; }
+  .hbtn.blue { background: var(--hp-blue); font-size: 17px; padding: 7px 13px; border-radius: 5px; }
+  .hbtn.blue:hover { background: #0b5ed7; }
+  .hbtn.blue:disabled { background: var(--hp-blue-off); opacity: 1; }
+  .hbtn.outline-blue {
+    background: transparent;
+    color: var(--hp-blue);
+    border: 1px solid var(--hp-blue);
+    padding: 3px 7px;
+  }
+  .hbtn.outline-blue:hover { background: rgba(13,110,253,0.06); }
+
+  .hp-input {
+    width: 100%;
+    height: 45px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    background: #fff;
+    font-family: "Courier New", monospace;
+    font-size: 17px;
+    letter-spacing: 6px;
+    text-align: center;
+    color: #212529;
+    outline: none;
+  }
+  .hp-input:focus { border-color: #86b7fe; box-shadow: 0 0 0 3px rgba(13,110,253,0.25); }
+
+  /* Switch no padrão Bootstrap (form-switch), azul quando ligado. */
+  .sw {
+    flex: 0 0 auto;
+    position: relative;
+    width: 33px;
+    height: 18px;
+    border-radius: 9px;
+    border: 1px solid #bfbfbf;
+    background: #fff;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease;
+  }
+  .sw::after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #bfbfbf;
+    transition: left 0.15s ease, background 0.15s ease;
+  }
+  .sw.on { background: var(--hp-blue); border-color: var(--hp-blue); box-shadow: 0 0 0 3px rgba(13,110,253,0.25); }
+  .sw.on::after { left: 17px; background: #fff; }
+  .sw-row { display: flex; align-items: center; gap: 7px; font-size: 15px; cursor: pointer; }
+
+  /* Lista de assinantes (001). */
+  .sig-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .sig-table th {
+    background: #212529;
+    color: #fff;
+    text-align: left;
+    font-weight: 700;
+    padding: 10px 7px;
+  }
+  .sig-table td {
+    background: #f8f9fa;
+    vertical-align: top;
+    padding: 9px 7px;
+    border-bottom: 1px solid #dee2e6;
+    line-height: 1.4;
+  }
+  .sig-table tr:last-child td { border-bottom-color: #222; }
+  .sig-table td.act { text-align: right; white-space: nowrap; }
+  .sig-link { color: var(--hp-blue); text-decoration: underline; cursor: pointer; background: none; border: none; font-size: 13px; }
+  .sig-wait { color: #212529; }
+  .sig-foot { background: #f8f9fa; text-align: center; padding: 7px 0; border-bottom: 1px solid #dee2e6; }
+
+  /* Modal Bootstrap (dicas, opinião) sobre a página escurecida. */
+  .modal-dim {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    z-index: 20;
+  }
+  .modal-dim[hidden] { display: none; }
+  .bmodal { width: 100%; background: #fff; border-radius: 4px; border: 1px solid rgba(0,0,0,0.2); color: #212529; }
+  .bmodal-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 15px;
+    border-bottom: 1px solid #dee2e6;
+  }
+  .bmodal-title { font-size: 18px; font-weight: 500; line-height: 1.4; }
+  .bmodal-x { border: none; background: none; color: #555; cursor: pointer; padding: 4px; margin-top: 2px; }
+  .bmodal-body { padding: 12px 15px; }
+  .bmodal-foot { display: flex; justify-content: flex-end; padding: 12px 15px; border-top: 1px solid #dee2e6; }
+  .tip { display: flex; align-items: flex-start; gap: 22px; font-size: 14.5px; line-height: 1.5; padding: 4px 0; }
+  .tip svg { flex: 0 0 34px; margin-top: 2px; }
+
+  /* Visualizador de PDF embutido (estilo do visualizador do navegador). */
+  .pdfv { margin: 0 0 0 0; background: #525659; }
+  .pdfv-bar {
+    height: 30px;
+    background: #323639;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 8px;
+    color: #f1f1f1;
+    font-size: 13px;
+  }
+  .pdfv-bar .pg {
+    width: 52px;
+    height: 20px;
+    background: #191b1c;
+    border-radius: 3px;
+    text-align: right;
+    padding-right: 7px;
+    line-height: 20px;
+  }
+  .pdfv-bar .sp { flex: 1; }
+  .pdfv-bar button { border: none; background: none; color: #f1f1f1; cursor: pointer; display: flex; padding: 2px; }
+  .pdfv-area { position: relative; height: 380px; overflow: auto; padding: 0 0 10px 0; }
+  .pdfv-page { margin: 0 auto 10px auto; background: #fff; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.4); }
+  .pdfv-page:first-child { margin-top: 0; }
+  .pdf-doc {
+    width: 540px;
+    padding: 22px 24px 26px 24px;
+    background: #fff;
+    color: #000;
+    font-family: Arial, Helvetica, sans-serif;
+    transform-origin: top left;
+  }
+  .pd-head { display: flex; align-items: flex-end; gap: 20px; border: 1px solid #555; padding: 6px 8px; }
+  .pd-logo { font-family: "Times New Roman", serif; font-weight: 900; color: #e2001a; font-size: 13px; line-height: 1; }
+  .pd-logo small { display: block; font-family: Arial; font-weight: 400; color: #888; font-size: 6px; text-align: center; }
+  .pd-title { flex: 1; text-align: center; font-size: 11px; }
+  .pd-sec { background: #d9d9d9; text-align: center; font-weight: 700; font-size: 8.5px; padding: 1px 0; border: 1px solid #555; border-top: none; }
+  .pd-sec.l { text-align: left; padding-left: 4px; }
+  .pd-row { display: grid; grid-template-columns: repeat(12, 1fr); border-left: 1px solid #555; }
+  .pd-cell { border-right: 1px solid #555; border-bottom: 1px solid #555; padding: 1px 3px 2px 3px; min-height: 19px; }
+  .pd-cell b { display: block; font-weight: 400; font-size: 6.5px; color: #222; }
+  .pd-cell span { display: block; font-size: 7.5px; text-transform: uppercase; }
+  .pd-table { width: 100%; border-collapse: collapse; font-size: 7px; }
+  .pd-table td { border: 1px solid #555; padding: 1.5px 3px; }
+  .pd-table td.n { text-align: right; white-space: nowrap; width: 60px; }
+  .pd-table td.c { width: 18px; font-weight: 700; }
+  .pd-table tr.hl td { background: #d9d9d9; font-weight: 700; }
+  .pd-par { font-size: 7px; line-height: 1.45; margin: 6px 0; text-align: justify; }
+  .pd-red { color: #c8102e; font-weight: 700; font-size: 8px; margin-top: 8px; }
+
+  /* Rubrica (área de desenho). */
+  .rub-canvas { display: block; width: 100%; height: 285px; border: 1px solid #222; background: var(--hp-bg); touch-action: none; cursor: crosshair; }
+
+  /* Estrelas da avaliação (017). */
+  .stars { display: flex; justify-content: center; gap: 7px; margin: 36px 0 22px 0; }
+  .star { border: none; background: none; cursor: pointer; padding: 0; display: flex; }
+  .star svg path { fill: #808080; transition: fill 0.1s ease; }
+  .star.on svg path { fill: #ff0000; }
+
+  .bmodal textarea {
+    width: 100%;
+    height: 125px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    padding: 8px 11px;
+    font-family: inherit;
+    font-size: 15px;
+    color: #212529;
+    resize: vertical;
+    outline: none;
+  }
+  .bmodal textarea:focus { border-color: #86b7fe; box-shadow: 0 0 0 3px rgba(13,110,253,0.25); }
+  .bmodal textarea::placeholder { color: #6c757d; }
+
+  /* Spinner "Aguarde um instante..." (005). */
+  .wait-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 26px; padding-bottom: 40px; }
+  .spinner { width: 58px; height: 58px; animation: spin 0.9s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .wait-text { font-size: 21px; font-weight: 700; color: #555; }
+
+  /* ===== Componente de captura (biometria/documento): fundo branco, X, botões pílula ===== */
+  .cp { color: var(--cp-text); }
+  .cp .scr-body { padding: 0 33px 18px 33px; display: flex; flex-direction: column; }
+  .cp-top { flex: 0 0 auto; height: 62px; display: flex; align-items: center; justify-content: space-between; }
+  .cp-ico { border: none; background: none; color: #555; cursor: pointer; padding: 4px; display: flex; }
+  .cp-title { font-size: 22px; font-weight: 500; color: #333; line-height: 1.25; margin-bottom: 6px; }
+  .cp-title.center { text-align: center; }
+  .cp-sub { font-size: 14.5px; line-height: 1.55; color: #666; }
+  .cp-list { margin: 26px 0 0 0; padding-left: 22px; font-size: 14.5px; line-height: 1.55; color: #666; }
+  .cp-list li { padding-left: 2px; margin-bottom: 10px; }
+  .cp-list b { color: #555; }
+  .cp-spacer { flex: 1; }
+  .cp-btn {
+    width: 100%;
+    height: 45px;
+    border: none;
+    border-radius: 23px;
+    background: var(--cp-red);
+    color: #fff;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    flex: 0 0 auto;
+  }
+  .cp-btn:disabled { background: #e6e6e6; color: #707070; cursor: default; }
+  .cp-link { border: none; background: none; color: var(--cp-red); font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 22px; }
+
+  .file-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    margin-top: 32px;
+    padding: 16px 15px;
+    border: 1px solid #e2e2e2;
+    border-radius: 8px;
+    background: #fff;
+    cursor: pointer;
+    text-align: left;
+  }
+  .file-card.err { border-color: #f0131e; }
+  .file-card .fi { flex: 0 0 47px; height: 47px; border-radius: 4px; background: #ececec; display: flex; align-items: center; justify-content: center; }
+  .file-card.sel .fi { background: #fff0f0; }
+  .file-card .ft { flex: 1; min-width: 0; }
+  .file-card .ft1, .file-card .ft2 { display: block; }
+  .file-card .ft1 { font-size: 17px; font-weight: 500; color: #222; }
+  .file-card .ft2 { font-size: 14px; color: #666; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .file-err { display: flex; align-items: flex-start; gap: 9px; margin-top: 10px; color: #f0131e; font-size: 13.5px; line-height: 1.4; }
+  .file-err svg { flex: 0 0 auto; margin-top: 1px; }
+  .help-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 15px 15px;
+    border: 1px solid #e2e2e2;
+    border-radius: 8px;
+    background: #fff;
+    color: #555;
+    font-size: 14px;
+    cursor: pointer;
+    text-align: left;
+  }
+
+  /* Seletor de arquivos simulado (folha inferior do sistema). */
+  .picker-dim { position: absolute; inset: 0; background: rgba(0,0,0,0.4); z-index: 30; display: flex; align-items: flex-end; }
+  .picker-dim[hidden] { display: none; }
+  .picker { width: 100%; background: #fff; border-radius: 16px 16px 0 0; padding: 10px 0 14px 0; font-family: Roboto, Arial, sans-serif; }
+  .picker-grab { width: 36px; height: 4px; border-radius: 2px; background: #cfcfcf; margin: 0 auto 10px auto; }
+  .picker-title { font-size: 15px; font-weight: 500; color: #222; padding: 0 18px 4px 18px; }
+  .picker-sub { font-size: 12px; color: #888; padding: 0 18px 8px 18px; }
+  .picker-item { display: flex; align-items: center; gap: 12px; width: 100%; padding: 10px 18px; border: none; background: none; cursor: pointer; text-align: left; }
+  .picker-item:hover { background: #f4f4f4; }
+  .picker-item .pn { font-size: 14px; color: #222; }
+  .picker-item .ps { font-size: 12px; color: #888; margin-top: 1px; }
+
+  .doc-tips { list-style: none; margin: 30px 0 0 22px; }
+  .doc-tips li { display: flex; align-items: center; gap: 14px; font-size: 15px; color: #444; margin-bottom: 18px; }
+
+  /* Câmera (selfie e documento). */
+  .face-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; padding-top: 64px; }
+  .steps { display: flex; align-items: center; width: 160px; }
+  .steps .dot { width: 16px; height: 16px; border-radius: 50%; border: 2px solid #c8c8c8; background: #fff; flex: 0 0 auto; position: relative; }
+  .steps .dot.cur { border-color: #a7e3b6; background: #a7e3b6; }
+  .steps .dot.cur::after { content: ""; position: absolute; inset: 3px; border-radius: 50%; background: #4fd06b; }
+  .steps .dot.done { border-color: #4fd06b; background: #4fd06b; }
+  .steps .line { flex: 1; height: 2px; background: #d0d0d0; }
+  .face-msg { font-size: 19.5px; font-weight: 500; color: #3a3a3a; margin-top: 10px; height: 28px; }
+  .oval-box { position: relative; width: 262px; height: 340px; margin-top: 74px; }
+  .oval-mask { position: absolute; left: 7px; top: 7px; width: 248px; height: 326px; border-radius: 50%; overflow: hidden; background: #dfe6ea; }
+  .oval-mask svg { width: 100%; height: 100%; transition: transform 0.6s ease; transform-origin: 50% 45%; }
+  .oval-mask.closer svg { transform: scale(1.28); }
+  .oval-ring { position: absolute; inset: 0; }
+  .oval-ring .prog { transition: stroke-dashoffset 2.1s linear; }
+  .oval-check {
+    position: absolute;
+    top: -18px;
+    left: 50%;
+    width: 46px;
+    height: 46px;
+    margin-left: -23px;
+    border-radius: 50%;
+    background: #5ee35a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: scale(0);
+    transition: transform 0.2s ease;
+  }
+  .oval-check.show { transform: scale(1); }
+
+  .cam { background: #1e1b19; color: #fff; }
+  .cam-bg { position: absolute; inset: 0; background:
+      radial-gradient(ellipse 60% 40% at 30% 35%, #4a3a2e 0%, transparent 70%),
+      radial-gradient(ellipse 70% 50% at 70% 70%, #2f3438 0%, transparent 70%),
+      linear-gradient(160deg, #3b3029 0%, #1d1f22 60%, #151617 100%); filter: blur(2px); }
+  .cam-top { position: relative; z-index: 2; height: 62px; display: flex; justify-content: flex-end; align-items: center; padding: 0 30px; }
+  .cam-msg { position: relative; z-index: 2; text-align: center; font-size: 21px; font-weight: 500; line-height: 1.5; padding: 0 30px; min-height: 66px; margin-top: 18px; }
+  .cam-frame {
+    position: relative;
+    z-index: 2;
+    margin: 26px auto 0 auto;
+    width: 316px;
+    height: 360px;
+    border: 4px solid var(--cam-green);
+    border-radius: 12px;
+    overflow: hidden;
+    background: #6d6a63;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .cam-frame svg { width: 290px; height: 340px; }
+  .countdown {
+    position: absolute;
+    width: 92px;
+    height: 92px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.92);
+    color: #111;
+    font-size: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .countdown[hidden] { display: none; }
+  .cam-flash { position: absolute; inset: 0; background: #fff; opacity: 0; pointer-events: none; z-index: 5; transition: opacity 0.12s ease; }
+  .cam-flash.on { opacity: 0.9; }
+  .cam-thumb { position: absolute; z-index: 2; left: 56px; bottom: 60px; width: 56px; height: 56px; border-radius: 4px; background: #333; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  .cam-thumb[hidden] { display: none; }
+  .cam-thumb svg { width: 50px; height: 56px; }
+
+  .review-img { margin: 18px -11px 0 -11px; height: 420px; background: #6d6a63; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  .review-img svg { width: 300px; height: 400px; }
+
+  .fail-top { flex: 0 0 300px; background: #f5f5f5; display: flex; align-items: center; justify-content: center; gap: 46px; position: relative; }
+  .fail-top::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 40px; background: #fff; border-top-right-radius: 60px; }
+  .fail-card { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+
+  /* ===== Painel de simulação (fora do celular; não faz parte do fluxo real) ===== */
+  /* O painel ocupa a 1ª coluna inteira, com 15px de respiro, e rola por dentro
+     quando o conteúdo não cabe na altura. */
+  .sim {
+    align-self: stretch;
+    margin: 15px;
+    min-width: 0;
+    overflow-y: auto;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.12);
+    padding: 16px 16px 18px 16px;
+    font-size: 13px;
+    color: #222;
+  }
+  .sim h2 { font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+  .sim .sim-note { font-size: 11.5px; color: #888; margin-top: 3px; line-height: 1.4; }
+  .sim-now { margin-top: 14px; background: #f6f6f6; border-radius: 8px; padding: 10px 12px; }
+  .sim-now .code { font-size: 22px; font-weight: 800; color: var(--red); letter-spacing: 0.5px; }
+  .sim-now .name { font-size: 12.5px; color: #444; margin-top: 2px; }
+  .sim-now .who { font-size: 11.5px; color: #888; margin-top: 5px; }
+  .sim-sec { margin-top: 16px; }
+  .sim-sec-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: #999; margin-bottom: 8px; }
+  .sim-field { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 9px; }
+  .sim-field > span { color: #333; }
+  .seg { display: inline-flex; border: 1.5px solid var(--red); border-radius: 6px; overflow: hidden; }
+  .seg button { border: none; background: #fff; color: #222; font-size: 12px; padding: 5px 10px; cursor: pointer; }
+  .seg button + button { border-left: 1.5px solid var(--red); }
+  .seg button.sel { background: var(--red); color: #fff; }
+  .sim select { font-family: inherit; font-size: 12px; padding: 4px 6px; border: 1px solid #ccc; border-radius: 5px; background: #fff; max-width: 170px; }
+  .sim-check { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 9px; cursor: pointer; line-height: 1.35; }
+  .sim-check input { accent-color: var(--red); margin-top: 2px; }
+  .sim-check small { display: block; color: #888; font-size: 11px; }
+  .sim-btn { width: 100%; margin-top: 4px; border: 1.5px solid var(--red); background: #fff; color: var(--red); font-weight: 700; font-size: 13px; padding: 8px 0; border-radius: 7px; cursor: pointer; }
+  .sim-btn:hover { background: rgba(214,0,28,0.06); }
+  .sim-hint { background: #fff7e6; border: 1px solid #f0c36d; color: #7a5200; border-radius: 6px; padding: 7px 9px; font-size: 12px; line-height: 1.4; }
+  .sim-hint code { font-family: "Courier New", monospace; font-weight: 700; font-size: 13px; }
+  .sim-toggle { display: none; }
+
+  @media (max-width: 1000px) {
+    .stage { display: flex; align-items: center; justify-content: center; }
+    .version-switch { position: fixed; top: 14px; right: 16px; margin: 0; z-index: 10; }
+    .sim {
+      position: fixed;
+      top: 56px;
+      left: 12px;
+      z-index: 70;
+      display: none;
+      width: 300px;
+      margin: 0;
+      max-height: calc(100vh - 70px);
+    }
+    .sim.open { display: block; }
+    .sim-toggle {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      position: fixed;
+      top: 14px;
+      left: 12px;
+      z-index: 71;
+      border: 1.5px solid var(--red);
+      background: #fff;
+      color: var(--red);
+      font-weight: 700;
+      font-size: 12px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    }
+  }
+
+  /* Em um celular de verdade, a tela do fluxo ocupa a viewport inteira, sem moldura. */
+  @media (max-width: 500px) {
+    .version-switch { display: none; }
+    .stage { display: block; padding: 0; }
+    .phone-slot { width: 100% !important; height: 100% !important; }
+    .phone {
+      position: static;
+      width: 100%;
+      height: 100%;
+      padding: 0;
+      border-radius: 0;
+      box-shadow: none;
+      transform: none !important;
+    }
+    .screen { width: 100%; height: 100%; border-radius: 0; }
+    .notch, .status-bar, .home-indicator { display: none; }
+    .scr { bottom: 0; }
+    .sim-toggle { top: 10px; left: 8px; padding: 8px; }
+    .sim-toggle-label { display: none; }
+    .sim { top: 50px; left: 8px; right: 8px; width: auto; }
+  }
+</style>
+</head>
+<body>
+
+  <button type="button" class="sim-toggle" id="simToggle">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+    <span class="sim-toggle-label">Simulação</span>
+  </button>
+
+  <div class="stage" id="stage">
+
+    <!-- Painel de simulação: escolhe o cenário e força falhas. Não faz parte do fluxo real. -->
+    <aside class="sim" id="sim">
+      <h2>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D6001C" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+        Painel de simulação
+      </h2>
+      <div class="sim-note">Fica fora do celular e não faz parte do fluxo real. Serve para escolher o cenário e forçar as ramificações.</div>
+
+      <div class="sim-now">
+        <div class="code" id="simCode">—</div>
+        <div class="name" id="simName"></div>
+        <div class="who" id="simWho"></div>
+      </div>
+
+      <div class="sim-sec">
+        <div class="sim-sec-title">Cenário (mudar reinicia o fluxo)</div>
+        <div class="sim-field">
+          <span>Canal</span>
+          <div class="seg" data-key="canal">
+            <button type="button" data-v="presencial">Presencial</button>
+            <button type="button" data-v="remoto">Remoto</button>
+          </div>
+        </div>
+        <div class="sim-field">
+          <span>Avalistas</span>
+          <div class="seg" data-key="avalistas">
+            <button type="button" data-v="0">0</button>
+            <button type="button" data-v="1">1</button>
+            <button type="button" data-v="2">2</button>
+          </div>
+        </div>
+        <div class="sim-field">
+          <span>SPF contratado</span>
+          <div class="seg" data-key="spf">
+            <button type="button" data-v="sim">Sim</button>
+            <button type="button" data-v="nao">Não</button>
+          </div>
+        </div>
+        <div class="sim-field" id="fieldAguarde">
+          <span>Avalista em "Aguarde"</span>
+          <div class="seg" data-key="aguarde">
+            <button type="button" data-v="sim">Sim</button>
+            <button type="button" data-v="nao">Não</button>
+          </div>
+        </div>
+        <div class="sim-field" id="fieldParte">
+          <span>Link aberto por</span>
+          <select id="simParte"></select>
+        </div>
+        <button type="button" class="sim-btn" id="simRestart">Reiniciar fluxo</button>
+      </div>
+
+      <div class="sim-sec" id="tokenHint">
+        <div class="sim-hint">Token válido desta simulação: <code>846504</code>. Qualquer outro código de 6 dígitos dá "código incorreto".</div>
+      </div>
+
+      <div class="sim-sec">
+        <div class="sim-sec-title">Forçar falhas (vale para a próxima tentativa)</div>
+        <label class="sim-check">
+          <input type="checkbox" id="failFace">
+          <span>Captura facial falha <small id="faceCount">Tentativas com falha: 0 de 3</small></span>
+        </label>
+        <label class="sim-check">
+          <input type="checkbox" id="failDoc">
+          <span>Validação da foto do documento falha <small id="docCount">Falhas (frente + verso): 0 de 3</small></span>
+        </label>
+        <label class="sim-check">
+          <input type="checkbox" id="failOrder">
+          <span>Fotografar o verso antes da frente <small>Falha conhecida (R11): o fluxo aceita as duas fotos e termina num aviso genérico de baixa qualidade.</small></span>
+        </label>
+        <div class="sim-note">Os erros da CNH Digital são simulados escolhendo o arquivo no seletor de arquivos do celular.</div>
+      </div>
+
+      <div class="sim-sec">
+        <div class="sim-sec-title">Ir para a tela</div>
+        <select id="simJump" style="max-width:none;width:100%"></select>
+      </div>
+    </aside>
+
+    <div class="phone-slot" id="phoneSlot">
+      <div class="phone" id="phone">
+        <div class="screen">
+          <div class="notch"></div>
+          <div class="status-bar">
+            <span>9:41</span>
+            <span class="status-icons">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="#111"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="#111"><path d="M8 2.2c2.4 0 4.6.9 6.2 2.5l1.3-1.3A10.6 10.6 0 0 0 8 .4 10.6 10.6 0 0 0 .5 3.4l1.3 1.3A8.8 8.8 0 0 1 8 2.2zm0 3.6c1.4 0 2.7.5 3.7 1.5L13 6A7 7 0 0 0 8 4a7 7 0 0 0-5 2l1.3 1.3c1-1 2.3-1.5 3.7-1.5zM8 9.4l-2.4 2.4L8 12l2.4-2.2z"/></svg>
+              <svg width="27" height="13" viewBox="0 0 27 13"><rect x="0.5" y="0.5" width="23" height="12" rx="3.5" fill="none" stroke="#111" opacity="0.4"/><rect x="2" y="2" width="20" height="9" rx="2" fill="#111"/><path d="M25 4.5v4c.8-.3 1.3-1.1 1.3-2s-.5-1.7-1.3-2z" fill="#111" opacity="0.4"/></svg>
+            </span>
+          </div>
+
+          <div class="screen-content" id="screenContent">
+
+            <!-- 000 · Identificação por token (só remoto) -->
+            <section class="scr hp" id="s-token">
+              <div class="hp-header"><span class="hp-logo">HONDA</span><span class="hp-logo-sub">Serviços Financeiros</span></div>
+              <div class="scr-body">
+                <h1 class="hp-title">Identificação</h1>
+                <ul class="hp-error" id="tokenError" hidden><li></li></ul>
+                <div class="hp-text" style="margin-bottom:16px">Digite o Token:</div>
+                <input class="hp-input" id="tokenInput" inputmode="numeric" maxlength="6" autocomplete="off">
+                <div class="hp-center" style="margin-top:46px"><button type="button" class="hbtn lg" id="tokenGo">CONTINUAR</button></div>
+                <div class="hp-text center" style="margin-top:188px">Dicas para facilitar o processo de assinatura.</div>
+                <div class="hp-center" style="margin-top:14px"><button type="button" class="hbtn lg" id="tokenTips" style="padding:7px 32px">CLIQUE AQUI E CONFIRA</button></div>
+              </div>
+              <div class="app-footer">Honda Serviços Financeiros</div>
+            </section>
+
+            <!-- 000-V · Vídeo tutorial -->
+            <section class="scr hp" id="s-video">
+              <div class="hp-header"><span class="hp-logo">HONDA</span><span class="hp-logo-sub">Serviços Financeiros</span></div>
+              <div class="scr-body" style="display:flex;flex-direction:column;justify-content:center;padding-bottom:60px">
+                <div id="videoBox" style="position:relative;width:100%;aspect-ratio:16/9;background:#000;border-radius:4px;overflow:hidden;cursor:pointer;display:flex;align-items:center;justify-content:center">
+                  <div style="position:absolute;left:12px;top:10px;color:#ddd;font-size:12px">Como fazer sua assinatura digital</div>
+                  <svg id="videoPlay" width="58" height="58" viewBox="0 0 58 58"><circle cx="29" cy="29" r="28" fill="rgba(255,255,255,0.18)" stroke="#fff" stroke-width="2"/><path d="M23 18l17 11-17 11z" fill="#fff"/></svg>
+                  <div style="position:absolute;left:0;right:0;bottom:0;height:4px;background:rgba(255,255,255,0.25)"><div id="videoBar" style="height:100%;width:0;background:#dc3545"></div></div>
+                </div>
+                <div class="hp-center" style="margin-top:22px"><button type="button" class="hbtn lg" id="videoOk">Entendi</button></div>
+              </div>
+              <div class="app-footer">Honda Serviços Financeiros</div>
+            </section>
+
+            <!-- 001 · Assinantes Concessionária (só presencial) -->
+            <section class="scr hp" id="s-lista">
+              <div class="hp-header"><span class="hp-logo">HONDA</span><span class="hp-logo-sub">Serviços Financeiros</span></div>
+              <div class="scr-body">
+                <h1 class="hp-title" style="margin-bottom:18px">Assinantes Concessionária</h1>
+                <table class="sig-table">
+                  <thead><tr><th style="width:49%">NOME</th><th colspan="2">CPF / CNPJ</th></tr></thead>
+                  <tbody id="sigBody"></tbody>
+                </table>
+                <div class="sig-foot"><button type="button" class="hbtn lg" id="sigRefresh">Atualizar Lista</button></div>
+              </div>
+              <div class="app-footer">Honda Serviços Financeiros</div>
+            </section>
+
+            <!-- 002 · Captura da Foto (consentimento) -->
+            <section class="scr hp" id="s-consent">
+              <div class="hp-header"><span class="hp-logo">HONDA</span><span class="hp-logo-sub">Serviços Financeiros</span></div>
+              <div class="scr-body">
+                <h1 class="hp-title">Captura da Foto</h1>
+                <p class="hp-text">Autorizo a captura da minha imagem facial com a finalidade única e exclusiva de viabilizar a minha identificação cadastral no momento do cadastro e formalização da(s) contratação(ões) junto á Honda, bem como para fins relacionados à prevenção a fraude e proteção ao crédito por meio da autenticação da minha identidade. Autorizo ainda que a Honda compartilhe a minha imagem facial com outras empresas do grupo Honda ou com terceiros conforme necessário para atingir as finalidades aqui descritas.</p>
+                <div class="sw-row" style="margin-top:34px" data-sw="consent"><span class="sw" id="swConsent"></span>Li e aceito os termos</div>
+                <div class="hp-center" style="margin-top:56px"><button type="button" class="hbtn lg" id="consentGo" disabled>CONTINUAR</button></div>
+              </div>
+              <div class="app-footer">Honda Serviços Financeiros</div>
+            </section>
+
+            <!-- 003 / 016-1 · Modal de dicas da selfie -->
+            <section class="scr hp" id="s-tips">
+              <div class="hp-header"><span class="hp-logo">HONDA</span><span class="hp-logo-sub">Serviços Financeiros</span></div>
+              <div class="scr-body"></div>
+              <div class="app-footer">Honda Serviços Financeiros</div>
+              <div class="modal-dim" style="bottom:26px">
+                <div class="bmodal">
+                  <div class="bmodal-head">
+                    <div class="bmodal-title" id="tipsTitle">Dicas importantes para Captura da Selfie</div>
+                    <button type="button" class="bmodal-x" data-act="tipsOk" aria-label="Fechar"><svg width="18" height="18" viewBox="0 0 18 18" stroke="#666" stroke-width="1.6"><path d="M2 2l14 14M16 2L2 16"/></svg></button>
+                  </div>
+                  <div class="bmodal-body">
+                    <div class="tip"><svg width="34" height="30" viewBox="0 0 24 22" fill="#222"><path d="M8 1h8l2 3h4a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h4zM12 7.5a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0 2.4a2.6 2.6 0 1 1 0 5.2 2.6 2.6 0 0 1 0-5.2z"/></svg><span>Quando solicitado, autorize o uso da câmera do dispositivo</span></div>
+                    <div class="tip"><svg width="34" height="22" viewBox="0 0 34 22"><path d="M17 1C9 1 3 7 1 11c2 4 8 10 16 10s14-6 16-10C31 7 25 1 17 1z" fill="#222"/><circle cx="17" cy="11" r="6.5" fill="#fff"/><circle cx="17" cy="11" r="4" fill="#222"/></svg><span>Mantenha a câmera no nível dos olhos</span></div>
+                    <div class="tip"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="1.8"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.6 10.8c.8.6 1.1 1.4 1.1 2.2h5c0-.8.4-1.6 1.1-2.2A6 6 0 0 0 12 3z"/></svg><span>Fique num local bem iluminado para sua foto sair com qualidade</span></div>
+                    <div class="tip"><svg width="34" height="26" viewBox="0 0 34 26" fill="none" stroke="#222" stroke-width="2.4"><path d="M3 4l3-2M31 4l-3-2M2 15V5M32 15V5"/><rect x="2" y="12" width="12" height="10" rx="5"/><rect x="20" y="12" width="12" height="10" rx="5"/><path d="M14 15c2-1.5 4-1.5 6 0"/></svg><span>Evite usar acessórios como óculos, bonés, máscaras e chapéus</span></div>
+                    <div class="tip"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><circle cx="9" cy="10" r="0.6" fill="#222"/><circle cx="15" cy="10" r="0.6" fill="#222"/><path d="M8 14.5c2 2 6 2 8 0"/></svg><span>Queremos ver você sorrir sempre! Mas dessa vez não sorria ou faça caretas</span></div>
+                  </div>
+                  <div class="bmodal-foot"><button type="button" class="hbtn lg" data-act="tipsOk">OK, Entendi</button></div>
+                </div>
+              </div>
+            </section>
+
+            <!-- 004 / 016-2 · Captura facial (2 capturas) -->
+            <section class="scr" id="s-face">
+              <div class="scr-body" style="display:flex">
+                <div class="face-wrap">
+                  <div class="steps"><span class="dot" id="dot1"></span><span class="line"></span><span class="dot" id="dot2"></span></div>
+                  <div class="face-msg" id="faceMsg">Tente não se mexer</div>
+                  <div class="oval-box">
+                    <div class="oval-mask" id="ovalMask">
+                      <svg viewBox="0 0 248 326" aria-hidden="true">
+                        <rect width="248" height="326" fill="#e3e8ea"/>
+                        <path d="M10 326c8-62 52-86 114-86s106 24 114 86z" fill="#5d6f80"/>
+                        <rect x="104" y="196" width="40" height="48" rx="12" fill="#d9a77e"/>
+                        <ellipse cx="124" cy="142" rx="70" ry="88" fill="#e3b38d"/>
+                        <path d="M54 132c-4-58 30-88 70-88s76 28 70 88c-6-22-20-40-40-46-18 10-50 12-80 6-12 10-18 24-20 40z" fill="#3b2a20"/>
+                        <ellipse cx="54" cy="148" rx="9" ry="16" fill="#d9a77e"/>
+                        <ellipse cx="194" cy="148" rx="9" ry="16" fill="#d9a77e"/>
+                        <path d="M86 122h26M136 122h26" stroke="#3b2a20" stroke-width="5" stroke-linecap="round"/>
+                        <ellipse cx="99" cy="138" rx="6" ry="4.5" fill="#2b2b2b"/>
+                        <ellipse cx="149" cy="138" rx="6" ry="4.5" fill="#2b2b2b"/>
+                        <path d="M124 146v24l-8 4" stroke="#b9876a" stroke-width="3" fill="none" stroke-linecap="round"/>
+                        <path d="M106 196h36" stroke="#a8604f" stroke-width="4" stroke-linecap="round"/>
+                      </svg>
+                    </div>
+                    <svg class="oval-ring" viewBox="0 0 262 340" aria-hidden="true">
+                      <ellipse cx="131" cy="170" rx="126" ry="165" fill="none" stroke="#cfcfcf" stroke-width="7"/>
+                      <path class="prog" id="ovalProg" d="M131 5a126 165 0 1 1 0 330a126 165 0 1 1 0-330" fill="none" stroke="#5ee35a" stroke-width="7" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/>
+                    </svg>
+                    <div class="oval-check" id="ovalCheck"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"/></svg></div>
+                  </div>
+                </div>
+              </div>
+              <div class="app-footer">Honda Serviços Financeiros</div>
+            </section>
+
+            <!-- 005 / 016-3 · Aguarde -->
+            <section class="scr" id="s-wait">
+              <div class="wait-wrap">
+                <svg class="spinner" viewBox="0 0 50 50"><circle cx="25" cy="25" r="21" fill="none" stroke="#d81e2c" stroke-width="4" stroke-dasharray="100 40" stroke-linecap="round"/></svg>
+                <div class="wait-text">Aguarde um instante...</div>
+              </div>
+              <div class="app-footer">Honda Serviços Financeiros</div>
+            </section>
+
+            <!-- 004-1 (falha facial) / 009-2 (cancelamento): mesmo layout "Atenção!" -->
+            <section class="scr hp" id="s-alert">
+              <div class="hp-header"><span class="hp-logo">HONDA</span><span class="hp-logo-sub">Serviços Financeiros</span></div>
+              <div class="scr-body">
+                <h1 class="hp-title center" style="margin-top:4px">Atenção!</h1>
+                <p class="hp-text center" id="alertText" style="padding:0 8px"></p>
+                <div class="hp-center" style="margin-top:34px" id="alertBtnWrap"><button type="button" class="hbtn lg" id="alertBtn">TENTAR NOVAMENTE</button></div>
+              </div>
+              <div class="app-footer">Honda Serviços Financeiros</div>
+            </section>
+
+            <!-- 006 · Escolha da forma de captura do documento -->
+            <section class="scr hp" id="s-doc-choice">
+              <div class="hp-header"><span class="hp-logo">HONDA</span><span class="hp-logo-sub">Serviços Financeiros</span></div>
+              <div class="scr-body">
+                <h1 class="hp-title" style="margin-bottom:10px">Agora vamos capturar seu documento de identificação.</h1>
+                <div style="font-size:16px;font-weight:500;margin-bottom:34px">Escolha Forma de Captura</div>
+                <div class="hp-text" style="margin-bottom:14px">Documentos Digitais:</div>
+                <button type="button" class="hbtn" id="choiceCnh" style="width:272px;height:54px;text-align:left;padding-left:16px;font-size:15.5px">CNH Digital</button>
+                <div class="hp-text" style="margin:28px 0 14px 0">Documentos Físicos:</div>
+                <button type="button" class="hbtn" id="choiceFisico" style="width:272px;height:54px;text-align:left;padding-left:16px;font-size:15.5px">RG, CNH, DNI, RNE e CIN</button>
+              </div>
+              <div class="app-footer">Honda Serviços Financeiros</div>
+            </section>
+
+            <!-- 006-1 · CNH Digital: instruções -->
+            <section class="scr cp" id="s-cnh-info">
+              <div class="scr-body">
+                <div class="cp-top"><span></span><button type="button" class="cp-ico" data-act="toChoice" aria-label="Fechar"><svg width="22" height="22" viewBox="0 0 22 22" stroke="#555" stroke-width="1.8"><path d="M4 4l14 14M18 4L4 18"/></svg></button></div>
+                <h1 class="cp-title" style="margin-top:22px">Envio de documento digital</h1>
+                <ol class="cp-list">
+                  <li>Acesse a pasta <b>“Arquivos”</b> em seu dispositivo</li>
+                  <li>Localize o arquivo do documento digital válido que deseja enviar</li>
+                  <li>Verifique se está salvo no formato <b>PDF</b></li>
+                  <li>Envie o arquivo do documento <b>original</b>, não serão aceitos prints de tela</li>
+                </ol>
+                <div class="cp-spacer"></div>
+                <button type="button" class="cp-btn" id="cnhInfoGo">Escolher arquivo</button>
+              </div>
+              <div class="app-footer">Honda Serviços Financeiros</div>
+            </section>
+
+            <!-- 006-2 a 006-5 · CNH Digital: adicionar arquivo e erros -->
+            <section class="scr cp" id="s-cnh-add">
+              <div class="scr-body">
+                <div class="cp-top">
+                  <button type="button" class="cp-ico" id="cnhBack" aria-label="Voltar"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="1.8"><path d="M20 12H4M10 6l-6 6 6 6"/></svg></button>
+                  <button type="button" class="cp-ico" data-act="toChoice" aria-label="Fechar"><svg width="22" height="22" viewBox="0 0 22 22" stroke="#555" stroke-width="1.8"><path d="M4 4l14 14M18 4L4 18"/></svg></button>
+                </div>
+                <h1 class="cp-title" id="cnhTitle">Adicione o documento</h1>
+                <div class="cp-sub" id="cnhSub">Envie um arquivo único no formato PDF com tamanho máximo de 4MB</div>
+                <button type="button" class="file-card" id="fileCard">
+                  <span class="fi"><svg width="18" height="22" viewBox="0 0 18 22" fill="none" stroke="#e2161f" stroke-width="1.8"><path d="M2 1h9l6 6v13a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1z"/></svg></span>
+                  <span class="ft"><span class="ft1" id="fileT1">Escolher arquivo</span><span class="ft2" id="fileT2" style="display:block">Toque para selecionar</span></span>
+                  <span id="fileIco"></span>
+                </button>
+                <div class="file-err" id="fileErr" hidden>
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#f0131e" stroke-width="1.6"><circle cx="10" cy="10" r="8.5"/><path d="M10 5.5v6M10 13.6v.9"/></svg>
+                  <span id="fileErrText"></span>
+                </div>
+                <div class="cp-spacer"></div>
+                <button type="button" class="help-row" id="cnhHelp">Como enviar meu documento digital
+                  <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#444" stroke-width="1.5"><circle cx="11" cy="11" r="9.5"/><path d="M11 10v6M11 6.5v.8"/></svg>
+                </button>
+                <button type="button" class="cp-btn" id="cnhSend" hidden style="margin-bottom:46px">Enviar arquivo</button>
+              </div>
+              <div class="app-footer">Honda Serviços Financeiros</div>
+              <div class="picker-dim" id="picker" hidden>
+                <div class="picker">
+                  <div class="picker-grab"></div>
+                  <div class="picker-title">Selecionar arquivo</div>
+                  <div class="picker-sub">Downloads · simulação do seletor de arquivos do celular</div>
+                  <div id="pickerList"></div>
+                </div>
+              </div>
+            </section>
+
+            <!-- 007 · Documento físico: instruções -->
+            <section class="scr cp" id="s-doc-tips">
+              <div class="scr-body">
+                <div class="cp-top"><span></span><button type="button" class="cp-ico" data-act="toChoice" aria-label="Fechar"><svg width="22" height="22" viewBox="0 0 22 22" stroke="#555" stroke-width="1.8"><path d="M4 4l14 14M18 4L4 18"/></svg></button></div>
+                <h1 class="cp-title" style="margin-top:12px">Fotografe o documento</h1>
+                <svg width="200" height="230" viewBox="0 0 200 230" style="align-self:center;margin-top:16px" aria-hidden="true">
+                  <rect x="44" y="2" width="112" height="196" rx="16" fill="#333"/>
+                  <rect x="52" y="18" width="96" height="160" fill="#fff8e6"/>
+                  <rect x="52" y="18" width="96" height="8" fill="#9a958d"/>
+                  <rect x="52" y="168" width="96" height="10" fill="#9a958d"/>
+                  <rect x="74" y="46" width="52" height="92" rx="6" fill="#6fb77f"/>
+                  <rect x="81" y="53" width="38" height="78" rx="3" fill="#dff0d2"/>
+                  <rect x="88" y="60" width="24" height="24" rx="2" fill="#fff"/>
+                  <circle cx="100" cy="70" r="6" fill="#4a2f25"/><path d="M92 84c1-6 4-8 8-8s7 2 8 8z" fill="#e5a58a"/>
+                  <rect x="88" y="94" width="24" height="24" rx="2" fill="#fff"/>
+                  <path d="M95 104c3-3 7-3 10 0M97 108c2-2 4-2 6 0" stroke="#9a9a9a" stroke-width="1.4" fill="none"/>
+                  <path d="M18 230l4-90 36-38c8-8 18 0 12 10l-18 30 6 88z" fill="#e8a867"/>
+                  <path d="M182 230l-4-90-36-38c-8-8-18 0-12 10l18 30-6 88z" fill="#e8a867"/>
+                </svg>
+                <ul class="doc-tips">
+                  <li><svg width="22" height="24" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="1.5"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.6 10.8c.8.6 1.1 1.4 1.1 2.2h5c0-.8.4-1.6 1.1-2.2A6 6 0 0 0 12 3z"/></svg>Procure um local iluminado</li>
+                  <li><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="1.5"><rect x="1" y="5" width="16" height="14" rx="1"/><circle cx="6.5" cy="11" r="2"/><path d="M3.5 16c1-2 5-2 6 0M20 4v16M23 6v12"/></svg>Retire o documento do plástico</li>
+                  <li><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="1.5"><circle cx="10" cy="10" r="7"/><path d="M15 15l7 7M10 7v6M7 10h6"/></svg>Aproxime a câmera do documento</li>
+                  <li><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="1.5"><rect x="1" y="4" width="22" height="16" rx="1"/><circle cx="7.5" cy="11" r="2.2"/><path d="M4 17c1-2.4 6-2.4 7 0M14 9h6M14 13h6"/></svg>Fotografe um lado de cada vez</li>
+                </ul>
+                <div class="cp-spacer"></div>
+                <button type="button" class="cp-btn" id="docTipsGo">Avançar</button>
+              </div>
+              <div class="app-footer">Honda Serviços Financeiros</div>
+            </section>
+
+            <!-- 008 / 010 · Câmera do documento (frente e verso, captura automática) -->
+            <section class="scr cam" id="s-cam">
+              <div class="scr-body">
+                <div class="cam-bg"></div>
+                <div class="cam-top"><button type="button" class="cp-ico" data-act="toChoice" aria-label="Fechar"><svg width="22" height="22" viewBox="0 0 22 22" stroke="#fff" stroke-width="2"><path d="M4 4l14 14M18 4L4 18"/></svg></button></div>
+                <div class="cam-msg" id="camMsg">Tente não se mexer</div>
+                <div class="cam-frame" id="camFrame">
+                  <span id="camDoc"></span>
+                  <div class="countdown" id="countdown">3</div>
+                </div>
+                <div class="cam-thumb" id="camThumb" hidden></div>
+                <div class="cam-flash" id="camFlash"></div>
+              </div>
+              <div class="app-footer">Honda Serviços Financeiros</div>
+            </section>
+
+            <!-- 009 / 011 · Revisão da foto do documento -->
+            <section class="scr cp" id="s-review">
+              <div class="scr-body" style="align-items:center">
+                <div class="cp-top" style="width:100%"><span></span><button type="button" class="cp-ico" data-act="toChoice" aria-label="Fechar"><svg width="22" height="22" viewBox="0 0 22 22" stroke="#555" stroke-width="1.8"><path d="M4 4l14 14M18 4L4 18"/></svg></button></div>
+                <h1 class="cp-title center" id="reviewTitle" style="margin-top:2px">DNI lado com foto</h1>
+                <div class="review-img" id="reviewImg" style="align-self:stretch"></div>
+                <div class="cp-spacer"></div>
+                <button type="button" class="cp-btn" id="reviewGo">Avançar</button>
+                <button type="button" class="cp-link" id="reviewRedo">Substituir Imagem</button>
+              </div>
+              <div class="app-footer">Honda Serviços Financeiros</div>
+            </section>
+
+            <!-- 009-1 · Falha na validação da imagem do documento -->
+            <section class="scr cp" id="s-doc-fail">
+              <div class="fail-top">
+                <button type="button" class="cp-ico" id="docFailX" data-act="toChoice" aria-label="Fechar" style="position:absolute;top:18px;right:30px"><svg width="22" height="22" viewBox="0 0 22 22" stroke="#555" stroke-width="1.8"><path d="M4 4l14 14M18 4L4 18"/></svg></button>
+                <div class="fail-card">
+                  <svg width="78" height="110" viewBox="0 0 78 110"><rect x="1" y="1" width="76" height="108" rx="6" fill="#b8b48c" stroke="#ccc"/><rect x="12" y="1" width="8" height="108" fill="#6b6a45"/><rect x="42" y="12" width="4" height="40" fill="#7b7a55"/><rect x="52" y="12" width="4" height="40" fill="#7b7a55"/><rect x="38" y="72" width="28" height="22" rx="2" fill="#5a5040"/><rect x="1" y="1" width="76" height="108" rx="6" fill="#fff" opacity="0.25"/></svg>
+                  <svg width="28" height="28" viewBox="0 0 28 28"><circle cx="14" cy="14" r="13" fill="#dc2626"/><path d="M9 9l10 10M19 9L9 19" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg>
+                </div>
+                <div class="fail-card">
+                  <svg width="78" height="110" viewBox="0 0 78 110"><rect x="1" y="1" width="76" height="108" rx="6" fill="#b6b843"/><rect x="12" y="1" width="8" height="108" fill="#55611d"/><rect x="42" y="12" width="4" height="40" fill="#7c8a22"/><rect x="52" y="12" width="4" height="40" fill="#7c8a22"/><rect x="38" y="72" width="28" height="22" rx="2" fill="#f3e6c8"/><circle cx="50" cy="83" r="6" fill="#4a2f25"/></svg>
+                  <svg width="28" height="28" viewBox="0 0 28 28"><circle cx="14" cy="14" r="13" fill="#16a34a"/><path d="M8 14.5l4 4 8-9" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+              </div>
+              <div class="scr-body" style="padding:30px 55px 18px 55px">
+                <h1 class="cp-title" style="font-size:23px;margin-bottom:8px">Vamos tentar novamente</h1>
+                <p class="cp-sub" style="font-size:15px;color:#555">Não foi possível validar a imagem enviada. Busque um local bem iluminado e siga as instruções na tela para fotografar o documento com a melhor qualidade.</p>
+                <div class="cp-spacer"></div>
+              </div>
+              <div style="padding:0 33px 18px 33px;background:#fff;min-height:63px" id="docFailBtnWrap"><button type="button" class="cp-btn" id="docFailGo">Tentar novamente</button></div>
+              <div class="app-footer">Honda Serviços Financeiros</div>
+            </section>
+
+            <!-- 012 · Autorizações -->
+            <section class="scr hp" id="s-auth">
+              <div class="hp-header"><span class="hp-logo">HONDA</span><span class="hp-logo-sub">Serviços Financeiros</span></div>
+              <div class="scr-body">
+                <h1 class="hp-title">Autorizações</h1>
+                <div class="hp-text" style="margin-bottom:30px">Eu autorizo:</div>
+                <div style="display:flex;gap:8px;margin-bottom:20px">
+                  <span class="sw on" data-auth="boleto" style="margin-top:3px"></span>
+                  <div class="hp-text"><b style="font-weight:500;font-size:15.5px">Boleto por E-mail e Comunicações</b><br>Autorizo o boleto por e-mail e toda comunicação referente ao contrato por SMS e meios digitais, sem a necessidade de enviar pelo correio.</div>
+                </div>
+                <div style="display:flex;gap:8px;margin-bottom:20px">
+                  <span class="sw" data-auth="receber" style="margin-top:3px"></span>
+                  <div class="hp-text"><b style="font-weight:500;font-size:15.5px">Receber</b><br>Autorizo receber do Banco Honda informações de novos produtos, condições especiais e pesquisas de satisfação.</div>
+                </div>
+                <div style="display:flex;gap:8px;margin-bottom:26px">
+                  <span class="sw" data-auth="compartilhar" style="margin-top:3px"></span>
+                  <div class="hp-text"><b style="font-weight:500;font-size:15.5px">Compartilhar</b><br>Autorizo compartilhar meus dados com outras empresas do grupo Honda para receber informações de novos produtos, condições especiais e pesquisas de satisfação. Para consultar a forma que é realizada a captura, o armazenamento e tratamentodos seus dados, acesse a política de privacidade do grupo Honda, disponível em:https://www.honda.com.br/politica-de-privacidade</div>
+                </div>
+                <div class="hp-center"><button type="button" class="hbtn lg" id="authGo">CONTINUAR</button></div>
+              </div>
+              <div class="app-footer">Honda Serviços Financeiros</div>
+            </section>
+
+            <!-- 013 / 014 / 015 / 016-4 · Termos (visualizador de PDF) -->
+            <section class="scr hp" id="s-termos">
+              <div class="hp-header"><span class="hp-logo">HONDA</span><span class="hp-logo-sub">Serviços Financeiros</span></div>
+              <div class="scr-body">
+                <h1 class="hp-title" style="font-size:22px;margin-bottom:12px">Termos</h1>
+                <div class="pdfv">
+                  <div class="pdfv-bar">
+                    <svg width="18" height="16" viewBox="0 0 18 16" fill="none" stroke="#f1f1f1" stroke-width="1.6"><rect x="1" y="1" width="16" height="14" rx="2"/><path d="M6 1v14M2.5 4.5h2M2.5 7.5h2"/></svg>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#f1f1f1" stroke-width="1.8"><circle cx="6.5" cy="6.5" r="5"/><path d="M10.5 10.5l4.5 4.5"/></svg>
+                    <span class="pg" id="pdfPage">1</span><span id="pdfTotal">de 1</span>
+                    <span class="sp"></span>
+                    <button type="button" id="pdfMinus" aria-label="Diminuir zoom"><svg width="16" height="16" viewBox="0 0 16 16" stroke="#f1f1f1" stroke-width="1.8"><path d="M2 8h12"/></svg></button>
+                    <span style="width:1px;height:18px;background:#666"></span>
+                    <button type="button" id="pdfPlus" aria-label="Aumentar zoom"><svg width="16" height="16" viewBox="0 0 16 16" stroke="#f1f1f1" stroke-width="1.8"><path d="M2 8h12M8 2v12"/></svg></button>
+                    <span class="sp"></span>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#f1f1f1" stroke-width="1.8"><path d="M3 3l5 5-5 5M9 3l5 5-5 5"/></svg>
+                  </div>
+                  <div class="pdfv-area" id="pdfArea"></div>
+                </div>
+                <div class="hp-center" id="termNav" style="margin-top:8px;display:flex;justify-content:center;gap:6px">
+                  <button type="button" class="hbtn blue" id="termPrev">Anterior</button>
+                  <button type="button" class="hbtn blue" id="termNext">Próximo</button>
+                </div>
+                <div id="termAccept" hidden>
+                  <div class="sw-row" style="justify-content:center;margin-top:22px" data-sw="terms"><span class="sw" id="swTerms"></span>Li e aceito os termos</div>
+                  <div class="hp-center" style="margin-top:22px"><button type="button" class="hbtn lg" id="termSign" disabled>ASSINAR</button></div>
+                </div>
+              </div>
+              <div class="app-footer">Honda Serviços Financeiros</div>
+            </section>
+
+            <!-- 016 / 016-5 · Rubrica (só presencial) -->
+            <section class="scr hp" id="s-rubrica">
+              <div class="hp-header"><span class="hp-logo">HONDA</span><span class="hp-logo-sub">Serviços Financeiros</span></div>
+              <div class="scr-body" style="padding-left:11px;padding-right:11px">
+                <h1 class="hp-title" style="margin-bottom:8px">Rubrica</h1>
+                <div class="hp-text" style="color:#6c757d;margin-bottom:20px">Não é necessário realizar assinatura conforme o documento.</div>
+                <div style="padding:0 8px"><canvas class="rub-canvas" id="rubCanvas"></canvas></div>
+                <div class="hp-center" style="margin-top:10px"><button type="button" class="hbtn outline-blue" id="rubClear" style="font-size:15px;padding:4px 8px">Limpar</button></div>
+                <div class="hp-center" style="margin-top:46px"><button type="button" class="hbtn lg" id="rubSign">ASSINAR</button></div>
+              </div>
+              <div class="app-footer">Honda Serviços Financeiros</div>
+            </section>
+
+            <!-- 017 · Obrigado! (avaliação) e ramificação 017-1 a 017-4 -->
+            <section class="scr hp" id="s-obrigado">
+              <div class="hp-header"><span class="hp-logo">HONDA</span><span class="hp-logo-sub">Serviços Financeiros</span></div>
+              <div class="scr-body">
+                <h1 class="hp-title">Obrigado!</h1>
+                <p class="hp-text">Estamos formalizando seu contrato, aguarde o contato da sua concessionária.</p>
+                <div id="rateBlock" style="margin-top:56px;text-align:center">
+                  <div style="font-size:16px;font-weight:700">O que você achou da assinatura?</div>
+                  <div style="font-size:16px;line-height:1.6;margin-top:2px;padding:0 20px">Sua opinião vai nos ajudar a tornar sua experiência cada vez melhor.</div>
+                  <div class="stars" id="stars"></div>
+                  <div id="suggestWrap" hidden style="margin-bottom:22px"><button type="button" class="hbtn lg" id="suggestBtn">SUGERIR MELHORIAS</button></div>
+                </div>
+                <div id="sentBlock" hidden style="margin-top:56px;text-align:center;font-size:16px;font-weight:700;line-height:1.6;padding:0 14px">Sua opinião foi enviada com sucesso.<br>Obrigado!</div>
+                <div class="hp-center" id="inicioWrap" style="margin-top:10px"><button type="button" class="hbtn lg" id="inicioBtn">INÍCIO</button></div>
+              </div>
+              <div class="app-footer">Honda Serviços Financeiros</div>
+              <div class="modal-dim" id="opModal" hidden style="bottom:26px">
+                <div class="bmodal">
+                  <div class="bmodal-head" style="align-items:center">
+                    <div class="bmodal-title">Deixe sua opinião</div>
+                    <button type="button" class="bmodal-x" id="opClose" aria-label="Fechar"><svg width="18" height="18" viewBox="0 0 18 18" stroke="#666" stroke-width="1.6"><path d="M2 2l14 14M16 2L2 16"/></svg></button>
+                  </div>
+                  <div class="bmodal-body" style="padding:14px 15px"><textarea id="opText" placeholder="Digite sua opinião aqui..."></textarea></div>
+                  <div class="bmodal-foot"><button type="button" class="hbtn lg" id="opSend">Enviar</button></div>
+                </div>
+              </div>
+            </section>
+
+            <!-- 018 · Fim -->
+            <section class="scr hp" id="s-fim">
+              <div class="hp-header"><span class="hp-logo">HONDA</span><span class="hp-logo-sub">Serviços Financeiros</span></div>
+              <div class="scr-body">
+                <h1 class="hp-title" id="fimTitle">Assinantes Concessionária</h1>
+                <p class="hp-text" id="fimText">Assinatura finalizada para todos os assinantes</p>
+              </div>
+              <div class="app-footer">Honda Serviços Financeiros</div>
+            </section>
+
+          </div>
+
+          <div class="home-indicator"></div>
+        </div>
+      </div>
+    </div>
+
+    <nav class="version-switch">
+      <span class="version-tag active">Fluxo atual</span>
+      <a class="version-tag" href="biometria-remake.html">Fluxo remodelado</a>
+    </nav>
+  </div>
+
+  <script>
+    // ================================================================
+    // Réplica do fluxo atual de Biometria / Assinatura Digital.
+    // Regras de negócio: BiometriaAssDigital/REGRAS.md (R01 a R10).
+    // Todos os nomes, CPFs e documentos são fictícios.
+    // ================================================================
+
+    var VALID_TOKEN = "846504";
+    var MAX_FALHAS = 3;
+
+    var PESSOAS = [
+      { nome: "JOÃO DA SILVA SANTOS", cpf: "123.456.789-09", papel: "Proponente" },
+      { nome: "MARIA OLIVEIRA SOUZA", cpf: "987.654.321-00", papel: "Avalista 1" },
+      { nome: "CARLOS PEREIRA LIMA", cpf: "111.444.777-35", papel: "Avalista 2" }
+    ];
+
+    var NOMES = {
+      "000": "Identificação (token)", "000-1": "Erro: código incorreto", "000-2": "Erro: token com menos de 6 dígitos",
+      "000-V": "Vídeo tutorial", "001": "Assinantes Concessionária", "001-1": "Assinantes: parte em \"Aguarde\"",
+      "001-2": "Assinantes: todos liberados", "002": "Captura da Foto (consentimento)",
+      "003": "Dicas para a Captura da Selfie", "004": "Captura facial", "004-1": "Falha na captura facial",
+      "005": "Aguarde (processando)", "006": "Escolha da forma de captura", "006-1": "CNH Digital: instruções",
+      "006-2": "CNH Digital: adicionar arquivo", "006-3": "Erro: páginas além do permitido",
+      "006-4": "Erro: tamanho maior que o permitido", "006-5": "Erro: tipo de documento não aceito",
+      "006-OK": "CNH Digital: arquivo válido selecionado", "007": "Fotografe o documento",
+      "008": "Captura da frente (automática)", "009": "Revisão da frente", "009-1": "Falha na validação da imagem",
+      "009-2": "Assinatura cancelada", "010": "Captura do verso (automática)", "011": "Revisão do verso",
+      "011-1": "Falha genérica: ordem invertida (fim)",
+      "012": "Autorizações", "013": "Termos: documento 1 de 2", "014": "Termos: documento 2 de 2",
+      "015": "Termos: aceite e assinatura", "016": "Rubrica", "016-1": "SPF: dicas da selfie",
+      "016-2": "SPF: captura facial", "016-3": "SPF: aguarde", "016-4": "SPF: termo do seguro",
+      "016-5": "SPF: rubrica", "017": "Obrigado! (avaliação)", "017-1": "Nota até 4: sugerir melhorias",
+      "017-2": "Deixe sua opinião", "017-3": "Opinião digitada", "017-4": "Opinião enviada",
+      "018": "Assinatura finalizada"
+    };
+
+    // Cenário escolhido no painel (persistido só como conveniência deste navegador).
+    var cenario = { canal: "presencial", avalistas: "1", spf: "sim", aguarde: "sim", parte: "0" };
+    try {
+      var salvo = JSON.parse(localStorage.getItem("bio_atual_cenario") || "null");
+      if (salvo) Object.keys(cenario).forEach(function (k) { if (salvo[k] != null) cenario[k] = String(salvo[k]); });
+    } catch (e) {}
+
+    var st = {};          // estado da simulação em andamento
+    var timers = [];      // timers da tela atual (limpos a cada troca de tela)
+
+    function later(fn, ms) { timers.push(setTimeout(fn, ms)); }
+    function clearTimers() { timers.forEach(clearTimeout); timers = []; }
+    function $(id) { return document.getElementById(id); }
+
+    function signer() { return st.signers[st.cur]; }
+    function isRemoto() { return cenario.canal === "remoto"; }
+    function temSpf() { return cenario.spf === "sim" && st.cur === 0; } // SPF só do proponente (R06)
+
+    // ---------- Navegação ----------
+    function show(sectionId, code) {
+      clearTimers();
+      document.querySelectorAll(".scr.active").forEach(function (s) { s.classList.remove("active"); });
+      $(sectionId).classList.add("active");
+      setCode(code);
+    }
+    function setCode(code) {
+      st.code = code;
+      $("simCode").textContent = code;
+      $("simName").textContent = NOMES[code] || "";
+      var s = st.signers && st.signers[st.cur];
+      $("simWho").textContent = s ? "Assinando: " + s.papel + " · " + s.nome : "";
+      var faceFalhas = st.faceMode === "spf" ? st.spfFaceFails : st.faceFails;
+      $("faceCount").textContent = (st.faceMode === "spf" ? "Selfie do SPF · " : "") + "Tentativas com falha: " + (faceFalhas || 0) + " de " + MAX_FALHAS;
+      $("docCount").textContent = "Falhas (frente + verso): " + (st.docFails || 0) + " de " + MAX_FALHAS;
+      var jump = $("simJump");
+      if ([].some.call(jump.options, function (o) { return o.value === code; })) jump.value = code;
+    }
+
+    function start() {
+      var n = 1 + parseInt(cenario.avalistas, 10);
+      st = { signers: [], cur: 0, code: "", faceFails: 0, docFails: 0, spfFaceFails: 0 };
+      for (var i = 0; i < n; i++) {
+        st.signers.push({
+          nome: PESSOAS[i].nome, cpf: PESSOAS[i].cpf, papel: PESSOAS[i].papel,
+          status: (i > 0 && cenario.aguarde === "sim") ? "aguarde" : "liberado"
+        });
+      }
+      if (isRemoto()) {
+        st.cur = Math.min(parseInt(cenario.parte, 10) || 0, n - 1);
+        openToken();
+      } else {
+        openLista();
+      }
+    }
+
+    function resetSignerCounters() { st.faceFails = 0; st.docFails = 0; st.spfFaceFails = 0; }
+
+    // ---------- 000 · Token (remoto) ----------
+    function openToken(errCode) {
+      var err = $("tokenError");
+      if (errCode === "000-1") { err.hidden = false; err.firstChild.textContent = "Código incorreto, tente novamente."; }
+      else if (errCode === "000-2") { err.hidden = false; err.firstChild.textContent = "O Token deve possuir 6 dígitos"; }
+      else { err.hidden = true; }
+      $("tokenInput").value = "";
+      show("s-token", errCode || "000");
+    }
+    $("tokenInput").addEventListener("input", function () { this.value = this.value.replace(/\D/g, "").slice(0, 6); });
+    $("tokenGo").addEventListener("click", function () {
+      var v = $("tokenInput").value;
+      if (v.length !== 6) return openToken("000-2");
+      if (v !== VALID_TOKEN) return openToken("000-1");
+      resetSignerCounters();
+      openConsent(); // remoto: da 000 direto para a 002 (R01)
+    });
+    $("tokenTips").addEventListener("click", openVideo);
+
+    // ---------- 000-V · Vídeo tutorial ----------
+    function openVideo() {
+      $("videoBar").style.transition = "none";
+      $("videoBar").style.width = "0";
+      $("videoPlay").style.display = "";
+      show("s-video", "000-V");
+    }
+    $("videoBox").addEventListener("click", function () {
+      $("videoPlay").style.display = "none";
+      var bar = $("videoBar");
+      bar.style.transition = "none"; bar.style.width = "0";
+      requestAnimationFrame(function () { bar.style.transition = "width 12s linear"; bar.style.width = "100%"; });
+    });
+    $("videoOk").addEventListener("click", function () { openToken(); });
+
+    // ---------- 001 · Assinantes Concessionária (presencial) ----------
+    function openLista() {
+      var body = $("sigBody");
+      body.innerHTML = "";
+      st.signers.forEach(function (s, i) {
+        var tr = document.createElement("tr");
+        var act = "";
+        if (s.status === "liberado") act = '<button type="button" class="sig-link" data-sig="' + i + '">Assinar</button>';
+        else if (s.status === "aguarde") act = '<span class="sig-wait">Aguarde</span>';
+        tr.innerHTML = "<td>" + s.nome + "</td><td>" + s.cpf + '</td><td class="act">' + act + "</td>";
+        body.appendChild(tr);
+      });
+      var anyWait = st.signers.some(function (s) { return s.status === "aguarde"; });
+      var code = anyWait ? "001-1" : (st.signers.length > 1 && st.signers.every(function (s) { return s.status === "liberado"; }) ? "001-2" : "001");
+      show("s-lista", code);
+    }
+    $("sigBody").addEventListener("click", function (e) {
+      var b = e.target.closest("[data-sig]");
+      if (!b) return;
+      st.cur = parseInt(b.getAttribute("data-sig"), 10);
+      resetSignerCounters();
+      openConsent();
+    });
+    // "Atualizar Lista": simula que o banco de propostas já sincronizou (R04).
+    $("sigRefresh").addEventListener("click", function () {
+      st.signers.forEach(function (s) { if (s.status === "aguarde") s.status = "liberado"; });
+      openLista();
+    });
+
+    // ---------- 002 · Consentimento da captura facial ----------
+    function openConsent() {
+      $("swConsent").classList.remove("on");
+      $("consentGo").disabled = true;
+      show("s-consent", "002");
+    }
+    document.querySelector('[data-sw="consent"]').addEventListener("click", function () {
+      var on = $("swConsent").classList.toggle("on");
+      $("consentGo").disabled = !on;
+    });
+    $("consentGo").addEventListener("click", function () { openTips("padrao"); });
+
+    // ---------- 003 / 016-1 · Dicas da selfie ----------
+    function openTips(modo) {
+      st.faceMode = modo;
+      $("tipsTitle").textContent = modo === "spf"
+        ? "Dicas importantes da Captura da Selfie para Assinatura do SPF"
+        : "Dicas importantes para Captura da Selfie";
+      show("s-tips", modo === "spf" ? "016-1" : "003");
+    }
+    document.querySelectorAll('[data-act="tipsOk"]').forEach(function (b) {
+      b.addEventListener("click", function () { openFace(); });
+    });
+
+    // ---------- 004 / 016-2 · Captura facial: 2 capturas, a 2ª com o rosto mais próximo ----------
+    function openFace() {
+      var spf = st.faceMode === "spf";
+      var dot1 = $("dot1"), dot2 = $("dot2"), prog = $("ovalProg"), check = $("ovalCheck"), mask = $("ovalMask");
+      function resetRing() {
+        prog.style.transition = "none";
+        prog.style.strokeDashoffset = "100";
+        check.classList.remove("show");
+        void prog.getBoundingClientRect();
+        prog.style.transition = "";
+      }
+      function fillRing() { prog.style.strokeDashoffset = "0"; }
+      dot1.className = "dot cur"; dot2.className = "dot";
+      mask.classList.remove("closer");
+      $("faceMsg").textContent = "Tente não se mexer";
+      resetRing();
+      show("s-face", spf ? "016-2" : "004");
+
+      later(fillRing, 250);
+      later(function () { check.classList.add("show"); }, 2400);
+      // 2ª captura: rosto mais próximo.
+      later(function () {
+        dot1.className = "dot done"; dot2.className = "dot cur";
+        resetRing();
+        mask.classList.add("closer");
+        $("faceMsg").textContent = "Aproxime o rosto";
+      }, 3000);
+      later(function () { $("faceMsg").textContent = "Tente não se mexer"; fillRing(); }, 3900);
+      later(function () { check.classList.add("show"); dot2.className = "dot done"; }, 6050);
+      later(function () {
+        openWait(spf ? "016-3" : "005", function () { faceResult(spf); });
+      }, 6600);
+    }
+
+    function faceResult(spf) {
+      if ($("failFace").checked) {
+        $("failFace").checked = false;
+        if (spf) st.spfFaceFails++; else st.faceFails++;
+        var falhas = spf ? st.spfFaceFails : st.faceFails;
+        if (falhas >= MAX_FALHAS) return openCancel("face");
+        return openAlertFace();
+      }
+      if (spf) openTermos("016-4"); else openDocChoice();
+    }
+
+    // ---------- 005 / 016-3 · Aguarde ----------
+    function openWait(code, then, ms) {
+      show("s-wait", code);
+      later(then, ms || 1800);
+    }
+
+    // ---------- 004-1 · Falha na captura facial (R10) ----------
+    function openAlertFace() {
+      $("alertText").textContent = "Não foi possível realizar a captura facial. Por favor, tente novamente.";
+      $("alertBtnWrap").hidden = false;
+      show("s-alert", "004-1");
+    }
+    $("alertBtn").addEventListener("click", function () { openTips(st.faceMode); });
+
+    // ---------- 009-2 · Cancelamento após 3 falhas (R08 / R10) ----------
+    function openCancel(origem) {
+      $("alertText").textContent = isRemoto()
+        ? "Desculpe, não foi possível seguir com a assinatura. Por favor, solicite à concessionária o reenvio do link de assinatura."
+        : "Desculpe, não foi possível seguir com a assinatura. Por favor, gere um novo QR code ou anexe os documentos via IHS.";
+      $("alertBtnWrap").hidden = true;
+      show("s-alert", "009-2");
+      $("simName").textContent = origem === "face" ? "Assinatura cancelada (3ª falha facial)" : "Assinatura cancelada (3ª falha no documento)";
+    }
+
+    // ---------- 006 · Escolha da forma de captura ----------
+    function openDocChoice() { show("s-doc-choice", "006"); }
+    $("choiceCnh").addEventListener("click", function () { show("s-cnh-info", "006-1"); });
+    $("choiceFisico").addEventListener("click", function () { show("s-doc-tips", "007"); });
+    document.querySelectorAll('[data-act="toChoice"]').forEach(function (b) { b.addEventListener("click", openDocChoice); });
+
+    // ---------- 006-1 a 006-5 · CNH Digital ----------
+    var ARQUIVOS = [
+      { nome: "CNH-Digital_JOAO.pdf", tam: "186KB", erro: null },
+      { nome: "Contrato_Aluguel_2026.pdf", tam: "60KB", erro: "006-3" },
+      { nome: "GameStation Escritorio.pdf", tam: "55.5MB", erro: "006-4" },
+      { nome: "DOC-20260916-WA0012.pdf", tam: "198KB", erro: "006-5" }
+    ];
+    var ERROS_ARQ = {
+      "006-3": "Arquivo com páginas além do permitido",
+      "006-4": "Arquivo com o tamanho maior que o permitido",
+      "006-5": "Tipo de documento não aceito, envie uma CNH Digital"
+    };
+    $("cnhInfoGo").addEventListener("click", function () { openCnhAdd(); });
+    $("cnhBack").addEventListener("click", function () { show("s-cnh-info", "006-1"); });
+    $("cnhHelp").addEventListener("click", function () { show("s-cnh-info", "006-1"); });
+
+    function openCnhAdd(arquivo) {
+      var card = $("fileCard");
+      $("picker").hidden = true;
+      if (!arquivo) {
+        $("cnhTitle").textContent = "Adicione o documento";
+        $("cnhSub").textContent = "Envie um arquivo único no formato PDF com tamanho máximo de 4MB";
+        card.className = "file-card";
+        $("fileT1").textContent = "Escolher arquivo";
+        $("fileT2").textContent = "Toque para selecionar";
+        $("fileIco").innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" stroke="#e2161f" stroke-width="1.8"><path d="M12 3v18M3 12h18"/></svg>';
+        $("fileErr").hidden = true;
+        $("cnhHelp").hidden = false;
+        $("cnhSend").hidden = true;
+        st.arquivo = null;
+        return show("s-cnh-add", "006-2");
+      }
+      st.arquivo = arquivo;
+      $("cnhTitle").textContent = "Envio de documento digital";
+      $("cnhSub").textContent = "Garanta que o arquivo selecionado é um documento digital original";
+      card.className = "file-card sel" + (arquivo.erro ? " err" : "");
+      $("fileT1").textContent = "Toque para substituir";
+      $("fileT2").textContent = arquivo.nome + " • " + arquivo.tam;
+      $("fileIco").innerHTML = '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="1.5"><path d="M5 9a7 7 0 0 1 12-3l2 2M19 15a7 7 0 0 1-12 3l-2-2"/><path d="M19 4v4h-4M5 20v-4h4"/></svg>';
+      $("fileErr").hidden = !arquivo.erro;
+      $("fileErrText").textContent = arquivo.erro ? ERROS_ARQ[arquivo.erro] : "";
+      $("cnhHelp").hidden = true;
+      $("cnhSend").hidden = false;
+      $("cnhSend").disabled = !!arquivo.erro;
+      show("s-cnh-add", arquivo.erro || "006-OK");
+    }
+    (function montarPicker() {
+      var list = $("pickerList");
+      ARQUIVOS.forEach(function (a, i) {
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = "picker-item";
+        b.innerHTML = '<svg width="30" height="34" viewBox="0 0 30 34"><path d="M3 1h16l8 8v22a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2z" fill="#e8453c"/><text x="15" y="25" text-anchor="middle" font-family="Arial" font-size="8" font-weight="700" fill="#fff">PDF</text></svg>'
+          + '<span><span class="pn" style="display:block">' + a.nome + '</span><span class="ps" style="display:block">' + a.tam + " · " + ["hoje", "ontem", "12 set.", "16 set."][i] + "</span></span>";
+        b.addEventListener("click", function () { openCnhAdd(a); });
+        list.appendChild(b);
+      });
+    })();
+    $("fileCard").addEventListener("click", function () { $("picker").hidden = false; });
+    $("picker").addEventListener("click", function (e) { if (e.target === this) this.hidden = true; });
+    // CNH Digital válida: segue direto para a 012 (R07).
+    $("cnhSend").addEventListener("click", function () {
+      if (!st.arquivo || st.arquivo.erro) return;
+      openWait("005", openAuth);
+    });
+
+    // ---------- 007 a 011 · Documento físico ----------
+    $("docTipsGo").addEventListener("click", function () { openCam("frente"); });
+
+    function svgDocFrente() {
+      return '<svg viewBox="0 0 290 340" aria-hidden="true"><g transform="translate(20 330) rotate(-90)">'
+        + '<rect x="0" y="0" width="310" height="250" rx="6" fill="#cfe5c3"/>'
+        + '<rect x="6" y="6" width="298" height="238" rx="4" fill="none" stroke="#3f9a4e" stroke-width="7" stroke-dasharray="3 2"/>'
+        + '<rect x="18" y="18" width="274" height="214" fill="#e3f0d8"/>'
+        + '<text x="155" y="40" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#2f7a3c">REPÚBLICA FEDERATIVA DO BRASIL</text>'
+        + '<text x="124" y="62" font-family="Arial" font-size="8" fill="#355">SECRETARIA DE SEGURANÇA</text>'
+        + '<text x="124" y="92" font-family="Arial" font-size="7" fill="#567">NOME</text>'
+        + '<text x="124" y="104" font-family="Arial" font-size="11" font-weight="700" fill="#223">JOÃO DA SILVA SANTOS</text>'
+        + '<text x="124" y="128" font-family="Arial" font-size="7" fill="#567">FILIAÇÃO</text>'
+        + '<text x="124" y="139" font-family="Arial" font-size="8" fill="#223">PAI FICTÍCIO DA SILVA</text>'
+        + '<text x="124" y="150" font-family="Arial" font-size="8" fill="#223">MÃE FICTÍCIA DA SILVA</text>'
+        + '<text x="124" y="174" font-family="Arial" font-size="7" fill="#567">DATA DE NASCIMENTO</text>'
+        + '<text x="124" y="186" font-family="Arial" font-size="9" font-weight="700" fill="#223">01/01/1990</text>'
+        + '<rect x="26" y="120" width="84" height="104" fill="#8a7a6a"/>'
+        + '<circle cx="68" cy="158" r="20" fill="#d2a07c"/><path d="M36 224c4-30 18-40 32-40s28 10 32 40z" fill="#3d4c5c"/><path d="M48 150c2-18 12-24 20-24s18 6 20 24c-6-8-14-10-20-10s-14 2-20 10z" fill="#2b2018"/>'
+        + '<text x="155" y="240" text-anchor="middle" font-family="Arial" font-size="10" font-weight="700" fill="#2f7a3c" letter-spacing="2">CARTEIRA DE IDENTIDADE</text>'
+        + '</g></svg>';
+    }
+    function svgDocVerso() {
+      return '<svg viewBox="0 0 290 340" aria-hidden="true"><g transform="translate(20 330) rotate(-90)">'
+        + '<rect x="0" y="0" width="310" height="250" rx="6" fill="#cfe5c3"/>'
+        + '<rect x="6" y="6" width="298" height="238" rx="4" fill="none" stroke="#3f9a4e" stroke-width="7" stroke-dasharray="3 2"/>'
+        + '<rect x="18" y="18" width="274" height="214" fill="#e3f0d8"/>'
+        + '<text x="30" y="44" font-family="Arial" font-size="7" fill="#567">REGISTRO GERAL</text>'
+        + '<text x="30" y="58" font-family="Arial" font-size="13" font-weight="700" fill="#c0392b">00.000.000-0</text>'
+        + '<text x="160" y="44" font-family="Arial" font-size="7" fill="#567">DATA DE EXPEDIÇÃO</text>'
+        + '<text x="160" y="58" font-family="Arial" font-size="10" font-weight="700" fill="#223">01/01/2020</text>'
+        + '<text x="30" y="84" font-family="Arial" font-size="7" fill="#567">CPF</text>'
+        + '<text x="30" y="96" font-family="Arial" font-size="9" fill="#223">123.456.789-09</text>'
+        + '<text x="30" y="120" font-family="Arial" font-size="7" fill="#567">NATURALIDADE</text>'
+        + '<text x="30" y="132" font-family="Arial" font-size="9" fill="#223">CIDADE FICTÍCIA - UF</text>'
+        + '<rect x="180" y="110" width="96" height="100" fill="#f3f3ee"/>'
+        + '<g fill="none" stroke="#333" stroke-width="1.2"><ellipse cx="228" cy="160" rx="10" ry="14"/><ellipse cx="228" cy="160" rx="18" ry="24"/><ellipse cx="228" cy="160" rx="26" ry="33"/><ellipse cx="228" cy="160" rx="34" ry="42"/></g>'
+        + '<text x="228" y="224" text-anchor="middle" font-family="Arial" font-size="7" fill="#567">POLEGAR DIREITO</text>'
+        + '<text x="155" y="240" text-anchor="middle" font-family="Arial" font-size="9" font-weight="700" fill="#2f7a3c" letter-spacing="1.5">VÁLIDA EM TODO O TERRITÓRIO NACIONAL</text>'
+        + '</g></svg>';
+    }
+
+    // Frente e verso com captura automática e contagem regressiva. O print 010 mostra
+    // um disparo manual no verso, mas isso é um bug conhecido (R07) e não é replicado.
+    function openCam(lado) {
+      st.lado = lado;
+      // Falha conhecida (R11): o usuário pode apontar o verso na 1ª captura e o sistema aceita.
+      if (lado === "frente") st.invertido = $("failOrder").checked;
+      $("camMsg").textContent = lado === "frente" ? "Tente não se mexer" : "Enquadre o documento na posição vertical";
+      $("camDoc").innerHTML = imgLado(lado);
+      $("camThumb").hidden = lado === "frente";
+      $("camThumb").innerHTML = imgLado("frente");
+      var cd = $("countdown");
+      cd.hidden = true;
+      $("camFlash").classList.remove("on");
+      show("s-cam", lado === "frente" ? "008" : "010");
+      later(function () { cd.hidden = false; cd.textContent = "3"; }, 1100);
+      later(function () { cd.textContent = "2"; }, 1900);
+      later(function () { cd.textContent = "1"; }, 2700);
+      later(function () { cd.hidden = true; $("camFlash").classList.add("on"); }, 3500);
+      later(function () { openReview(lado); }, 3700);
+    }
+
+    // Imagem que aparece em cada etapa: com a ordem invertida, a 1ª captura mostra o verso.
+    function mostraFrente(etapa) { return (etapa === "frente") !== !!st.invertido; }
+    function imgLado(etapa) { return mostraFrente(etapa) ? svgDocFrente() : svgDocVerso(); }
+
+    function openReview(lado) {
+      // O título segue o lado real fotografado: com a ordem invertida, o sistema até
+      // identifica "lado sem foto" na 1ª revisão e "lado com foto" na 2ª, mas aceita
+      // as duas e só falha no fim, com um aviso genérico (R11).
+      $("reviewTitle").textContent = mostraFrente(lado) ? "DNI lado com foto" : "DNI lado sem foto";
+      $("reviewImg").innerHTML = imgLado(lado);
+      show("s-review", lado === "frente" ? "009" : "011");
+    }
+    $("reviewRedo").addEventListener("click", function () { openCam(st.lado); });
+    $("reviewGo").addEventListener("click", function () {
+      // Ordem invertida (R11): depois das duas fotos, aviso genérico de baixa qualidade e fim.
+      if (st.lado === "verso" && st.invertido) {
+        st.invertido = false;
+        $("failOrder").checked = false;
+        return openDocFail(true);
+      }
+      // Validação da imagem: 3 falhas no total (frente + verso) cancelam a assinatura (R08).
+      if ($("failDoc").checked) {
+        $("failDoc").checked = false;
+        st.docFails++;
+        if (st.docFails >= MAX_FALHAS) return openCancel("doc");
+        return openDocFail(false);
+      }
+      if (st.lado === "frente") openCam("verso");
+      else openWait("005", openAuth);
+    });
+    // 009-1 tem "Tentar novamente"; a 011-1 (ordem invertida) não tem retorno.
+    function openDocFail(semRetorno) {
+      $("docFailBtnWrap").firstElementChild.hidden = semRetorno;
+      $("docFailX").hidden = semRetorno;
+      show("s-doc-fail", semRetorno ? "011-1" : "009-1");
+    }
+    $("docFailGo").addEventListener("click", function () { openCam(st.lado); });
+
+    // ---------- 012 · Autorizações (nenhuma obrigatória; boleto ligado por padrão) ----------
+    function openAuth() {
+      document.querySelectorAll("[data-auth]").forEach(function (sw) {
+        sw.classList.toggle("on", sw.getAttribute("data-auth") === "boleto");
+      });
+      show("s-auth", "012");
+    }
+    document.querySelectorAll("[data-auth]").forEach(function (sw) {
+      sw.addEventListener("click", function () { sw.classList.toggle("on"); });
+    });
+    $("authGo").addEventListener("click", function () { openTermos("013"); });
+
+    // ---------- Documentos fictícios dos termos ----------
+    function sec(titulo) { return '<div class="pd-sec">' + titulo + "</div>"; }
+    function row(cells) {
+      return '<div class="pd-row">' + cells.map(function (c) {
+        return '<div class="pd-cell" style="grid-column:span ' + c[2] + '"><b>' + c[0] + "</b><span>" + (c[1] || "&nbsp;") + "</span></div>";
+      }).join("") + "</div>";
+    }
+    function docHead(titulo) {
+      return '<div class="pd-head"><span class="pd-logo">HONDA<small>Banco</small></span><span class="pd-title">' + titulo + "</span></div>";
+    }
+    function docProposta() {
+      return '<div class="pdf-doc">' + docHead("PROPOSTA DE FINANCIAMENTO - PESSOA FÍSICA")
+        + '<div class="pd-row"><div class="pd-cell" style="grid-column:span 6;text-align:center;font-weight:700;font-size:8px">CDC</div><div class="pd-cell" style="grid-column:span 6;text-align:center;font-weight:700;font-size:8px">PROPONENTE</div></div>'
+        + row([["Concessionária", "MOTO CLUBE EXEMPLO", 6], ["Cód. Assist. Técnica", "1000001", 3], ["Data", "16/10/2026", 3]])
+        + row([["Nome do Vendedor(a)", "VENDEDOR FICTÍCIO", 4], ["CPF do Vendedor(a)", "000.000.000-00", 2], ["Telefone DDD/Nº", "", 2], ["Nº da Proposta", "1000000001-1", 2], ["Código da Tabela", "2CNNA000001", 2]])
+        + sec("INFORMAÇÕES CADASTRAIS")
+        + row([["CPF", "123.456.789-09", 3], ["Nome Completo", "JOÃO DA SILVA SANTOS", 6], ["Data Nascimento", "01/01/1990", 3]])
+        + row([["Tipo Doc Ident.", "RG", 2], ["Nº Documento", "00000000-0", 2], ["Órgão Expedidor", "SSP", 2], ["Data Emissão", "01/01/2020", 2], ["Naturalidade", "CIDADE FICTÍCIA", 2], ["Sexo", "MASC.", 2]])
+        + row([["Estado Civil", "SOLTEIRO", 3], ["Qtd. Dep.", "0", 2], ["E-mail", "joao.ficticio@exemplo.com", 5], ["Nacionalidade", "BRASIL", 2]])
+        + row([["Nome da Mãe", "MÃE FICTÍCIA DA SILVA", 6], ["Nome do Pai", "PAI FICTÍCIO DA SILVA", 6]])
+        + sec("INFORMAÇÕES RESIDENCIAIS")
+        + row([["Endereço Residencial", "RUA EXEMPLO", 6], ["Nº", "100", 2], ["Complemento", "", 4]])
+        + row([["Bairro", "CENTRO", 3], ["CEP", "00000-000", 2], ["Cidade", "CIDADE FICTÍCIA", 3], ["UF", "SP", 1], ["Tempo Residência", "5 ANO(S)", 3]])
+        + row([["Tipo Residência", "PRÓPRIA/QUITADA", 4], ["Valor do Aluguel / Prestação", "0,00", 4], ["DDD Nº Celular", "(11) 90000-0000", 4]])
+        + sec("INFORMAÇÕES PROFISSIONAIS")
+        + row([["Empresa onde trabalha", "EMPRESA EXEMPLO LTDA", 6], ["Ramo de Atividade", "COMÉRCIO", 6]])
+        + row([["Profissão/Cargo", "AUXILIAR ADMINISTRATIVO", 4], ["Data Admissão", "02/02/2020", 3], ["Natureza da Ocupação", "PROFISSIONAL REGISTRADO (CLT)", 5]])
+        + row([["Renda Mensal Comprovada", "3.500,00", 3], ["Outras Rendas Mensais", "0,00", 3], ["Total", "3.500,00", 3], ["Sócio de empresa", "NÃO", 3]])
+        + sec("FONTES DE REFERÊNCIA")
+        + row([["Banco", "", 2], ["Agência", "", 2], ["Nº Conta", "", 3], ["Contato", "", 5]])
+        + row([["Autorizo débito em conta", "NÃO", 6], ["Pessoal", "", 6]])
+        + sec("DESCRIÇÃO DO BEM A SER FINANCIADO")
+        + row([["Marca", "HONDA", 3], ["Modelo", "XRE 190 ADVENTURE", 4], ["Ano Fabr.", "2026", 1], ["Ano Modelo", "2026", 2], ["Zero Km", "SIM", 2]])
+        + row([["Combustível", "ALC/GAS", 3], ["Chassi", "", 4], ["Valor de Mercado", "29.796,00", 3], ["Placa", "", 2]])
+        + sec("CARACTERÍSTICAS DA OPERAÇÃO")
+        + row([["Valor da Venda (R$)", "28.400,00", 3], ["(+) Valor dos Acessórios (R$)", "0,00", 3], ["(+) Tarifa Cadastro (R$)", "790,00", 3], ["(-) Entrada (R$)", "22.400,00", 3]])
+        + row([["(+) IOF (R$)", "27,93", 3], ["(=) Valor Financiado (R$)", "7.350,40", 3], ["Valor da Prestação (R$)", "305,79", 3], ["Qtde. Prestações", "36", 3]])
+        + row([["Modalidade de Pagto.", "PREFIXADO", 3], ["1º Vencimento", "16/11/2026", 3], ["Taxa Mensal", "2,37", 2], ["Taxa Anual", "32,46", 2], ["CET Anual", "55,28", 2]])
+        + sec("DATAS E ASSINATURAS")
+        + row([["Local e data", "CIDADE FICTÍCIA, 16/10/2026", 6], ["Assinatura do Proponente", "ASSINATURA DIGITAL", 6]])
+        + "</div>";
+    }
+    function docOrcamento() {
+      var linhas = [
+        ["A", "INFORMAÇÕES GERAIS: DADOS DO CONSUMIDOR E DO VEÍCULO", "", "", true],
+        ["A.1", "Nome do(a) Consumidor(a): JOÃO DA SILVA SANTOS · CPF: 123.456.789-09", "", ""],
+        ["A.2", "Veículo-Marca: HONDA-XRE 190 ADVENTURE · Ano Modelo: 2026/2026 · Cor: CINZA", "", ""],
+        ["A.3", "Concessionária / Revenda / Lojista: MOTO CLUBE EXEMPLO", "", ""],
+        ["B", "VALOR FINANCIADO (PRINCIPAL + ACESSÓRIOS + SERVIÇOS DE TERCEIROS)", "R$", "% (*)", true],
+        ["B.1", "Valor do veículo à vista", "28.400,00", ""],
+        ["B.2", "Acessórios - Financiados: ( )sim (x)não", "0,00", "0,00"],
+        ["B.3", "IPVA - Financiado: ( )sim (x)não", "0,00", "0,00"],
+        ["B.4", "Multas de trânsito - Financiadas: ( )sim (x)não", "0,00", "0,00"],
+        ["B.5", "Licenciamento - Financiado: ( )sim (x)não", "0,00", "0,00"],
+        ["B.6", "Seguro(s) - Financiado(s): ( )sim (x)não", "0,00", "0,00"],
+        ["B.9", "Registro contrato - Órgão de trânsito - Financiado: (x)sim ( )não", "532,47", "7,24"],
+        ["B.10", "SUBTOTAL: VEÍCULO + ACESSÓRIOS + SERVIÇOS DE TERCEIROS", "28.932,47", ""],
+        ["C", "PAGAMENTO INICIAL / ENTRADA", "", "", true],
+        ["C.1", "Valor da entrada", "22.400,00", ""],
+        ["C.2", "Valor liberado a fornecedores", "6.532,47", "88,87"],
+        ["D", "TARIFAS", "", "", true],
+        ["D.1", "Confecção de cadastro para início de relacionamento - Financiada: (x)sim ( )não", "790,00", "10,75"],
+        ["D.3", "Total de tarifas a serem financiadas", "790,00", "10,75"],
+        ["E", "IOF - IMPOSTOS INCIDENTES SOBRE A OPERAÇÃO", "", "", true],
+        ["E.1", "Valor total a ser financiado sem impostos (B.10 - C.1 + D.3)", "7.322,47", ""],
+        ["E.3", "IOF - Alíquota adicional · Alíquota 0,38% única", "27,93", "0,38"],
+        ["E.4", "Total de impostos a serem financiados", "27,93", "0,38"],
+        ["F", "DADOS DO FINANCIAMENTO", "", "", true],
+        ["F.1", "Data do 1º Vencimento", "16/11/2026", ""],
+        ["F.2", "Número de parcelas mensais", "36", ""],
+        ["F.4", "Taxa de juros mensal e anual", "2,37% a.m.", "32,46% a.a."],
+        ["F.5", "Valor de cada parcela mensal", "305,79", ""],
+        ["F.6", "VALOR TOTAL FINANCIADO (COM IMPOSTOS) (E.1 + E.4)", "7.350,40", "100,00"],
+        ["G", "VALOR TOTAL PAGO AO FINAL (F.5 X F.2) + C.1 + F.3", "33.408,44", "", true],
+        ["H", "CET - CUSTO EFETIVO TOTAL DA OPERAÇÃO", "3,74% a.m.", "55,28% a.a.", true],
+        ["I", "Prazo de validade do orçamento: 03 DIAS ÚTEIS · Data: 16/10/2026", "", ""],
+        ["J", "Assinatura do Consumidor:", "", ""]
+      ];
+      return '<div class="pdf-doc">' + docHead("ORÇAMENTO DE OPERAÇÃO DE CRÉDITO DIRETO<br>AO CONSUMIDOR (CDC) - PRODUTOS")
+        + '<div style="text-align:right;font-size:7px;margin:3px 0">ORÇAMENTO Nº 1000000001-1 / 2026</div>'
+        + '<div class="pd-sec">DADOS DE RESPONSABILIDADE DO CORRESPONDENTE (CONCESSIONÁRIA / REVENDA / LOJISTA)</div>'
+        + '<table class="pd-table">' + linhas.map(function (l) {
+          return '<tr' + (l[4] ? ' class="hl"' : "") + '><td class="c">' + l[0] + "</td><td>" + l[1] + '</td><td class="n">' + l[2] + '</td><td class="n">' + l[3] + "</td></tr>";
+        }).join("") + "</table></div>";
+    }
+    function docSpf(pagina) {
+      if (pagina === 1) {
+        return '<div class="pdf-doc">'
+          + '<div style="display:flex;align-items:flex-start;gap:14px;border-bottom:2px solid #c8102e;padding-bottom:6px">'
+          + '<div style="font-size:10px;font-weight:700;color:#444;line-height:1.3">PROPOSTA<br>DE ADESÃO</div>'
+          + '<div style="flex:1"><div style="color:#c8102e;font-weight:700;font-size:9px">SEGURO PROTEÇÃO FINANCEIRA</div><div style="font-size:6.5px;color:#555">As Condições Gerais deste seguro foram apresentadas ao segurado no momento da contratação.</div></div>'
+          + '<div style="font-size:8px;font-weight:700;color:#1f7a3a;border:1px solid #1f7a3a;padding:2px 5px">SEGURADORA</div></div>'
+          + '<div class="pd-red">▲ VOCÊ É O "PROPONENTE" NESTA PROPOSTA DE ADESÃO. AQUI ESTÃO OS SEUS DADOS PESSOAIS:</div>'
+          + row([["Nome", "JOÃO DA SILVA SANTOS", 7], ["Data de Nascimento", "01/01/1990", 3], ["Nacionalidade", "BRASIL", 2]])
+          + row([["CPF", "123.456.789-09", 4], ["Endereço", "RUA EXEMPLO, 100", 5], ["CEP", "00000-000", 3]])
+          + '<div class="pd-red">▲ CONFIRA OS DADOS DO SEGURO QUE VOCÊ VAI CONTRATAR:</div>'
+          + row([["Nº Proposta", "1.000.000.001", 3], ["Valor Financiado R$", "7.350,40", 3], ["Prêmio Único Total R$", "512,30", 3], ["IOF R$", "1,94", 3]])
+          + '<p class="pd-par"><b>Vigência do Seguro:</b> o período de vigência do seguro seguirá a vigência do contrato de financiamento, limitado a 36 meses.</p>'
+          + '<div class="pd-red">▲ CONHEÇA O SEGURO QUE VOCÊ VAI CONTRATAR EM DETALHES, PROTEÇÃO POR PROTEÇÃO:</div>'
+          + '<table class="pd-table" style="margin-top:4px"><tr class="hl"><td>Coberturas</td><td>Elegibilidade</td><td>Prêmio</td><td>Carência</td><td>Franquia</td><td>Capital Segurado</td></tr>'
+          + '<tr><td>Morte</td><td rowspan="2">Todos os tipos</td><td class="n">R$ 280,10</td><td>Não há</td><td>Não há</td><td>Saldo devedor na data do evento</td></tr>'
+          + '<tr><td>Invalidez Permanente Total por Acidente</td><td class="n">R$ 32,20</td><td>Não há</td><td>Não há</td><td>Saldo devedor na data do evento</td></tr>'
+          + '<tr><td>Desemprego Involuntário</td><td>Profissionais com vínculo empregatício (CLT)</td><td class="n">R$ 200,00</td><td>31 dias</td><td>31 dias</td><td>Até 6 parcelas</td></tr></table>'
+          + '<div class="pd-red">▲ QUEM RECEBERÁ A INDENIZAÇÃO DO SEGURO, CASO SEJA PRECISO UTILIZÁ-LO?</div>'
+          + '<p class="pd-par">O primeiro beneficiário será sempre o estipulante do seguro, que receberá o valor para efetuar o pagamento do compromisso financeiro assumido.</p>'
+          + '<div class="pd-red">▲ OUTRAS INFORMAÇÕES IMPORTANTES PARA VOCÊ:</div>'
+          + '<p class="pd-par">A contratação do seguro é opcional, sendo facultado ao segurado o seu cancelamento a qualquer tempo, com devolução do prêmio pago referente ao período a decorrer, se houver. Em caso de extinção antecipada da obrigação, o seguro estará automaticamente cancelado.</p>'
+          + "</div>";
+      }
+      return '<div class="pdf-doc">'
+        + '<div class="pd-red" style="margin-top:0">▲ DECLARAÇÃO:</div>'
+        + '<p class="pd-par">Declaro que estou em perfeitas condições de saúde, não estou realizando nenhum tratamento médico ou sob investigação médica no momento da assinatura desta proposta de adesão. Declaro para os devidos fins que não tenho outra seguradora a ser indicada para esta contratação. Declaro que antes de contratar este seguro, tive acesso às informações mínimas obrigatórias acompanhadas de todas as Condições Gerais do seguro.</p>'
+        + '<p class="pd-par">Estou ciente de que a Seguradora dispõe do prazo de 25 dias para aceitação ou recusa desta proposta, contados do seu recebimento, devendo se manifestar expressamente sobre o resultado da análise, com devida justificativa em caso de recusa.</p>'
+        + '<div class="pd-red">▲ AUTORIZAÇÃO DE PAGAMENTO:</div>'
+        + '<p class="pd-par">Autorizo a inclusão do prêmio do seguro no valor financiado do contrato de financiamento nº 1000000001-1.</p>'
+        + row([["Local e data", "CIDADE FICTÍCIA, 16/10/2026", 6], ["Assinatura do Proponente", "ASSINATURA DIGITAL", 6]])
+        + '<p class="pd-par" style="margin-top:12px;color:#666">Documento fictício para simulação de interface.</p>'
+        + "</div>";
+    }
+
+    // ---------- 013 / 014 / 015 / 016-4 · Termos ----------
+    var pdfZoom = 1;
+    function renderPdf(htmls) {
+      var area = $("pdfArea");
+      area.innerHTML = "";
+      area.scrollTop = 0;
+      htmls.forEach(function (h) {
+        var page = document.createElement("div");
+        page.className = "pdfv-page";
+        page.innerHTML = h;
+        area.appendChild(page);
+      });
+      layoutPdf();
+      $("pdfTotal").textContent = "de " + htmls.length;
+      $("pdfPage").textContent = "1";
+    }
+    function layoutPdf() {
+      var area = $("pdfArea");
+      var base = (area.clientWidth - 46) / 540;
+      var scale = base * pdfZoom;
+      area.querySelectorAll(".pdfv-page").forEach(function (page) {
+        var doc = page.firstChild;
+        doc.style.transform = "scale(" + scale + ")";
+        page.style.width = (540 * scale) + "px";
+        page.style.height = (doc.offsetHeight * scale) + "px";
+      });
+    }
+    $("pdfPlus").addEventListener("click", function () { pdfZoom = Math.min(2.2, pdfZoom * 1.2); layoutPdf(); });
+    $("pdfMinus").addEventListener("click", function () { pdfZoom = Math.max(0.6, pdfZoom / 1.2); layoutPdf(); });
+    $("pdfArea").addEventListener("scroll", function () {
+      var pages = this.querySelectorAll(".pdfv-page");
+      var idx = 0;
+      pages.forEach(function (p, i) { if (p.offsetTop - this.scrollTop < this.clientHeight / 2) idx = i; }, this);
+      $("pdfPage").textContent = String(idx + 1);
+    });
+
+    function openTermos(code) {
+      pdfZoom = 1;
+      st.termo = code;
+      var spf = code === "016-4";
+      $("termNav").style.display = spf ? "none" : "flex";
+      $("termAccept").hidden = !(code === "015" || spf);
+      $("swTerms").classList.remove("on");
+      $("termSign").disabled = true;
+      $("termPrev").disabled = code === "013";
+      $("termNext").disabled = code === "015";
+      show("s-termos", code);
+      if (spf) renderPdf([docSpf(1), docSpf(2)]);
+      else renderPdf([code === "013" ? docProposta() : docOrcamento()]);
+    }
+    $("termPrev").addEventListener("click", function () { openTermos(st.termo === "015" ? "014" : "013"); });
+    // Na 2ª página, o "Próximo" libera o aceite (como nos prints 014 → 015).
+    $("termNext").addEventListener("click", function () { openTermos(st.termo === "013" ? "014" : "015"); });
+    document.querySelector('[data-sw="terms"]').addEventListener("click", function () {
+      var on = $("swTerms").classList.toggle("on");
+      $("termSign").disabled = !on;
+    });
+    $("termSign").addEventListener("click", function () {
+      if (st.termo === "016-4") {
+        if (isRemoto()) openObrigado(); else openRubrica("016-5"); // rubrica só no presencial (R05)
+      } else {
+        if (isRemoto()) afterContrato(); else openRubrica("016");
+      }
+    });
+
+    // Depois do contrato: SPF só para o proponente que contratou (R06).
+    function afterContrato() {
+      if (temSpf()) openTips("spf"); else openObrigado();
+    }
+
+    // ---------- 016 / 016-5 · Rubrica (opcional) ----------
+    var rub = { ctx: null, drawing: false };
+    function openRubrica(code) {
+      st.rubrica = code;
+      show("s-rubrica", code);
+      var c = $("rubCanvas");
+      var w = c.clientWidth, h = c.clientHeight;
+      c.width = w * 2; c.height = h * 2;
+      rub.ctx = c.getContext("2d");
+      rub.ctx.setTransform(2, 0, 0, 2, 0, 0);
+      rub.ctx.lineWidth = 3.2;
+      rub.ctx.lineCap = "round";
+      rub.ctx.lineJoin = "round";
+      rub.ctx.strokeStyle = "#000";
+    }
+    function rubPos(e) {
+      var c = $("rubCanvas"), r = c.getBoundingClientRect();
+      return { x: (e.clientX - r.left) * (c.clientWidth / r.width), y: (e.clientY - r.top) * (c.clientHeight / r.height) };
+    }
+    $("rubCanvas").addEventListener("pointerdown", function (e) {
+      rub.drawing = true; this.setPointerCapture(e.pointerId);
+      var p = rubPos(e); rub.ctx.beginPath(); rub.ctx.moveTo(p.x, p.y);
+    });
+    $("rubCanvas").addEventListener("pointermove", function (e) {
+      if (!rub.drawing) return;
+      var p = rubPos(e); rub.ctx.lineTo(p.x, p.y); rub.ctx.stroke();
+    });
+    ["pointerup", "pointercancel"].forEach(function (ev) {
+      $("rubCanvas").addEventListener(ev, function () { rub.drawing = false; });
+    });
+    $("rubClear").addEventListener("click", function () {
+      var c = $("rubCanvas"); rub.ctx.clearRect(0, 0, c.width, c.height);
+    });
+    // Rubrica não é obrigatória: ASSINAR com a área em branco segue normalmente (R09).
+    $("rubSign").addEventListener("click", function () {
+      if (st.rubrica === "016-5") openObrigado(); else afterContrato();
+    });
+
+    // ---------- 017 · Obrigado! e avaliação (R02) ----------
+    var STAR_SVG = '<svg width="46" height="46" viewBox="0 0 24 24"><path d="M12 2.2l2.95 6.1 6.7.95-4.85 4.7 1.15 6.65L12 17.45 6.05 20.6 7.2 13.95 2.35 9.25l6.7-.95z" stroke-linejoin="round"/></svg>';
+    (function montarEstrelas() {
+      var box = $("stars");
+      for (var i = 1; i <= 5; i++) {
+        var b = document.createElement("button");
+        b.type = "button"; b.className = "star"; b.setAttribute("data-n", i);
+        b.setAttribute("aria-label", i + " estrela" + (i > 1 ? "s" : ""));
+        b.innerHTML = STAR_SVG;
+        box.appendChild(b);
+      }
+    })();
+
+    function openObrigado() {
+      st.nota = 0;
+      $("rateBlock").hidden = false;
+      $("sentBlock").hidden = true;
+      $("suggestWrap").hidden = true;
+      $("opModal").hidden = true;
+      $("opText").value = "";
+      paintStars();
+      // Remoto: sem o botão INÍCIO; a passagem para a 018 é automática (R02).
+      $("inicioWrap").hidden = isRemoto();
+      show("s-obrigado", "017");
+    }
+    function paintStars() {
+      document.querySelectorAll(".star").forEach(function (s) {
+        s.classList.toggle("on", parseInt(s.getAttribute("data-n"), 10) <= st.nota);
+      });
+    }
+    $("stars").addEventListener("click", function (e) {
+      var b = e.target.closest(".star");
+      if (!b) return;
+      clearTimers();
+      st.nota = parseInt(b.getAttribute("data-n"), 10);
+      paintStars();
+      if (st.nota <= 4) {
+        $("suggestWrap").hidden = false;
+        setCode("017-1");
+      } else {
+        $("suggestWrap").hidden = true;
+        setCode("017");
+        if (isRemoto()) later(openFim, 1200);
+      }
+    });
+    $("suggestBtn").addEventListener("click", function () {
+      $("opModal").hidden = false;
+      setCode("017-2");
+      $("opText").focus();
+    });
+    $("opText").addEventListener("input", function () { setCode(this.value.trim() ? "017-3" : "017-2"); });
+    $("opClose").addEventListener("click", function () { $("opModal").hidden = true; setCode("017-1"); });
+    $("opSend").addEventListener("click", function () {
+      $("opModal").hidden = true;
+      $("rateBlock").hidden = true;
+      $("sentBlock").hidden = false;
+      setCode("017-4");
+      if (isRemoto()) later(openFim, 2500);
+    });
+    // Presencial: INÍCIO volta para a 001 (próxima parte) ou leva à 018 (todas assinaram).
+    // A avaliação é opcional: dá para tocar em INÍCIO sem dar estrelas.
+    $("inicioBtn").addEventListener("click", function () {
+      signer().status = "assinado";
+      var faltam = st.signers.some(function (s) { return s.status !== "assinado"; });
+      if (faltam) openLista(); else openFim();
+    });
+
+    // ---------- 018 · Fim ----------
+    function openFim() {
+      if (isRemoto()) {
+        $("fimTitle").textContent = "Assinatura Digital";
+        $("fimText").textContent = "Assinatura finalizada com sucesso.";
+      } else {
+        $("fimTitle").textContent = "Assinantes Concessionária";
+        $("fimText").textContent = "Assinatura finalizada para todos os assinantes";
+      }
+      show("s-fim", "018");
+    }
+
+    // ================================================================
+    // Painel de simulação
+    // ================================================================
+    function salvarCenario() {
+      try { localStorage.setItem("bio_atual_cenario", JSON.stringify(cenario)); } catch (e) {}
+    }
+    function pintarPainel() {
+      document.querySelectorAll(".seg[data-key]").forEach(function (seg) {
+        var key = seg.getAttribute("data-key");
+        seg.querySelectorAll("button").forEach(function (b) {
+          b.classList.toggle("sel", b.getAttribute("data-v") === cenario[key]);
+        });
+      });
+      var remoto = isRemoto();
+      var temAval = cenario.avalistas !== "0";
+      $("fieldAguarde").style.display = (!remoto && temAval) ? "" : "none";
+      $("fieldParte").style.display = (remoto && temAval) ? "" : "none";
+      $("tokenHint").style.display = remoto ? "" : "none";
+      var sel = $("simParte");
+      sel.innerHTML = "";
+      for (var i = 0; i <= parseInt(cenario.avalistas, 10); i++) {
+        var o = document.createElement("option");
+        o.value = String(i);
+        o.textContent = PESSOAS[i].papel + (i > 0 ? " (sem SPF)" : "");
+        sel.appendChild(o);
+      }
+      if (parseInt(cenario.parte, 10) > parseInt(cenario.avalistas, 10)) cenario.parte = "0";
+      sel.value = cenario.parte;
+    }
+    document.querySelectorAll(".seg[data-key]").forEach(function (seg) {
+      seg.addEventListener("click", function (e) {
+        var b = e.target.closest("button");
+        if (!b) return;
+        cenario[seg.getAttribute("data-key")] = b.getAttribute("data-v");
+        salvarCenario(); pintarPainel(); start();
+      });
+    });
+    $("simParte").addEventListener("change", function () {
+      cenario.parte = this.value; salvarCenario(); start();
+    });
+    $("simRestart").addEventListener("click", start);
+    $("simToggle").addEventListener("click", function () { $("sim").classList.toggle("open"); });
+
+    // "Ir para a tela": atalhos para revisar cada print sem percorrer o fluxo inteiro.
+    var ATALHOS = [
+      ["000", "000 · Identificação (token)", function () { forcarCanal("remoto"); openToken(); }],
+      ["000-1", "000-1 · Erro: código incorreto", function () { forcarCanal("remoto"); openToken("000-1"); }],
+      ["000-2", "000-2 · Erro: token incompleto", function () { forcarCanal("remoto"); openToken("000-2"); }],
+      ["000-V", "000-V · Vídeo tutorial", function () { forcarCanal("remoto"); openVideo(); }],
+      ["001", "001 · Assinantes Concessionária", function () { forcarCanal("presencial"); openLista(); }],
+      ["002", "002 · Captura da Foto (consentimento)", openConsent],
+      ["003", "003 · Dicas da selfie", function () { openTips("padrao"); }],
+      ["004", "004 · Captura facial", function () { st.faceMode = "padrao"; openFace(); }],
+      ["004-1", "004-1 · Falha na captura facial", function () { st.faceMode = "padrao"; openAlertFace(); }],
+      ["005", "005 · Aguarde", function () { openWait("005", openDocChoice, 2500); }],
+      ["006", "006 · Escolha da forma de captura", openDocChoice],
+      ["006-1", "006-1 · CNH Digital: instruções", function () { show("s-cnh-info", "006-1"); }],
+      ["006-2", "006-2 · CNH Digital: adicionar arquivo", function () { openCnhAdd(); }],
+      ["006-3", "006-3 · Erro: páginas", function () { openCnhAdd(ARQUIVOS[1]); }],
+      ["006-4", "006-4 · Erro: tamanho", function () { openCnhAdd(ARQUIVOS[2]); }],
+      ["006-5", "006-5 · Erro: tipo de documento", function () { openCnhAdd(ARQUIVOS[3]); }],
+      ["007", "007 · Fotografe o documento", function () { show("s-doc-tips", "007"); }],
+      ["008", "008 · Captura da frente", function () { openCam("frente"); }],
+      ["009", "009 · Revisão da frente", function () { st.lado = "frente"; openReview("frente"); }],
+      ["009-1", "009-1 · Falha na validação", function () { st.lado = "frente"; openDocFail(false); }],
+      ["009-2", "009-2 · Assinatura cancelada", function () { openCancel("doc"); }],
+      ["010", "010 · Captura do verso", function () { openCam("verso"); }],
+      ["011", "011 · Revisão do verso", function () { st.lado = "verso"; openReview("verso"); }],
+      ["011-1", "011-1 · Falha genérica: ordem invertida", function () { st.lado = "verso"; openDocFail(true); }],
+      ["012", "012 · Autorizações", openAuth],
+      ["013", "013 · Termos: documento 1", function () { openTermos("013"); }],
+      ["014", "014 · Termos: documento 2", function () { openTermos("014"); }],
+      ["015", "015 · Termos: aceite", function () { openTermos("015"); }],
+      ["016", "016 · Rubrica", function () { forcarCanal("presencial"); openRubrica("016"); }],
+      ["016-1", "016-1 · SPF: dicas da selfie", function () { st.cur = 0; openTips("spf"); }],
+      ["016-2", "016-2 · SPF: captura facial", function () { st.cur = 0; st.faceMode = "spf"; openFace(); }],
+      ["016-4", "016-4 · SPF: termo do seguro", function () { st.cur = 0; openTermos("016-4"); }],
+      ["016-5", "016-5 · SPF: rubrica", function () { forcarCanal("presencial"); st.cur = 0; openRubrica("016-5"); }],
+      ["017", "017 · Obrigado! (avaliação)", openObrigado],
+      ["018", "018 · Fim", openFim]
+    ];
+    // Atalhos de telas exclusivas de um canal trocam o canal do cenário, sem perder a tela.
+    function forcarCanal(canal) {
+      if (cenario.canal === canal) return;
+      cenario.canal = canal; salvarCenario(); pintarPainel();
+      start();
+    }
+    (function montarAtalhos() {
+      var sel = $("simJump");
+      var o0 = document.createElement("option");
+      o0.value = ""; o0.textContent = "Escolha uma tela…";
+      sel.appendChild(o0);
+      ATALHOS.forEach(function (a) {
+        var o = document.createElement("option");
+        o.value = a[0]; o.textContent = a[1];
+        sel.appendChild(o);
+      });
+      sel.addEventListener("change", function () {
+        var a = ATALHOS.filter(function (x) { return x[0] === sel.value; })[0];
+        if (a) a[2]();
+      });
+    })();
+
+    // ================================================================
+    // Escala do aparelho: cabe inteiro na área disponível, sem ampliar além do real.
+    // ================================================================
+    var stage = $("stage"), phone = $("phone"), slot = $("phoneSlot"), sim = $("sim");
+    function fitPhone() {
+      if (window.innerWidth <= 500) { slot.style.width = ""; slot.style.height = ""; return; }
+      var w = phone.offsetWidth, h = phone.offsetHeight;
+      // Acima de 1000px o celular ocupa a coluna do meio (34%); abaixo, a largura toda.
+      var colW = window.innerWidth > 1000 ? stage.clientWidth * 0.34 : stage.clientWidth;
+      var scale = Math.min(1, (stage.clientHeight - 32) / h, (colW - 32) / w);
+      phone.style.transform = "scale(" + scale + ")";
+      slot.style.width = (w * scale) + "px";
+      slot.style.height = (h * scale) + "px";
+    }
+    window.addEventListener("resize", function () { fitPhone(); if (st.code && /^01[3-5]$|^016-4$/.test(st.code)) layoutPdf(); });
+
+    pintarPainel();
+    fitPhone();
+    start();
+  </script>
+
+</body>
+</html>
