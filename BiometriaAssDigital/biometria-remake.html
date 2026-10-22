@@ -80,7 +80,7 @@
   .notes li { position: relative; padding-left: 16px; margin-bottom: 8px; }
   .notes li::before { content: ""; position: absolute; left: 2px; top: 7px; width: 6px; height: 6px; border-radius: 50%; background: #bbb; }
   .notes .n-new li::before { background: var(--red); }
-  .notes .tag { display: inline-block; font-size: 10.5px; font-weight: 700; color: var(--red); background: rgba(214,0,28,0.07); border-radius: 4px; padding: 0 5px; margin-left: 4px; white-space: nowrap; }
+  .notes .tag { display: inline-block; font-size: 10.5px; font-weight: 700; color: var(--red); background: rgba(214,0,28,0.07); border-radius: 4px; padding: 0 5px; margin-left: 4px; white-space: normal; }
   .notes .tag.fb { color: #7a5200; background: #fff4e0; }
   .notes .h3-hint { text-transform: none; letter-spacing: 0; font-weight: 400; color: #aaa; }
   /* Itens com área na tela: ícone de alvo e destaque ao passar o mouse ou fixar. */
@@ -572,6 +572,55 @@
   .picker-item2 .pn { display: block; font-size: 14.5px; color: #222; }
   .picker-item2 .ps { display: block; font-size: 12.5px; color: #888; margin-top: 1px; }
 
+  /* ===== Etapa 4: autorizações e contrato ===== */
+  .auth-card { margin-top: 12px; border: 1px solid var(--rk-line); border-radius: 16px; padding: 14px 14px 12px 14px; }
+  .auth-row { display: flex; gap: 12px; align-items: flex-start; }
+  .auth-row .at { flex: 1; min-width: 0; }
+  .auth-row .at b { display: block; font-size: 15px; font-weight: 600; }
+  .auth-row .at span { display: block; font-size: 13.5px; color: var(--rk-muted); margin-top: 3px; line-height: 1.45; }
+  .tgl { flex: 0 0 48px; height: 28px; border-radius: 14px; background: #d6d6d6; position: relative; border: none; cursor: pointer; transition: background 0.15s ease; margin-top: 2px; }
+  .tgl::after { content: ""; position: absolute; top: 3px; left: 3px; width: 22px; height: 22px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.25); transition: left 0.15s ease; }
+  .tgl.on { background: var(--rk-green); }
+  .tgl.on::after { left: 23px; }
+  .auth-more { border: none; background: none; color: var(--red); font-size: 13px; font-weight: 600; cursor: pointer; padding: 8px 0 0 0; }
+  .auth-detail { font-size: 13px; color: var(--rk-muted); line-height: 1.5; margin-top: 6px; padding-top: 8px; border-top: 1px solid #f0f0f0; }
+  .note-box { display: flex; gap: 10px; margin-top: 14px; padding: 11px 13px; border-radius: 12px; background: var(--rk-soft); color: #444; font-size: 13px; line-height: 1.45; }
+
+  /* Leitor do contrato em texto (D02): resumo no topo, progresso da leitura e aceite ao fim. */
+  .rd-top { flex: 0 0 auto; padding: 14px 20px 0 20px; border-bottom: 1px solid #efefef; }
+  .rd-doc { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .rd-doc b { font-size: 17px; font-weight: 700; line-height: 1.25; }
+  .rd-doc span { font-size: 12.5px; color: var(--rk-muted); white-space: nowrap; }
+  .rd-tools { display: flex; align-items: center; gap: 8px; margin: 10px 0 10px 0; }
+  .rd-tool { border: 1px solid var(--rk-line); background: #fff; border-radius: 999px; padding: 5px 11px; font-size: 13px; font-weight: 600; color: var(--rk-text); cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+  .rd-tool:disabled { color: #bbb; cursor: default; }
+  .rd-prog { height: 3px; background: #eee; margin: 0 -20px; }
+  .rd-prog i { display: block; height: 100%; width: 0; background: var(--red); transition: width 0.1s linear; }
+  .rd-body { flex: 1; min-height: 0; overflow-y: auto; padding: 16px 20px 24px 20px; font-size: var(--rd-fs, 15px); line-height: 1.65; color: #2a2a2a; }
+  .rd-body h3 { font-size: 1.05em; font-weight: 700; color: var(--rk-text); margin: 20px 0 6px 0; }
+  .rd-body p { margin: 0 0 8px 0; }
+  .rd-body .fict { font-size: 12px; color: #999; margin-top: 18px; }
+  .rd-end { display: flex; align-items: center; gap: 8px; justify-content: center; margin-top: 18px; padding: 10px; border-radius: 10px; background: var(--rk-green-bg); color: #155d2b; font-size: 13px; font-weight: 600; }
+  .sum-card { border-radius: 16px; background: #fff5f6; border: 1px solid #f7d4da; padding: 14px 16px; }
+  .sum-card .st { font-size: 12px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: var(--red); }
+  .sum-card .big { font-size: 26px; font-weight: 700; margin-top: 6px; line-height: 1.1; color: var(--rk-text); }
+  .sum-card .big small { font-size: 14px; font-weight: 500; color: var(--rk-muted); }
+  .sum-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 12px; margin-top: 12px; }
+  .sum-grid .l { display: block; font-size: 12px; color: var(--rk-muted); }
+  .sum-grid .v { display: block; font-size: 14.5px; font-weight: 600; color: var(--rk-text); }
+  .rows { margin-top: 4px; }
+  .rows .r { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-bottom: 1px solid #f1f1f1; font-size: 0.93em; }
+  .rows .r span:last-child { font-weight: 600; white-space: nowrap; color: var(--rk-text); }
+  .rows .r.tot { border-bottom: none; font-weight: 700; }
+
+  .sign-list { list-style: none; margin-top: 18px; border: 1px solid var(--rk-line); border-radius: 16px; }
+  .sign-list li { display: flex; gap: 12px; align-items: center; padding: 13px 14px; font-size: 14.5px; }
+  .sign-list li + li { border-top: 1px solid #f0f0f0; }
+  .sign-list .ck { flex: 0 0 26px; height: 26px; border-radius: 50%; background: var(--rk-green); display: flex; align-items: center; justify-content: center; }
+  .sign-list .sl { flex: 1; }
+  .sign-list .sl span { display: block; font-size: 12.5px; color: var(--rk-muted); }
+  .sign-list button { border: none; background: none; color: var(--red); font-weight: 600; font-size: 13px; cursor: pointer; }
+
   /* ===== Painel de simulação (fora do celular; não faz parte do fluxo real) ===== */
   /* O painel ocupa a 1ª coluna inteira, com 15px de respiro, e rola por dentro
      quando o conteúdo não cabe na altura. */
@@ -704,7 +753,7 @@
           Voltar à Home
         </a>
       </h2>
-      <div class="sim-note">Fluxo remodelado, em construção etapa por etapa. Prontas: entrada (token e lista de assinantes), boas-vindas, selfie e documento. Decisões D03 a D12 do REGRAS.md.</div>
+      <div class="sim-note">Fluxo remodelado, em construção etapa por etapa. Prontas: entrada (token e lista de assinantes), boas-vindas, selfie, documento, autorizações, contrato e seguro. Decisões D01 a D16 do REGRAS.md.</div>
 
       <div class="sim-now">
         <div class="code" id="simCode">—</div>
@@ -1340,6 +1389,98 @@
               <div class="rk-foot"><button type="button" class="rk-btn" id="docOkGo">Continuar</button></div>
             </section>
 
+            <!-- 012 · Autorizações -->
+            <section class="scr" id="s-auth">
+              <div class="rk-header"><span class="rk-logo"><b>HONDA</b><span>Serviços Financeiros</span></span></div>
+              <div class="rk-body">
+                <div class="stepbar" data-etapa="2"></div>
+                <h1 class="rk-title">Como prefere receber as informações?</h1>
+                <p class="rk-text">Nenhuma opção é obrigatória. Você pode mudar isso depois com a concessionária.</p>
+                <div class="auth-card" data-auth-card="boleto">
+                  <div class="auth-row">
+                    <span class="at"><b>Boleto e avisos por e-mail e SMS</b><span>Receber o boleto e as comunicações do contrato por meios digitais, sem papel pelo correio.</span></span>
+                    <button type="button" class="tgl" data-tgl="boleto" aria-label="Boleto e avisos digitais"></button>
+                  </div>
+                  <button type="button" class="auth-more" data-more="boleto">Ver detalhes</button>
+                  <div class="auth-detail" data-detail="boleto" hidden>Autorizo o boleto por e-mail e toda comunicação referente ao contrato por SMS e meios digitais, sem a necessidade de enviar pelo correio.</div>
+                </div>
+                <div class="auth-card" data-auth-card="ofertas">
+                  <div class="auth-row">
+                    <span class="at"><b>Ofertas do Banco Honda</b><span>Novos produtos, condições especiais e pesquisas de satisfação.</span></span>
+                    <button type="button" class="tgl" data-tgl="ofertas" aria-label="Ofertas do Banco Honda"></button>
+                  </div>
+                  <button type="button" class="auth-more" data-more="ofertas">Ver detalhes</button>
+                  <div class="auth-detail" data-detail="ofertas" hidden>Autorizo receber do Banco Honda informações de novos produtos, condições especiais e pesquisas de satisfação.</div>
+                </div>
+                <div class="auth-card" data-auth-card="compartilhar">
+                  <div class="auth-row">
+                    <span class="at"><b>Compartilhar com o grupo Honda</b><span>Outras empresas Honda podem enviar ofertas e pesquisas.</span></span>
+                    <button type="button" class="tgl" data-tgl="compartilhar" aria-label="Compartilhar com o grupo Honda"></button>
+                  </div>
+                  <button type="button" class="auth-more" data-more="compartilhar">Ver detalhes</button>
+                  <div class="auth-detail" data-detail="compartilhar" hidden>Autorizo compartilhar meus dados com outras empresas do grupo Honda para receber informações de novos produtos, condições especiais e pesquisas de satisfação. A forma de captura, armazenamento e tratamento dos dados está na política de privacidade do grupo Honda (honda.com.br/politica-de-privacidade).</div>
+                </div>
+                <div class="rk-spacer"></div>
+              </div>
+              <div class="rk-foot"><button type="button" class="rk-btn" id="authGo">Continuar</button></div>
+            </section>
+
+            <!-- 013 / 014 · Leitor do contrato (texto, rolagem libera o aceite) -->
+            <section class="scr" id="s-reader">
+              <div class="rk-header">
+                <button type="button" class="rk-back" id="rdBack" aria-label="Voltar"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+                <span class="rk-logo"><b>HONDA</b><span>Serviços Financeiros</span></span>
+              </div>
+              <div class="rd-top">
+                <div class="stepbar" data-etapa="2" style="margin-bottom:12px"></div>
+                <div class="rd-doc"><b id="rdTitle">Proposta de financiamento</b><span id="rdCount">Documento 1 de 2</span></div>
+                <div class="rd-tools">
+                  <button type="button" class="rd-tool" id="rdMinus" aria-label="Diminuir letra">A−</button>
+                  <button type="button" class="rd-tool" id="rdPlus" aria-label="Aumentar letra">A+</button>
+                  <span style="flex:1"></span>
+                  <button type="button" class="rd-tool" id="rdPdf"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>Baixar PDF</button>
+                </div>
+                <div class="rd-prog"><i id="rdProg"></i></div>
+              </div>
+              <div class="rd-body" id="rdBody"></div>
+              <div class="rk-foot" style="border-top:1px solid #efefef"><button type="button" class="rk-btn" id="rdAccept" disabled>Role até o fim para aceitar</button></div>
+              <div class="toast" id="toastRd"></div>
+            </section>
+
+            <!-- 015 · Confirmar e assinar (sem rubrica) -->
+            <section class="scr" id="s-sign">
+              <div class="rk-header"><span class="rk-logo"><b>HONDA</b><span>Serviços Financeiros</span></span></div>
+              <div class="rk-body">
+                <div class="stepbar" data-etapa="2"></div>
+                <h1 class="rk-title">Tudo pronto para assinar</h1>
+                <p class="rk-text">Você leu e aceitou os documentos abaixo.</p>
+                <ul class="sign-list" id="signList">
+                  <li><span class="ck"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span><span class="sl">Proposta de financiamento<span>Lida e aceita</span></span><button type="button" data-reler="1">Rever</button></li>
+                  <li><span class="ck"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span><span class="sl">Orçamento do crédito (CDC)<span>Lido e aceito</span></span><button type="button" data-reler="2">Rever</button></li>
+                  <li id="signSpf"><span class="ck" style="background:#1f5fbf"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span><span class="sl">Seguro Proteção Financeira<span>R$ 512,30 · contratação aceita</span></span><button type="button" data-reler="3">Rever</button></li>
+                </ul>
+                <div class="note-box" id="signNote">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2" style="flex-shrink:0;margin-top:1px"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+                  <span>Sua assinatura eletrônica usa a selfie e o documento que você enviou. Não é preciso desenhar nenhuma rubrica.</span>
+                </div>
+                <div class="rk-spacer"></div>
+              </div>
+              <div class="rk-foot"><button type="button" class="rk-btn" id="signGo">Assinar contrato</button></div>
+            </section>
+
+            <!-- 015-A / 015-OK · Assinando e contrato assinado -->
+            <section class="scr" id="s-signed">
+              <div class="rk-header"><span class="rk-logo"><b>HONDA</b><span>Serviços Financeiros</span></span></div>
+              <div class="rk-body" style="text-align:center">
+                <div class="stepbar" data-etapa="2" style="text-align:left"></div>
+                <div class="rk-hero-ic" id="signedIc" style="margin-top:30px"></div>
+                <h1 class="rk-title" id="signedTitle"></h1>
+                <p class="rk-text" id="signedText"></p>
+                <div class="rk-spacer"></div>
+              </div>
+              <div class="rk-foot" id="signedFoot"><button type="button" class="rk-btn" id="signedGo">Continuar</button></div>
+            </section>
+
             <!-- Próximas etapas: ainda em construção no remake -->
             <section class="scr" id="s-next">
               <div class="rk-header"><span class="rk-logo"><b>HONDA</b><span>Serviços Financeiros</span></span></div>
@@ -1348,7 +1489,7 @@
                   <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#6b6b6b" stroke-width="2"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z"/></svg>
                 </div>
                 <h1 class="rk-title">Próximas etapas em construção</h1>
-                <p class="rk-text">Autorizações, contrato, termo do seguro e avaliação do remake serão desenhados nas próximas rodadas.</p>
+                <p class="rk-text">A avaliação do remake será desenhada na próxima rodada.</p>
                 <div class="rk-spacer"></div>
               </div>
               <div class="rk-foot">
@@ -1426,7 +1567,12 @@
       "009-1": "Documento: falha na foto, com motivo", "006-1": "CNH Digital: regras e como exportar",
       "006-3": "CNH Digital: PDF com várias páginas", "006-4": "CNH Digital: arquivo acima de 4 MB",
       "006-5": "CNH Digital: arquivo não é uma CNH", "006-OK": "CNH Digital: arquivo certo",
-      "DOC-V": "Documento: verificação", "DOC-OK": "Documento confirmado"
+      "DOC-V": "Documento: verificação", "DOC-OK": "Documento confirmado",
+      "012": "Autorizações (nenhuma obrigatória)", "013": "Contrato: proposta (lendo)",
+      "013-L": "Contrato: proposta lida até o fim", "014": "Contrato: orçamento CDC (lendo)",
+      "014-L": "Contrato: orçamento lido até o fim", "015": "Confirmar e assinar (sem rubrica)",
+      "015-A": "Assinando o contrato", "015-OK": "Contrato assinado",
+      "016-4": "Contrato: termo do SPF (documento 3 de 3)", "016-4-L": "Contrato: termo do SPF lido até o fim"
     };
 
     // Melhorias de cada tela, exibidas na 3ª coluna: o problema no fluxo atual e o que
@@ -1502,7 +1648,7 @@
         depois: [
           { t: "Mostra quem está assinando (nome e papel) e a proposta (número, moto e concessionária). <span class='tag'>D05</span>", alvo: "#s-welcome .rk-eyebrow, #s-welcome .who-card" },
           { t: "Lista as etapas com o tempo estimado de cada uma e o total.", alvo: "#wSteps, #s-welcome .steps-total" },
-          { t: "Sem a rubrica. <span class='tag'>D01</span> O termo do SPF só aparece para o proponente que contratou. <span class='tag'>R06</span>", alvo: "#wSteps" },
+          { t: "Sem a rubrica <span class='tag'>D01</span> e sem a 2ª selfie do SPF: o seguro entra na etapa do contrato (\"Autorizações, contrato e seguro\"). <span class='tag'>D16</span>", alvo: "#wSteps" },
           { t: "Para CNPJ, avisa que a selfie e o documento são do representante legal. <span class='tag'>R12</span>", alvo: "#wPj",
             ver: function () { cenario["tipo" + st.cur] = "cnpj"; salvarCenario(); pintarPainel(); var cur = st.cur; start(); st.cur = cur; openWelcome(); } },
           { t: "Diz o que ter em mãos (documento e local iluminado) antes de começar.", alvo: "#s-welcome .bring" }
@@ -1715,10 +1861,76 @@
         antes: ["O fluxo pula para as Autorizações sem confirmar que o documento foi aceito."],
         depois: [{ t: "Confirmação clara e qual é a próxima etapa (autorizações e contrato).", alvo: "#s-docok .rk-hero-ic, #s-docok .rk-title, #s-docok .rk-text" }]
       },
+      auth: {
+        titulo: "012 · Autorizações", sub: "Nenhuma é obrigatória (R09)",
+        antes: [
+          "Três textos jurídicos longos, um embaixo do outro, com switches pequenos. <span class='tag'>R09</span>",
+          "Não diz que nada é obrigatório, então a pessoa fica na dúvida se pode desligar.",
+          "\"Boleto por e-mail\" já vem ligado, o que pede atenção de LGPD (o consentimento precisa ser ativo). <span class='tag'>R09</span>"
+        ],
+        depois: [
+          { t: "Pergunta direta no título e aviso de que nenhuma opção é obrigatória. <span class='tag'>D13</span>", alvo: "#s-auth .rk-title, #s-auth .rk-text" },
+          { t: "Cada autorização num cartão, com título curto e uma frase simples. O texto completo fica em \"Ver detalhes\".", alvo: "#s-auth .auth-card" },
+          { t: "Chave grande e verde quando ligada, fácil de tocar.", alvo: "#s-auth .tgl" },
+          { t: "Mantido o padrão atual (boleto digital ligado). Fica como ponto para o jurídico avaliar (LGPD).", alvo: "[data-auth-card=boleto]" }
+        ]
+      },
+      reader: {
+        titulo: "013 / 014 · Contrato em texto", sub: "Antes: PDF num visualizador pequeno (013 a 015)",
+        antes: [
+          "PDF minúsculo dentro de um visualizador pequeno, difícil de ampliar. <span class='tag fb'>Feedback: \"letras muito pequenas\", \"não dá pra ler o contrato\" (41 menções)</span>",
+          "Não dá para baixar o documento. <span class='tag fb'>Feedback: \"opção de baixar o documento\"</span>",
+          "O aceite (\"Li e aceito\") aparece no último documento sem garantir que a pessoa chegou ao fim.",
+          "Os valores importantes ficam perdidos no meio da tabela. <span class='tag fb'>Feedback: \"realçar os pontos fundamentais como valores\"</span>"
+        ],
+        depois: [
+          { t: "Resumo do financiamento no topo: parcela em destaque, valor financiado, juros, CET e total a pagar. <span class='tag'>D14</span>", alvo: "#rdBody .sum-card" },
+          { t: "Contrato reescrito em texto legível no celular, com seções curtas e títulos. <span class='tag'>D02</span>", alvo: "#rdBody" },
+          { t: "\"Documento 1 de 2\" (ou \"de 3\", com o seguro) e barra de leitura que avança com a rolagem.", alvo: "#rdCount, #s-reader .rd-prog" },
+          { t: "A− / A+ para ajustar o tamanho da letra.", alvo: "#rdMinus, #rdPlus" },
+          { t: "\"Baixar PDF\" para ler depois ou guardar uma cópia.", alvo: "#rdPdf" },
+          { t: "\"Aceito\" só libera depois de rolar até o fim do documento. <span class='tag'>D02</span>", alvo: "#rdAccept" }
+        ]
+      },
+      sign: {
+        titulo: "015 · Confirmar e assinar", sub: "Sem rubrica (D01)",
+        antes: [
+          "Depois do aceite, a tela de rubrica pede para desenhar com o dedo, mesmo sem ser obrigatória. <span class='tag'>R09</span> <span class='tag fb'>Feedback: crítica nº 1 (73 menções)</span>"
+        ],
+        depois: [
+          { t: "Lista do que foi lido e aceito, com a opção de rever cada documento. <span class='tag'>D15</span>", alvo: "#signList" },
+          { t: "Com SPF, o seguro aparece numa linha própria, com o valor e \"contratação aceita\". <span class='tag'>D16</span>", alvo: "#signSpf",
+            ver: function () { forcarSpf(); st.lidos = { 1: true, 2: true, 3: true }; st.spfOk = true; openSign(); } },
+          { t: "Explica que a assinatura eletrônica usa a selfie e o documento, e que não precisa de rubrica. <span class='tag'>D01</span>", alvo: "#signNote" },
+          { t: "Um botão claro: \"Assinar contrato\".", alvo: "#signGo" }
+        ]
+      },
+      signed: {
+        titulo: "Contrato assinado", sub: "Tela nova",
+        antes: ["Depois de assinar, o fluxo pula para a próxima tela sem confirmar a assinatura."],
+        depois: [
+          { t: "Confirmação \"Contrato assinado\" e a próxima etapa: termo do SPF (se contratado) ou avaliação. <span class='tag'>D15</span>", alvo: "#signedIc, #signedTitle, #signedText" }
+        ]
+      },
+      spfdoc: {
+        titulo: "016-4 · Seguro Proteção Financeira", sub: "Documento 3 de 3 · só para o proponente com SPF",
+        antes: [
+          "Etapa separada depois do contrato: dicas da selfie do SPF, <b>2ª selfie</b>, processamento, termo em PDF e rubrica (016-1 a 016-5). <span class='tag'>R06</span>",
+          "A 2ª selfie foi pedido do jurídico: clientes alegavam não saber que tinham contratado o seguro. Ela servia de prova de que a pessoa contratou por vontade própria.",
+          "Repetir a selfie é atrito. <span class='tag fb'>Feedback: \"muito burocrático\", \"reconhecimento facial dificulta\"</span>"
+        ],
+        depois: [
+          { t: "Sem a 2ª selfie: a identidade já foi confirmada pela selfie aprovada no início. O seguro vira o 3º documento do contrato. <span class='tag'>D16</span>", alvo: "#rdCount, #rdTitle" },
+          { t: "Visual próprio (azul, da seguradora) e resumo no topo: \"Seguro incluído na sua proposta\", valor (R$ 512,30 no financiamento), vigência, coberturas e cancelamento.", alvo: "#rdBody .sum-card" },
+          { t: "Aceite específico e afirmativo, separado do contrato: \"Li e concordo com a contratação do Seguro Proteção Financeira\". Sem ele, o \"Aceito\" não libera.", alvo: "#spfConsent, #rdAccept" },
+          { t: "Sem opção de retirar o seguro aqui: quem ativa ou desativa o SPF é o colaborador, na abertura da proposta. A assinatura só apresenta o que já foi definido lá." },
+          { t: "Requisito para o time de desenvolvimento: trilha de auditoria do aceite (data, hora, dispositivo, IP) ligada à sessão da selfie aprovada. É a prova que substitui a 2ª selfie, a validar com o jurídico." }
+        ]
+      },
       next: {
         titulo: "Próximas etapas", sub: "Em construção",
         antes: [],
-        depois: [{ t: "Autorizações, contrato (D02), termo do SPF e avaliação serão desenhados nas próximas rodadas." }]
+        depois: [{ t: "A avaliação será desenhada na próxima rodada." }]
       }
     };
     var NOTA_POR_CODIGO = {
@@ -1729,7 +1941,10 @@
       "006": "docchoice", "007": "doctips", "008": "doccam", "008-L": "doccam", "010": "doccam",
       "009": "docreview", "011": "docreview", "009-1": "docfail",
       "006-1": "cnh", "006-3": "cnh", "006-4": "cnh", "006-5": "cnh", "006-OK": "cnh",
-      "DOC-V": "docverify", "DOC-OK": "docok"
+      "DOC-V": "docverify", "DOC-OK": "docok",
+      "012": "auth", "013": "reader", "013-L": "reader", "014": "reader", "014-L": "reader",
+      "015": "sign", "015-A": "signed", "015-OK": "signed",
+      "016-4": "spfdoc", "016-4-L": "spfdoc"
     };
 
     var notaAtual = null;   // grupo de notas exibido
@@ -1833,7 +2048,11 @@
         "006-1": function () { openCnh(st.cnhArq); }, "006-3": function () { openCnh(st.cnhArq); },
         "006-4": function () { openCnh(st.cnhArq); }, "006-5": function () { openCnh(st.cnhArq); },
         "006-OK": function () { openCnh(st.cnhArq); }, "DOC-V": openDocChoice,
-        "DOC-OK": function () { pintarEtapas("s-docok"); show("s-docok", "DOC-OK"); }
+        "DOC-OK": function () { pintarEtapas("s-docok"); show("s-docok", "DOC-OK"); },
+        "012": openAuthR, "013": function () { openReader(1); }, "013-L": function () { openReader(1); },
+        "014": function () { openReader(2); }, "014-L": function () { openReader(2); },
+        "015": openSign, "015-A": openSign, "015-OK": openSign,
+        "016-4": function () { openReader(3); }, "016-4-L": function () { openReader(3); }
       }[s.code];
       if (reabrir) reabrir(); else start();
     }
@@ -2169,12 +2388,15 @@
       $("wSteps").innerHTML = etapas.map(function (e, i) {
         return '<li><span class="n">' + (i + 1) + '</span><span class="t">' + e.nome + '</span><span class="m">' + e.tempo + "</span></li>";
       }).join("");
-      $("wTime").textContent = "Cerca de " + (etapas.length === 5 ? 6 : 5) + " minutos no total";
+      $("wTime").textContent = "Cerca de " + (temSpf() ? 6 : 5) + " minutos no total";
       // Tentativas de selfie e consentimento valem por assinante.
       st.faceFails = 0;
       st.consentiu = false;
       st.docFails = 0;
       st.docTipo = null;
+      st.auth = null;
+      st.lidos = {};
+      st.spfOk = false;
       atualizarContSelfie();
       atualizarContDoc();
       $("welcomeBack").hidden = isRemoto();
@@ -2183,17 +2405,19 @@
     $("welcomeBack").addEventListener("click", function () { openLista(); });
     $("welcomeGo").addEventListener("click", function () { openSelfieIntro(); });
 
-    // Etapas do processo de quem está assinando: sem rubrica (D01); termo do SPF só para
-    // o proponente que contratou (R06). Usadas nas boas-vindas e no indicador de etapa.
+    // Etapas do processo de quem está assinando: sem rubrica (D01). O SPF não é mais uma
+    // etapa à parte com 2ª selfie: entra no contrato como 3º documento (D16), só para o
+    // proponente que contratou (R06). Usadas nas boas-vindas e no indicador de etapa.
+    function temSpf() { return st.cur === 0 && cenario.spf === "sim"; }
     function etapasDoAssinante() {
-      var e = [
+      return [
         { nome: "Selfie", curto: "Selfie", tempo: "1 min" },
         { nome: "Documento de identificação", curto: "Documento", tempo: "2 min" },
-        { nome: "Autorizações e contrato", curto: "Contrato", tempo: "2 min" }
+        temSpf()
+          ? { nome: "Autorizações, contrato e seguro", curto: "Contrato", tempo: "3 min" }
+          : { nome: "Autorizações e contrato", curto: "Contrato", tempo: "2 min" },
+        { nome: "Avaliação", curto: "Avaliação", tempo: "opcional" }
       ];
-      if (st.cur === 0 && cenario.spf === "sim") e.push({ nome: "Termo do Seguro Proteção Financeira", curto: "Seguro", tempo: "1 min" });
-      e.push({ nome: "Avaliação", curto: "Avaliação", tempo: "opcional" });
-      return e;
     }
     // Preenche os indicadores "Etapa X de N · Nome" da tela (D06).
     function pintarEtapas(scrId) {
@@ -2645,7 +2869,206 @@
       later(function () { itens[2].className = "done"; }, 2800);
       later(function () { pintarEtapas("s-docok"); show("s-docok", "DOC-OK"); }, 3300);
     }
-    $("docOkGo").addEventListener("click", function () { show("s-next", "PRÓX"); });
+    $("docOkGo").addEventListener("click", function () { openAuthR(); });
+
+    // ================================================================
+    // Etapa 4 · Autorizações e contrato (D13 a D15; D01 sem rubrica; D02 contrato em texto)
+    // ================================================================
+
+    // ---------- 012 · Autorizações (D13, R09) ----------
+    function openAuthR() {
+      if (!st.auth) st.auth = { boleto: true, ofertas: false, compartilhar: false }; // padrão atual (R09)
+      document.querySelectorAll("[data-tgl]").forEach(function (t) {
+        var on = !!st.auth[t.getAttribute("data-tgl")];
+        t.classList.toggle("on", on);
+        t.setAttribute("aria-pressed", on ? "true" : "false");
+      });
+      pintarEtapas("s-auth");
+      show("s-auth", "012");
+    }
+    document.querySelectorAll("[data-tgl]").forEach(function (t) {
+      t.addEventListener("click", function () {
+        var k = t.getAttribute("data-tgl");
+        st.auth[k] = !st.auth[k];
+        t.classList.toggle("on", st.auth[k]);
+        t.setAttribute("aria-pressed", st.auth[k] ? "true" : "false");
+      });
+    });
+    document.querySelectorAll("[data-more]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        var d = document.querySelector('[data-detail="' + b.getAttribute("data-more") + '"]');
+        d.hidden = !d.hidden;
+        b.textContent = d.hidden ? "Ver detalhes" : "Ocultar detalhes";
+      });
+    });
+    $("authGo").addEventListener("click", function () { st.lidos = {}; openReader(1); });
+
+    // ---------- 013 / 014 · Contrato em texto (D02, D14) ----------
+    function linhas(pares) {
+      return '<div class="rows">' + pares.map(function (p) {
+        return '<div class="r' + (p[2] ? " tot" : "") + '"><span>' + p[0] + "</span><span>" + p[1] + "</span></div>";
+      }).join("") + "</div>";
+    }
+    function textoContrato(n) {
+      var prop = st.signers[0];
+      var aval = st.signers.slice(1).map(function (s) { return s.nome + " (" + s.tipo.toUpperCase() + " " + s.doc + ")"; });
+      var spf = cenario.spf === "sim";
+      if (n === 3) {
+        // Termo do SPF (D16): visual próprio, resumo do seguro e aceite específico.
+        return '<div class="sum-card" style="background:#f2f6fd;border-color:#cfdcf3"><div class="st" style="color:#1f5fbf">Seguro incluído na sua proposta</div>' +
+          '<div class="big">R$ 512,30 <small>incluído no valor financiado</small></div>' +
+          '<div class="sum-grid">' +
+          '<span><span class="l">Seguradora</span><span class="v">Seguradora parceira</span></span>' +
+          '<span><span class="l">Vigência</span><span class="v">36 meses, junto com o financiamento</span></span>' +
+          '<span><span class="l">Cobre</span><span class="v">Morte, invalidez e desemprego</span></span>' +
+          '<span><span class="l">Cancelamento</span><span class="v">A qualquer tempo</span></span>' +
+          "</div></div>" +
+          "<h3>1. O que é este seguro</h3><p>O Seguro Proteção Financeira paga as parcelas do seu financiamento se acontecer um dos eventos cobertos. Ele é um contrato separado do financiamento, com a seguradora parceira.</p>" +
+          "<h3>2. Coberturas</h3>" +
+          linhas([["Morte", "quita o saldo devedor"], ["Invalidez permanente por acidente", "quita o saldo devedor"], ["Desemprego involuntário (CLT)", "até 6 parcelas"]]) +
+          "<h3>3. Quanto custa</h3><p>O prêmio único é de R$ 512,30, já incluído no valor financiado da proposta. Não há cobrança separada.</p>" +
+          "<h3>4. Contratação e cancelamento</h3><p>O seguro foi incluído na sua proposta pela concessionária, na abertura do financiamento. Depois de assinado, você pode cancelá-lo a qualquer tempo, com devolução proporcional do valor pago referente ao período restante.</p>" +
+          "<h3>5. Quem recebe a indenização</h3><p>O primeiro beneficiário é o Banco Honda, que recebe o valor para quitar as parcelas ou o saldo do financiamento.</p>" +
+          "<h3>6. Declaração</h3><p>Declaro que tive acesso às condições gerais do seguro e que estou em boas condições de saúde na data desta adesão.</p>" +
+          '<p class="fict">Texto fictício, escrito para a simulação de interface.</p>' +
+          '<div class="consent-box' + (st.spfOk ? " on" : "") + '" id="spfConsent" role="checkbox" aria-checked="' + (st.spfOk ? "true" : "false") + '" tabindex="0" style="margin-top:16px">' +
+          '<span class="chk"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span>' +
+          '<span class="consent-txt"><b>Li e concordo com a contratação do Seguro Proteção Financeira</b>, de R$ 512,30, incluído no meu financiamento.</span></div>';
+      }
+      if (n === 1) {
+        return '<div class="sum-card"><div class="st">Resumo do seu financiamento</div>' +
+          '<div class="big">36 × R$ 305,79 <small>por mês</small></div>' +
+          '<div class="sum-grid">' +
+          '<span><span class="l">Veículo</span><span class="v">Honda XRE 190 Adventure 2026</span></span>' +
+          '<span><span class="l">Valor do veículo</span><span class="v">R$ 28.400,00</span></span>' +
+          '<span><span class="l">Entrada</span><span class="v">R$ 22.400,00</span></span>' +
+          '<span><span class="l">Valor financiado</span><span class="v">R$ 7.350,40</span></span>' +
+          '<span><span class="l">1º vencimento</span><span class="v">16/11/2026</span></span>' +
+          '<span><span class="l">Juros</span><span class="v">2,37% ao mês</span></span>' +
+          '<span><span class="l">Custo total (CET)</span><span class="v">55,28% ao ano</span></span>' +
+          '<span><span class="l">Total a pagar</span><span class="v">R$ 33.408,44</span></span>' +
+          "</div></div>" +
+          "<h3>1. Quem está contratando</h3><p><b>Proponente:</b> " + prop.nome + ", " + prop.tipo.toUpperCase() + " " + prop.doc + ".</p>" +
+          (aval.length ? "<p><b>" + (aval.length > 1 ? "Avalistas" : "Avalista") + ":</b> " + aval.join("; ") + ". O avalista se responsabiliza pelo pagamento caso o proponente não pague.</p>" : "") +
+          "<p><b>Concessionária:</b> Moto Clube Exemplo. <b>Financiador:</b> Banco Honda S.A.</p>" +
+          "<h3>2. O que está sendo financiado</h3><p>Motocicleta Honda XRE 190 Adventure, ano e modelo 2026, zero quilômetro, cor cinza, no valor de R$ 28.400,00 à vista.</p>" +
+          "<h3>3. Valores e custos</h3>" +
+          linhas([["Valor do veículo", "R$ 28.400,00"], ["Entrada", "− R$ 22.400,00"], ["Tarifa de cadastro", "R$ 790,00"], ["Registro do contrato", "R$ 532,47"], ["IOF", "R$ 27,93"], ["Valor financiado", "R$ 7.350,40", true]]) +
+          "<h3>4. Como você vai pagar</h3><p>Em 36 parcelas mensais e iguais de R$ 305,79, por boleto, com o primeiro vencimento em 16/11/2026 e os demais no mesmo dia dos meses seguintes. A taxa de juros é de 2,37% ao mês (32,46% ao ano), prefixada. O Custo Efetivo Total (CET), que soma juros, tarifas e impostos, é de 3,74% ao mês (55,28% ao ano).</p>" +
+          "<h3>5. Se uma parcela atrasar</h3><p>Sobre a parcela em atraso incidem juros de mora de 1% ao mês e multa de 2%. O atraso pode levar à inclusão do nome nos cadastros de proteção ao crédito, depois de aviso prévio.</p>" +
+          "<h3>6. Garantia: alienação fiduciária</h3><p>Até a última parcela ser paga, o veículo fica alienado ao Banco Honda. Você usa a moto normalmente, mas não pode vendê-la ou transferi-la sem quitar o financiamento. A baixa da alienação é feita depois da quitação.</p>" +
+          "<h3>7. Pagamento antecipado</h3><p>Você pode antecipar parcelas ou quitar o contrato a qualquer momento, com redução proporcional dos juros.</p>" +
+          (spf ? "<h3>8. Seguro Proteção Financeira</h3><p>Esta proposta inclui o Seguro Proteção Financeira, que tem termo de adesão próprio: o documento 3 desta assinatura, com aceite separado. Depois de assinado, o seguro pode ser cancelado a qualquer tempo.</p>" : "") +
+          "<h3>" + (spf ? "9" : "8") + ". Declarações</h3><p>Declaro que as informações prestadas são verdadeiras e que recebi uma cópia deste contrato. Autorizo o tratamento dos meus dados pessoais para a análise e a formalização deste financiamento, conforme a Lei Geral de Proteção de Dados (LGPD).</p>" +
+          '<p class="fict">Texto fictício, escrito para a simulação de interface.</p>';
+      }
+      return '<div class="sum-card"><div class="st">Orçamento do crédito (CDC)</div>' +
+        '<div class="big">R$ 33.408,44 <small>total a pagar</small></div>' +
+        '<div class="sum-grid">' +
+        '<span><span class="l">Orçamento nº</span><span class="v">1000000001-1</span></span>' +
+        '<span><span class="l">Válido até</span><span class="v">3 dias úteis</span></span>' +
+        "</div></div>" +
+        "<h3>A. Consumidor e veículo</h3><p>" + prop.nome + " (" + prop.tipo.toUpperCase() + " " + prop.doc + "). Honda XRE 190 Adventure 2026/2026, cinza, vendida pela Moto Clube Exemplo.</p>" +
+        "<h3>B. Valor do bem e serviços</h3>" +
+        linhas([["Veículo à vista", "R$ 28.400,00"], ["Acessórios, IPVA, licenciamento e multas", "não financiados"], ["Registro do contrato no órgão de trânsito", "R$ 532,47"], ["Subtotal", "R$ 28.932,47", true]]) +
+        "<h3>C. Entrada</h3>" + linhas([["Valor da entrada", "R$ 22.400,00"], ["Valor pago a fornecedores", "R$ 6.532,47"]]) +
+        "<h3>D. Tarifas</h3>" + linhas([["Cadastro (início de relacionamento)", "R$ 790,00"]]) +
+        "<h3>E. Impostos</h3>" + linhas([["IOF (alíquota adicional de 0,38%)", "R$ 27,93"]]) +
+        "<h3>F. Financiamento</h3>" + linhas([["Valor financiado (com impostos)", "R$ 7.350,40"], ["Parcelas", "36 × R$ 305,79"], ["1º vencimento", "16/11/2026"], ["Juros", "2,37% a.m. · 32,46% a.a."]]) +
+        "<h3>G. Total</h3>" + linhas([["Total pago ao final (parcelas + entrada)", "R$ 33.408,44", true]]) +
+        "<h3>H. Custo Efetivo Total</h3><p>O CET da operação é de 3,74% ao mês e 55,28% ao ano. Ele reúne juros, tarifas, impostos e demais custos do financiamento.</p>" +
+        "<p>A contratação depende da aprovação da instituição financeira. Este orçamento vale por 3 dias úteis a partir de 16/10/2026.</p>" +
+        '<p class="fict">Texto fictício, escrito para a simulação de interface.</p>';
+    }
+    var DOC_TITULO = { 1: "Proposta de financiamento", 2: "Orçamento do crédito (CDC)", 3: "Seguro Proteção Financeira" };
+    var DOC_COD = { 1: "013", 2: "014", 3: "016-4" };
+    function totalDocs() { return temSpf() ? 3 : 2; }
+    function openReader(n) {
+      st.doc = n;
+      st.lidos = st.lidos || {};
+      pintarEtapas("s-reader");
+      $("rdTitle").textContent = DOC_TITULO[n];
+      $("rdCount").textContent = "Documento " + n + " de " + totalDocs();
+      // No documento do seguro, o "Fim do documento" vem antes do aceite específico.
+      var fimHtml = '<div class="rd-end" id="rdEnd"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1e8e3e" stroke-width="3"><path d="M5 12.5l4.5 4.5L19 7"/></svg>Fim do documento</div>';
+      var txt = textoContrato(n);
+      if (n === 3) txt = txt.replace('<div class="consent-box', fimHtml + '<div class="consent-box');
+      $("rdBody").innerHTML = n === 3 ? txt : txt + fimHtml;
+      $("rdBody").scrollTop = 0;
+      if (n === 3) {
+        $("spfConsent").addEventListener("click", function () {
+          st.spfOk = !st.spfOk;
+          this.classList.toggle("on", st.spfOk);
+          this.setAttribute("aria-checked", st.spfOk ? "true" : "false");
+          atualizarLeitura();
+        });
+      }
+      aplicarFonte();
+      show("s-reader", DOC_COD[n]);
+      atualizarLeitura();
+    }
+    function atualizarLeitura() {
+      var b = $("rdBody");
+      var max = b.scrollHeight - b.clientHeight;
+      var pct = max <= 0 ? 1 : Math.min(1, b.scrollTop / max);
+      $("rdProg").style.width = (pct * 100) + "%";
+      var fim = pct >= 0.985 || (st.lidos && st.lidos[st.doc]);
+      if (fim && !st.lidos[st.doc]) { st.lidos[st.doc] = true; setCode(DOC_COD[st.doc] + "-L"); }
+      var btn = $("rdAccept");
+      // Seguro: além de ler até o fim, precisa marcar "Quero contratar" (aceite específico, D16).
+      var precisaMarcar = st.doc === 3 && !st.spfOk;
+      btn.disabled = !fim || precisaMarcar;
+      btn.textContent = !fim ? "Role até o fim para aceitar"
+        : precisaMarcar ? "Marque a opção acima para aceitar"
+        : st.doc < totalDocs() ? "Aceito e continuar" : "Aceito";
+    }
+    $("rdBody").addEventListener("scroll", atualizarLeitura);
+    // Tamanho da letra (A− / A+), lembrado durante a assinatura.
+    function aplicarFonte() {
+      var fs = st.fonte || 15;
+      $("rdBody").style.setProperty("--rd-fs", fs + "px");
+      $("rdMinus").disabled = fs <= 13;
+      $("rdPlus").disabled = fs >= 21;
+    }
+    $("rdMinus").addEventListener("click", function () { st.fonte = Math.max(13, (st.fonte || 15) - 2); aplicarFonte(); atualizarLeitura(); });
+    $("rdPlus").addEventListener("click", function () { st.fonte = Math.min(21, (st.fonte || 15) + 2); aplicarFonte(); atualizarLeitura(); });
+    $("rdPdf").addEventListener("click", function () { toast("toastRd", "PDF salvo em Downloads (simulação)"); });
+    $("rdAccept").addEventListener("click", function () {
+      if (st.relendo) { st.relendo = false; openSign(); return; }
+      if (st.doc < totalDocs()) openReader(st.doc + 1); else openSign();
+    });
+    $("rdBack").addEventListener("click", function () {
+      if (st.relendo) { st.relendo = false; openSign(); return; }
+      if (st.doc > 1) openReader(st.doc - 1); else openAuthR();
+    });
+
+    // ---------- 015 · Confirmar e assinar, sem rubrica (D15, D01, D16) ----------
+    function openSign() {
+      $("signSpf").hidden = !temSpf();
+      pintarEtapas("s-sign");
+      show("s-sign", "015");
+    }
+    document.querySelectorAll("[data-reler]").forEach(function (b) {
+      b.addEventListener("click", function () { st.relendo = true; openReader(parseInt(b.getAttribute("data-reler"), 10)); });
+    });
+    $("signGo").addEventListener("click", function () {
+      pintarEtapas("s-signed");
+      $("signedIc").style.background = "var(--rk-soft)";
+      $("signedIc").innerHTML = '<span class="mini-spin" style="width:30px;height:30px;color:#D6001C;border-width:3px"></span>';
+      $("signedTitle").textContent = "Assinando o contrato…";
+      $("signedText").textContent = "Isso leva poucos segundos.";
+      $("signedFoot").hidden = true;
+      show("s-signed", "015-A");
+      later(function () {
+        $("signedIc").style.background = "var(--rk-green-bg)";
+        $("signedIc").innerHTML = '<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#1e8e3e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"/></svg>';
+        $("signedTitle").textContent = temSpf() ? "Contrato e seguro assinados" : "Contrato assinado";
+        $("signedText").innerHTML = "Próxima etapa: <b>avaliação (opcional)</b>.";
+        $("signedFoot").hidden = false;
+        setCode("015-OK");
+      }, 1800);
+    });
+    $("signedGo").addEventListener("click", function () { show("s-next", "PRÓX"); });
 
     function atualizarContSelfie() {
       $("simSelfieCount").textContent = "Tentativas com falha: " + (st.faceFails || 0) + " de " + MAX_SELFIE + ". Vale para todas as tentativas até mudar.";
@@ -2714,6 +3137,11 @@
     });
     $("simUnlock").addEventListener("click", function () { if (st.code === "000-B") unlock(false); });
 
+    // Atalhos do SPF: garante cenário com seguro e o proponente assinando.
+    function forcarSpf() {
+      if (cenario.spf !== "sim") { cenario.spf = "sim"; salvarCenario(); pintarPainel(); start(); }
+      st.cur = 0;
+    }
     function forcarCanal(canal) {
       if (cenario.canal === canal) return;
       cenario.canal = canal; salvarCenario(); pintarPainel(); start();
@@ -2743,7 +3171,12 @@
       ["009-1", "009-1 · Falha na foto do documento", function () { st.lado = "frente"; st.docFails = 1; atualizarContDoc(); openDocFail($("simDoc").value === "ok" ? "reflexo" : $("simDoc").value); }],
       ["006-1", "006-1 · CNH Digital", function () { openCnh(); }],
       ["006-4", "006-4 · CNH Digital: arquivo grande", function () { openCnh(ARQ_CNH[2]); }],
-      ["DOC-OK", "DOC-OK · Documento confirmado", function () { pintarEtapas("s-docok"); show("s-docok", "DOC-OK"); }]
+      ["DOC-OK", "DOC-OK · Documento confirmado", function () { pintarEtapas("s-docok"); show("s-docok", "DOC-OK"); }],
+      ["012", "012 · Autorizações", openAuthR],
+      ["013", "013 · Contrato: proposta", function () { st.lidos = {}; openReader(1); }],
+      ["014", "014 · Contrato: orçamento CDC", function () { st.lidos = { 1: true }; openReader(2); }],
+      ["016-4", "016-4 · Contrato: termo do SPF (3 de 3)", function () { forcarSpf(); st.lidos = { 1: true, 2: true }; openReader(3); }],
+      ["015", "015 · Confirmar e assinar", openSign]
     ];
     (function montarAtalhos() {
       var sel = $("simJump");

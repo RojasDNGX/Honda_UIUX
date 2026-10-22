@@ -219,6 +219,11 @@ A selfie do SPF segue **o mesmo processo da selfie padrão** (2 capturas, mesmas
 **Onde se aplica:** todo o fluxo (002 a 018); a diferença visível hoje é só na 001.
 **Impacto no remake:** ponto a tratar. Uma empresa não tem rosto nem RG: quem faz a selfie e mostra o documento é o **representante legal**. O remake deve considerar o cenário PJ, por exemplo identificando o representante (nome e CPF) antes da biometria, ajustando os textos ("Você está assinando em nome de EXEMPLO LTDA") e, se o negócio exigir, pedindo documentos da empresa.
 
+### R13 — A assinatura digital não altera a proposta
+**Regra:** o ambiente de assinatura digital **só estrutura e apresenta** as informações que já foram digitadas, selecionadas e ativadas no **sistema de abertura de proposta** (o sistema base). Ele não ativa nem desativa nada na proposta. Exemplo: o **SPF é ativado pelo colaborador** na abertura da proposta, antes de a pessoa chegar à assinatura.
+**Onde se aplica:** todo o fluxo, em especial os documentos do contrato e o termo do SPF.
+**Impacto no remake:** obrigatória. Nenhuma tela da assinatura pode oferecer recusar, retirar ou mudar itens da proposta (como "não quero o seguro"). Mudanças são feitas pelo colaborador no sistema base, que gera um novo acesso à assinatura.
+
 ### R10 — Falha na captura facial
 **Regra:** quando a captura facial não dá certo (004, ou 016-2 no SPF), aparece uma tela com o **mesmo layout da tela de cancelamento** (009-2: cabeçalho Honda, título "Atenção!" e texto centralizado). O texto informa que **não foi possível realizar a captura facial** e pede para **tentar novamente**.
 - _Não há print._ Na réplica, a tela é a **004-1**, com o texto "Não foi possível realizar a captura facial. Por favor, tente novamente." e um botão **"Tentar novamente"**, que volta para as dicas da selfie (003, ou 016-1 no SPF).
@@ -352,6 +357,36 @@ Depois do token (remoto) ou do "Iniciar" (presencial), uma tela mostra:
 - **3ª falha:** encerra a assinatura na mesma tela da selfie (D08/D09), que diz que o motivo foi a foto do documento.
 - **Verificação:** diz o tempo estimado e o que está sendo conferido (incluindo a comparação com a selfie), e depois confirma o documento.
 - **Em aberto para o negócio:** aceitar RG digital/CIN digital e passaporte (FEEDBACK.md, tema 7).
+
+### D13 — Autorizações mais simples, sem mudar o que é obrigatório
+- Título com pergunta direta ("Como prefere receber as informações?") e o aviso de que **nenhuma opção é obrigatória** (R09).
+- Cada autorização vira um **cartão** com título curto, uma frase simples e uma chave grande. O texto jurídico completo fica em **"Ver detalhes"**.
+- **Mantido o padrão atual:** "Boleto e avisos digitais" vem ligado. _Ponto para o jurídico:_ o consentimento já ligado pode precisar ser revisto pela LGPD (consentimento ativo).
+
+### D14 — Leitor do contrato (implementação da D02)
+- **Resumo do financiamento no topo** do primeiro documento: parcela em destaque (36 × R$ 305,79), valor financiado, juros, CET e total a pagar. Responde ao feedback "realçar os valores".
+- Os dois documentos (Proposta de financiamento e Orçamento CDC) são **reescritos em texto** legível, com seções curtas, e aparecem um de cada vez ("Documento 1 de 2").
+- **Barra de leitura** que avança com a rolagem; **A− / A+** para o tamanho da letra; **"Baixar PDF"**.
+- O botão **"Aceito"** só libera quando a pessoa **rola até o fim** do documento.
+- _Atenção:_ a versão em texto precisa ter o mesmo conteúdo jurídico dos PDFs oficiais. A redação final é do jurídico; o texto da simulação é fictício.
+
+### D15 — Assinatura sem rubrica, com confirmação clara
+- Depois dos dois aceites, a tela "Tudo pronto para assinar" lista os documentos lidos e aceitos, com a opção de **rever** cada um.
+- Explica que a assinatura eletrônica usa a **selfie e o documento** e que não precisa de rubrica (D01).
+- O botão é **"Assinar contrato"**. Depois aparecem "Assinando…" e a confirmação **"Contrato assinado"**, com a próxima etapa: termo do SPF, se contratado, ou avaliação.
+
+### D16 — SPF sem a 2ª selfie: o seguro vira o 3º documento do contrato
+_Condicionada à aprovação do jurídico da Honda._
+- **Por que existe a 2ª selfie hoje** (segundo os analistas e o time de desenvolvimento): foi pedido do jurídico da Honda, porque clientes alegavam que não sabiam do SPF e não queriam ter assinado. A selfie extra serve de prova de que a pessoa contratou o seguro por vontade própria, sabendo o que era.
+- **Por que dá para retirar:** a causa era o seguro passar despercebido (PDF pequeno, aceite único no fim). Com as melhorias, o seguro fica explícito e tem aceite próprio. A identidade já foi confirmada pela selfie aprovada no liveness do início, e a 2ª selfie não acrescenta identidade, só atrito (FEEDBACK.md, temas 4 e 6).
+- **Como fica no remake:**
+  - Sem as telas 016-1 a 016-5 (dicas, 2ª selfie, processamento, termo em PDF e rubrica).
+  - O seguro entra como **"Documento 3 de 3 · Seguro Proteção Financeira"**, só para o proponente com SPF (os avalistas não têm SPF, R06). A etapa nas boas-vindas passa a ser "Autorizações, contrato e seguro", e o processo fica com 4 etapas no lugar de 5.
+  - **Visual próprio** (azul, da seguradora) e **resumo no topo:** "Seguro incluído na sua proposta", valor (R$ 512,30 no financiamento), vigência, coberturas e cancelamento a qualquer tempo depois de assinado.
+  - **Aceite específico e afirmativo,** separado do contrato: além de rolar até o fim, marcar **"Li e concordo com a contratação do Seguro Proteção Financeira"**. Sem isso, o "Aceito" não libera.
+  - **Sem opção de retirar ou recusar o seguro nesta tela** (R13): quem ativa o SPF é o colaborador, na abertura da proposta.
+  - Na tela "Tudo pronto para assinar", o seguro aparece em **linha própria** ("R$ 512,30 · contratação aceita"), e a confirmação diz "Contrato e seguro assinados".
+- **Requisito para o time de desenvolvimento — trilha de auditoria:** registrar data, hora, dispositivo e IP do aceite do SPF (a caixa marcada e o "Aceito"), ligados ao identificador da sessão da selfie aprovada. É a prova que substitui a 2ª selfie e o principal argumento para o jurídico.
 
 ## Cenários futuros (só para conhecimento)
 
