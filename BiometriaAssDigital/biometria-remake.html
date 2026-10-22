@@ -621,6 +621,33 @@
   .sign-list .sl span { display: block; font-size: 12.5px; color: var(--rk-muted); }
   .sign-list button { border: none; background: none; color: var(--red); font-weight: 600; font-size: 13px; cursor: pointer; }
 
+  /* Confirmações intermediárias: seguem sozinhas em 3 s, com barra de progresso. */
+  .auto-next { margin: 26px auto 0 auto; width: 200px; text-align: center; }
+  .auto-next span { display: block; font-size: 13px; color: var(--rk-muted); margin-bottom: 8px; }
+  .auto-next i { display: block; height: 4px; border-radius: 2px; background: #ececec; overflow: hidden; }
+  .auto-next i b { display: block; height: 100%; width: 0; background: var(--rk-green); }
+  .auto-next.run i b { width: 100%; transition: width 4s linear; }
+
+  /* ===== Etapa 5: avaliação e encerramento ===== */
+  .done-head { text-align: center; padding-top: 4px; }
+  .done-head .rk-hero-ic { margin: 8px auto 14px auto; }
+  .rate-card { margin-top: 20px; border: 1px solid var(--rk-line); border-radius: 18px; padding: 16px 14px 14px 14px; text-align: center; }
+  .rate-card .rq { font-size: 16px; font-weight: 700; }
+  .rate-card .rs { font-size: 13px; color: var(--rk-muted); margin-top: 2px; }
+  .rstars { display: flex; justify-content: center; gap: 6px; margin-top: 12px; }
+  .rstar { border: none; background: none; padding: 2px; cursor: pointer; display: flex; transition: transform 0.1s ease; }
+  .rstar:active { transform: scale(0.9); }
+  .rate-card.sent .rstar { cursor: default; }
+  .rstar svg path { fill: #e1e1e1; transition: fill 0.12s ease; }
+  .rstar.on svg path { fill: #f5b301; }
+  .rlabel { min-height: 20px; margin-top: 6px; font-size: 13.5px; font-weight: 600; color: var(--rk-muted); }
+  .chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 12px; }
+  .chip { border: 1.5px solid var(--rk-line); background: #fff; border-radius: 999px; padding: 7px 12px; font-size: 13.5px; color: var(--rk-text); cursor: pointer; transition: border-color 0.12s ease, background 0.12s ease; }
+  .chip.on { border-color: var(--red); background: #fff5f6; color: var(--red); font-weight: 600; }
+  .rate-card textarea { width: 100%; height: 76px; margin-top: 12px; border: 1px solid #d8d8d8; border-radius: 12px; padding: 10px 12px; font-family: inherit; font-size: 14px; color: var(--rk-text); resize: none; outline: none; }
+  .rate-card textarea:focus { border-color: var(--red); box-shadow: 0 0 0 3px rgba(214,0,28,0.1); }
+  .rate-thanks { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 12px; padding: 10px; border-radius: 12px; background: var(--rk-green-bg); color: #155d2b; font-size: 14px; font-weight: 600; }
+
   /* ===== Painel de simulação (fora do celular; não faz parte do fluxo real) ===== */
   /* O painel ocupa a 1ª coluna inteira, com 15px de respiro, e rola por dentro
      quando o conteúdo não cabe na altura. */
@@ -753,7 +780,7 @@
           Voltar à Home
         </a>
       </h2>
-      <div class="sim-note">Fluxo remodelado, em construção etapa por etapa. Prontas: entrada (token e lista de assinantes), boas-vindas, selfie, documento, autorizações, contrato e seguro. Decisões D01 a D16 do REGRAS.md.</div>
+      <div class="sim-note">Fluxo remodelado completo: entrada (token e lista de assinantes), boas-vindas, selfie, documento, autorizações, contrato, seguro e avaliação. Decisões D01 a D17 do REGRAS.md.</div>
 
       <div class="sim-now">
         <div class="code" id="simCode">—</div>
@@ -1139,9 +1166,9 @@
                 </div>
                 <h1 class="rk-title">Selfie confirmada</h1>
                 <p class="rk-text">Próxima etapa: <b id="fokNext">documento de identificação</b>.</p>
+                <div class="auto-next"><span>Seguindo para a próxima etapa…</span><i><b></b></i></div>
                 <div class="rk-spacer"></div>
               </div>
-              <div class="rk-foot"><button type="button" class="rk-btn" id="fokGo">Continuar</button></div>
             </section>
 
             <!-- 004-1 · Falha na selfie, com motivo e tentativas restantes -->
@@ -1384,9 +1411,9 @@
                 </div>
                 <h1 class="rk-title">Documento confirmado</h1>
                 <p class="rk-text">Próxima etapa: <b>autorizações e contrato</b>.</p>
+                <div class="auto-next"><span>Seguindo para a próxima etapa…</span><i><b></b></i></div>
                 <div class="rk-spacer"></div>
               </div>
-              <div class="rk-foot"><button type="button" class="rk-btn" id="docOkGo">Continuar</button></div>
             </section>
 
             <!-- 012 · Autorizações -->
@@ -1476,9 +1503,53 @@
                 <div class="rk-hero-ic" id="signedIc" style="margin-top:30px"></div>
                 <h1 class="rk-title" id="signedTitle"></h1>
                 <p class="rk-text" id="signedText"></p>
+                <div class="auto-next" id="signedAuto" hidden><span>Seguindo para a próxima etapa…</span><i><b></b></i></div>
                 <div class="rk-spacer"></div>
               </div>
-              <div class="rk-foot" id="signedFoot"><button type="button" class="rk-btn" id="signedGo">Continuar</button></div>
+            </section>
+
+            <!-- 017 · Assinatura concluída + avaliação (opcional) -->
+            <section class="scr" id="s-rate">
+              <div class="rk-header"><span class="rk-logo"><b>HONDA</b><span>Serviços Financeiros</span></span></div>
+              <div class="rk-body">
+                <div class="stepbar" data-etapa="3"></div>
+                <div class="done-head">
+                  <div class="rk-hero-ic" style="background:var(--rk-green-bg)"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#1e8e3e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"/></svg></div>
+                  <h1 class="rk-title" id="rateTitle">Sua assinatura foi concluída</h1>
+                  <p class="rk-text" id="rateNext">A concessionária vai seguir com a formalização do contrato e entrar em contato.</p>
+                </div>
+                <button type="button" class="help-card" id="rateCopy" style="margin-top:16px">
+                  <span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D6001C" stroke-width="2.2"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg></span>
+                  <span><span class="t1" style="display:block">Baixar cópia do contrato</span><span class="t2" style="display:block">PDF com tudo o que você assinou</span></span>
+                </button>
+                <div class="rate-card" id="rateCard">
+                  <div class="rq">Como foi assinar pelo celular?</div>
+                  <div class="rs">Opcional · leva 10 segundos</div>
+                  <div class="rstars" id="rstars"></div>
+                  <div class="rlabel" id="rlabel"></div>
+                  <div id="rateMore" hidden>
+                    <div class="rs" style="margin-top:8px">O que podemos melhorar?</div>
+                    <div class="chips" id="chips"></div>
+                    <textarea id="rateText" placeholder="Quer contar mais? (opcional)"></textarea>
+                  </div>
+                  <button type="button" class="rk-btn sm" id="rateSend" style="margin-top:12px" hidden>Enviar avaliação</button>
+                  <div class="rate-thanks" id="rateThanks" hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1e8e3e" stroke-width="3"><path d="M5 12.5l4.5 4.5L19 7"/></svg><span id="rateThanksTxt">Obrigado pela avaliação!</span></div>
+                </div>
+                <div class="rk-spacer"></div>
+              </div>
+              <div class="rk-foot"><button type="button" class="rk-btn" id="rateDone">Concluir</button></div>
+              <div class="toast" id="toastRate"></div>
+            </section>
+
+            <!-- 018 · Fim (remoto) -->
+            <section class="scr" id="s-final">
+              <div class="rk-header"><span class="rk-logo"><b>HONDA</b><span>Serviços Financeiros</span></span></div>
+              <div class="rk-body" style="text-align:center">
+                <div class="rk-hero-ic" style="background:var(--rk-green-bg);margin-top:70px"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#1e8e3e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"/></svg></div>
+                <h1 class="rk-title">Tudo certo!</h1>
+                <p class="rk-text">Sua assinatura foi finalizada com sucesso. Você já pode fechar esta página.</p>
+                <div class="rk-spacer"></div>
+              </div>
             </section>
 
             <!-- Próximas etapas: ainda em construção no remake -->
@@ -1572,7 +1643,9 @@
       "013-L": "Contrato: proposta lida até o fim", "014": "Contrato: orçamento CDC (lendo)",
       "014-L": "Contrato: orçamento lido até o fim", "015": "Confirmar e assinar (sem rubrica)",
       "015-A": "Assinando o contrato", "015-OK": "Contrato assinado",
-      "016-4": "Contrato: termo do SPF (documento 3 de 3)", "016-4-L": "Contrato: termo do SPF lido até o fim"
+      "016-4": "Contrato: termo do SPF (documento 3 de 3)", "016-4-L": "Contrato: termo do SPF lido até o fim",
+      "017": "Assinatura concluída + avaliação (opcional)", "017-1": "Avaliação até 4: motivos na mesma tela",
+      "017-4": "Avaliação enviada", "017-5": "Avaliação 5 estrelas", "018": "Fim (remoto)"
     };
 
     // Melhorias de cada tela, exibidas na 3ª coluna: o problema no fluxo atual e o que
@@ -1715,7 +1788,8 @@
         antes: ["Depois da verificação, o fluxo pula direto para o documento, sem confirmar que a selfie deu certo."],
         depois: [
           { t: "Confirmação clara de sucesso. <span class='tag'>D07</span>", alvo: "#s-fok .rk-hero-ic, #s-fok .rk-title" },
-          { t: "Diz qual é a próxima etapa antes de seguir.", alvo: "#s-fok .rk-text" }
+          { t: "Diz qual é a próxima etapa antes de seguir.", alvo: "#s-fok .rk-text" },
+          { t: "Segue sozinha em 4 segundos, com barra de progresso: sem botão, porque não há decisão a tomar. <span class='tag'>D18</span>", alvo: "#s-fok .auto-next" }
         ]
       },
       ffail: {
@@ -1859,7 +1933,10 @@
       docok: {
         titulo: "Documento confirmado", sub: "Tela nova",
         antes: ["O fluxo pula para as Autorizações sem confirmar que o documento foi aceito."],
-        depois: [{ t: "Confirmação clara e qual é a próxima etapa (autorizações e contrato).", alvo: "#s-docok .rk-hero-ic, #s-docok .rk-title, #s-docok .rk-text" }]
+        depois: [
+          { t: "Confirmação clara e qual é a próxima etapa (autorizações e contrato).", alvo: "#s-docok .rk-hero-ic, #s-docok .rk-title, #s-docok .rk-text" },
+          { t: "Segue sozinha em 4 segundos, com barra de progresso. <span class='tag'>D18</span>", alvo: "#s-docok .auto-next" }
+        ]
       },
       auth: {
         titulo: "012 · Autorizações", sub: "Nenhuma é obrigatória (R09)",
@@ -1909,7 +1986,8 @@
         titulo: "Contrato assinado", sub: "Tela nova",
         antes: ["Depois de assinar, o fluxo pula para a próxima tela sem confirmar a assinatura."],
         depois: [
-          { t: "Confirmação \"Contrato assinado\" e a próxima etapa: termo do SPF (se contratado) ou avaliação. <span class='tag'>D15</span>", alvo: "#signedIc, #signedTitle, #signedText" }
+          { t: "Confirmação \"Contrato assinado\" (ou \"Contrato e seguro assinados\") e a próxima etapa: avaliação, opcional. <span class='tag'>D15</span>", alvo: "#signedIc, #signedTitle, #signedText" },
+          { t: "Segue sozinha em 4 segundos, com barra de progresso. <span class='tag'>D18</span>", alvo: "#signedAuto" }
         ]
       },
       spfdoc: {
@@ -1926,6 +2004,32 @@
           { t: "Sem opção de retirar o seguro aqui: quem ativa ou desativa o SPF é o colaborador, na abertura da proposta. A assinatura só apresenta o que já foi definido lá." },
           { t: "Requisito para o time de desenvolvimento: trilha de auditoria do aceite (data, hora, dispositivo, IP) ligada à sessão da selfie aprovada. É a prova que substitui a 2ª selfie, a validar com o jurídico." }
         ]
+      },
+      rate: {
+        titulo: "017 · Assinatura concluída + avaliação", sub: "Avaliação opcional",
+        antes: [
+          "Título \"Obrigado!\" com estrelas cinza e vermelhas, sem confirmação clara de que a assinatura terminou.",
+          "Com nota até 4: botão \"Sugerir melhorias\", depois um modal com campo de texto livre. Os comentários saem vagos (\"Péssimo\", \"Muito ruim\"), sem dizer o motivo. <span class='tag'>R02</span> <span class='tag fb'>Feedback: 24 críticas genéricas</span>",
+          "No remoto não há botão: quem não avalia fica parado na tela. <span class='tag'>R02</span>",
+          "Não dá para guardar uma cópia do que foi assinado. <span class='tag fb'>Feedback: \"gostaria de poder imprimir o que estou assinando\"</span>"
+        ],
+        depois: [
+          { t: "Confirmação clara: \"Sua assinatura foi concluída\" (ou \"Contrato e seguro assinados\") e o que acontece agora. <span class='tag'>D17</span>", alvo: "#s-rate .done-head" },
+          { t: "\"Baixar cópia do contrato\" em PDF.", alvo: "#rateCopy" },
+          { t: "Avaliação marcada como opcional, com rótulo em cada nota (de \"Muito difícil\" a \"Muito fácil\").", alvo: "#rateCard .rq, #rateCard .rs, #rstars" },
+          { t: "A nota pode ser trocada à vontade; só vale ao tocar em \"Enviar avaliação\". Hoje o primeiro toque já é definitivo.", alvo: "#rstars, #rateSend",
+            visivel: function () { return !$("rateSend").hidden; },
+            ver: function () { openRate(); $("rstars").querySelector('[data-n="5"]').click(); } },
+          { t: "Com nota até 4, os motivos aparecem na mesma tela, em botões de um toque (ler o contrato, selfie, foto do documento…), e o texto é opcional. Os comentários passam a dizer o problema. <span class='tag'>R02</span>", alvo: "#rateMore",
+            visivel: function () { return !$("rateMore").hidden; },
+            ver: function () { openRate(); $("rstars").querySelector('[data-n="3"]').click(); } },
+          { t: "Botão \"Concluir\" sempre disponível. No presencial: \"Concluir e chamar o próximo\". No remoto, também encerra sozinho depois de avaliar, como hoje.", alvo: "#rateDone" }
+        ]
+      },
+      final: {
+        titulo: "018 · Fim (remoto)", sub: "Antes: \"Assinatura finalizada com sucesso\"",
+        antes: ["Texto simples na mesma tela cinza das outras, sem dizer se pode fechar a página."],
+        depois: [{ t: "Confirmação final com ícone de sucesso e a orientação de que já pode fechar a página. <span class='tag'>D17</span>", alvo: "#s-final .rk-title, #s-final .rk-text" }]
       },
       next: {
         titulo: "Próximas etapas", sub: "Em construção",
@@ -1944,7 +2048,8 @@
       "DOC-V": "docverify", "DOC-OK": "docok",
       "012": "auth", "013": "reader", "013-L": "reader", "014": "reader", "014-L": "reader",
       "015": "sign", "015-A": "signed", "015-OK": "signed",
-      "016-4": "spfdoc", "016-4-L": "spfdoc"
+      "016-4": "spfdoc", "016-4-L": "spfdoc",
+      "017": "rate", "017-1": "rate", "017-4": "rate", "017-5": "rate", "018": "final"
     };
 
     var notaAtual = null;   // grupo de notas exibido
@@ -2048,11 +2153,12 @@
         "006-1": function () { openCnh(st.cnhArq); }, "006-3": function () { openCnh(st.cnhArq); },
         "006-4": function () { openCnh(st.cnhArq); }, "006-5": function () { openCnh(st.cnhArq); },
         "006-OK": function () { openCnh(st.cnhArq); }, "DOC-V": openDocChoice,
-        "DOC-OK": function () { pintarEtapas("s-docok"); show("s-docok", "DOC-OK"); },
+        "DOC-OK": openDocOk,
         "012": openAuthR, "013": function () { openReader(1); }, "013-L": function () { openReader(1); },
         "014": function () { openReader(2); }, "014-L": function () { openReader(2); },
         "015": openSign, "015-A": openSign, "015-OK": openSign,
-        "016-4": function () { openReader(3); }, "016-4-L": function () { openReader(3); }
+        "016-4": function () { openReader(3); }, "016-4-L": function () { openReader(3); },
+        "017": openRate, "017-1": openRate, "017-4": openRate, "017-5": openRate, "018": openFinal
       }[s.code];
       if (reabrir) reabrir(); else start();
     }
@@ -2556,12 +2662,23 @@
     }
 
     // ---------- 004-OK · Selfie confirmada ----------
+    // Confirmações intermediárias seguem sozinhas em 4 s, com barra de progresso (D18).
+    // A duração da barra está no CSS (.auto-next.run); mude os dois juntos.
+    var AUTO_SEGUIR_MS = 4000;
+    function autoSeguir(scrId, proxima) {
+      var a = document.querySelector("#" + scrId + " .auto-next");
+      a.hidden = false;
+      a.classList.remove("run");
+      void a.offsetWidth;
+      a.classList.add("run");
+      later(proxima, AUTO_SEGUIR_MS);
+    }
     function openFaceOk() {
       pintarEtapas("s-fok");
       $("fokNext").textContent = "documento de identificação";
       show("s-fok", "004-OK");
+      autoSeguir("s-fok", openDocChoice);
     }
-    $("fokGo").addEventListener("click", function () { openDocChoice(); });
 
     // ---------- 004-1 · Falha com motivo, dicas e tentativas restantes (D08) ----------
     var FALHAS = {
@@ -2867,9 +2984,13 @@
       later(function () { itens[0].className = "done"; itens[1].className = "cur"; }, 900);
       later(function () { itens[1].className = "done"; itens[2].className = "cur"; }, 1900);
       later(function () { itens[2].className = "done"; }, 2800);
-      later(function () { pintarEtapas("s-docok"); show("s-docok", "DOC-OK"); }, 3300);
+      later(openDocOk, 3300);
     }
-    $("docOkGo").addEventListener("click", function () { openAuthR(); });
+    function openDocOk() {
+      pintarEtapas("s-docok");
+      show("s-docok", "DOC-OK");
+      autoSeguir("s-docok", openAuthR);
+    }
 
     // ================================================================
     // Etapa 4 · Autorizações e contrato (D13 a D15; D01 sem rubrica; D02 contrato em texto)
@@ -3057,18 +3178,100 @@
       $("signedIc").innerHTML = '<span class="mini-spin" style="width:30px;height:30px;color:#D6001C;border-width:3px"></span>';
       $("signedTitle").textContent = "Assinando o contrato…";
       $("signedText").textContent = "Isso leva poucos segundos.";
-      $("signedFoot").hidden = true;
+      $("signedAuto").hidden = true;
       show("s-signed", "015-A");
       later(function () {
         $("signedIc").style.background = "var(--rk-green-bg)";
         $("signedIc").innerHTML = '<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#1e8e3e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"/></svg>';
         $("signedTitle").textContent = temSpf() ? "Contrato e seguro assinados" : "Contrato assinado";
         $("signedText").innerHTML = "Próxima etapa: <b>avaliação (opcional)</b>.";
-        $("signedFoot").hidden = false;
         setCode("015-OK");
+        autoSeguir("s-signed", openRate);
       }, 1800);
     });
-    $("signedGo").addEventListener("click", function () { show("s-next", "PRÓX"); });
+
+    // ================================================================
+    // Etapa 5 · Avaliação e encerramento (D17; R02)
+    // ================================================================
+    var NOTA_TXT = ["", "Muito difícil", "Difícil", "Regular", "Fácil", "Muito fácil"];
+    var MOTIVOS = ["Ler o contrato", "Selfie", "Foto do documento", "Demorou", "Entender as etapas", "Outro"];
+    (function montarAvaliacao() {
+      var box = $("rstars");
+      for (var i = 1; i <= 5; i++) {
+        var b = document.createElement("button");
+        b.type = "button"; b.className = "rstar"; b.setAttribute("data-n", i);
+        b.setAttribute("aria-label", i + " de 5 · " + NOTA_TXT[i]);
+        b.innerHTML = '<svg width="40" height="40" viewBox="0 0 24 24"><path d="M12 2.2l2.95 6.1 6.7.95-4.85 4.7 1.15 6.65L12 17.45 6.05 20.6 7.2 13.95 2.35 9.25l6.7-.95z" stroke-linejoin="round"/></svg>';
+        box.appendChild(b);
+      }
+      $("chips").innerHTML = MOTIVOS.map(function (m) { return '<button type="button" class="chip">' + m + "</button>"; }).join("");
+    })();
+
+    function openRate() {
+      st.nota = 0;
+      st.avaliado = false;
+      pintarEtapas("s-rate");
+      $("rateTitle").textContent = temSpf() ? "Contrato e seguro assinados" : "Sua assinatura foi concluída";
+      $("rateMore").hidden = true;
+      $("rateThanks").hidden = true;
+      $("rateText").value = "";
+      document.querySelectorAll(".chip").forEach(function (c) { c.classList.remove("on"); });
+      $("rateSend").hidden = true;
+      $("rateCard").classList.remove("sent");
+      pintarNota(0);
+      // Presencial: volta à lista para a próxima pessoa; remoto: encerra (D17).
+      var faltam = !isRemoto() && st.signers.some(function (s, i) { return i !== st.cur && s.status !== "concluido"; });
+      $("rateDone").textContent = isRemoto() ? "Concluir" : (faltam ? "Concluir e chamar o próximo" : "Concluir");
+      show("s-rate", "017");
+    }
+    function pintarNota(n) {
+      document.querySelectorAll(".rstar").forEach(function (s) { s.classList.toggle("on", parseInt(s.getAttribute("data-n"), 10) <= n); });
+      $("rlabel").textContent = NOTA_TXT[n] || "";
+    }
+    // A nota pode ser trocada quantas vezes a pessoa quiser; só vale ao tocar em
+    // "Enviar avaliação" (ou em "Concluir", que envia a nota escolhida e ainda não enviada).
+    $("rstars").addEventListener("click", function (e) {
+      var b = e.target.closest(".rstar");
+      if (!b || st.avaliado) return;
+      st.nota = parseInt(b.getAttribute("data-n"), 10);
+      pintarNota(st.nota);
+      // R02: até 4 estrelas, pede o motivo, na mesma tela (sem modal). Com 5, sem motivo.
+      $("rateMore").hidden = st.nota === 5;
+      $("rateSend").hidden = false;
+      setCode(st.nota <= 4 ? "017-1" : "017");
+    });
+    $("chips").addEventListener("click", function (e) {
+      var c = e.target.closest(".chip");
+      if (!c) return;
+      c.classList.toggle("on");
+    });
+    $("rateSend").addEventListener("click", enviarAvaliacao);
+    function enviarAvaliacao() {
+      if (!st.nota || st.avaliado) return;
+      $("rateMore").hidden = true;
+      $("rateSend").hidden = true;
+      $("rateCard").classList.add("sent");
+      agradecer();
+    }
+    function agradecer() {
+      st.avaliado = true;
+      $("rateThanks").hidden = false;
+      $("rateThanksTxt").textContent = st.nota === 5 ? "Obrigado pela avaliação!" : "Obrigado! Sua opinião vai nos ajudar a melhorar.";
+      setCode(st.nota === 5 ? "017-5" : "017-4");
+      // Remoto: depois de avaliar, encerra sozinho, como hoje (R02).
+      if (isRemoto()) later(openFinal, 1800);
+    }
+    $("rateCopy").addEventListener("click", function () { toast("toastRate", "Cópia do contrato salva em Downloads (simulação)"); });
+    $("rateDone").addEventListener("click", function () {
+      // Nota escolhida e não enviada: "Concluir" envia junto.
+      if (st.nota && !st.avaliado) { st.avaliado = true; }
+      if (isRemoto()) return openFinal();
+      signer().status = "concluido";
+      openLista();
+    });
+
+    // ---------- 018 · Fim (remoto) ----------
+    function openFinal() { show("s-final", "018"); }
 
     function atualizarContSelfie() {
       $("simSelfieCount").textContent = "Tentativas com falha: " + (st.faceFails || 0) + " de " + MAX_SELFIE + ". Vale para todas as tentativas até mudar.";
@@ -3171,12 +3374,14 @@
       ["009-1", "009-1 · Falha na foto do documento", function () { st.lado = "frente"; st.docFails = 1; atualizarContDoc(); openDocFail($("simDoc").value === "ok" ? "reflexo" : $("simDoc").value); }],
       ["006-1", "006-1 · CNH Digital", function () { openCnh(); }],
       ["006-4", "006-4 · CNH Digital: arquivo grande", function () { openCnh(ARQ_CNH[2]); }],
-      ["DOC-OK", "DOC-OK · Documento confirmado", function () { pintarEtapas("s-docok"); show("s-docok", "DOC-OK"); }],
+      ["DOC-OK", "DOC-OK · Documento confirmado", openDocOk],
       ["012", "012 · Autorizações", openAuthR],
       ["013", "013 · Contrato: proposta", function () { st.lidos = {}; openReader(1); }],
       ["014", "014 · Contrato: orçamento CDC", function () { st.lidos = { 1: true }; openReader(2); }],
       ["016-4", "016-4 · Contrato: termo do SPF (3 de 3)", function () { forcarSpf(); st.lidos = { 1: true, 2: true }; openReader(3); }],
-      ["015", "015 · Confirmar e assinar", openSign]
+      ["015", "015 · Confirmar e assinar", openSign],
+      ["017", "017 · Concluída + avaliação", openRate],
+      ["018", "018 · Fim (remoto)", function () { forcarCanal("remoto"); openFinal(); }]
     ];
     (function montarAtalhos() {
       var sel = $("simJump");

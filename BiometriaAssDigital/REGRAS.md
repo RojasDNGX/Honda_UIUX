@@ -388,6 +388,21 @@ _Condicionada à aprovação do jurídico da Honda._
   - Na tela "Tudo pronto para assinar", o seguro aparece em **linha própria** ("R$ 512,30 · contratação aceita"), e a confirmação diz "Contrato e seguro assinados".
 - **Requisito para o time de desenvolvimento — trilha de auditoria:** registrar data, hora, dispositivo e IP do aceite do SPF (a caixa marcada e o "Aceito"), ligados ao identificador da sessão da selfie aprovada. É a prova que substitui a 2ª selfie e o principal argumento para o jurídico.
 
+### D17 — Avaliação e encerramento
+- A tela 017 abre com uma **confirmação clara** ("Sua assinatura foi concluída" ou "Contrato e seguro assinados") e o que acontece agora. Inclui **"Baixar cópia do contrato"** em PDF.
+- A **avaliação é opcional** e diz isso. Cada nota tem um rótulo (de "Muito difícil" a "Muito fácil").
+- **A nota pode ser trocada à vontade** (por exemplo, de 5 para 4) e só vale ao tocar em **"Enviar avaliação"**. Esse botão aparece depois de escolher qualquer nota. Se a pessoa tocar em "Concluir" com uma nota escolhida e não enviada, a nota vai junto. Hoje o primeiro toque nas estrelas já é definitivo.
+- **R02 mantida:** com 5 estrelas, não há comentário. Com até 4, os **motivos aparecem na mesma tela**, sem modal: botões de um toque ("Ler o contrato", "Selfie", "Foto do documento", "Demorou", "Entender as etapas", "Outro") e texto opcional. Os comentários passam a dizer o problema, em vez de "Péssimo" (24 críticas genéricas no FEEDBACK.md).
+- **Botão "Concluir" sempre disponível:**
+  - **Presencial:** "Concluir e chamar o próximo", que volta para a lista de assinantes (001).
+  - **Remoto:** "Concluir". Depois de avaliar, a tela também encerra sozinha, como hoje (R02). Isso resolve quem não quer avaliar, que hoje fica parado na tela sem botão.
+- **018 (remoto):** "Tudo certo!", com a orientação de que já pode fechar a página.
+
+### D18 — Confirmações intermediárias seguem sozinhas
+- As telas **Selfie confirmada**, **Documento confirmado** e **Contrato assinado** não têm mais o botão "Continuar". Elas seguem para a próxima etapa **sozinhas, em 4 segundos**, porque não há decisão a tomar ali.
+- Para não parecer que a tela travou, mostram **"Seguindo para a próxima etapa…"** com uma barra de progresso de 4 segundos.
+- **Não vale** para a tela final (017/018), que continua com o botão "Concluir", a avaliação e o download da cópia (D17).
+
 ## Cenários futuros (só para conhecimento)
 
 > Ainda **não entram** na réplica nem no remake. Ficam registrados para quando o usuário pedir.
