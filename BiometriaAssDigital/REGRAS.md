@@ -325,6 +325,34 @@ Depois do token (remoto) ou do "Iniciar" (presencial), uma tela mostra:
   - **Problema de hoje:** se a pessoa a distância não termina e não avisa, o colaborador não sabe o que aconteceu nem entende a demora. Ele só descobre por suspeita, entrando em contato com o proponente.
 - **Motivo:** a tela atual (009-2) não tem botão, e no remoto o colaborador fica sem informação.
 
+### D10 — Documento: escolha clara entre físico e CNH Digital
+- A tela 006 vira **"Qual documento você vai usar?"**, com indicador de etapa e **dois cartões de escolha**:
+  - **Documento físico** (RG, CIN, CNH, RNE ou DNI): "você vai fotografar a frente e depois o verso";
+  - **CNH Digital:** "arquivo PDF tirado do app Carteira Digital de Trânsito".
+- "Continuar" só libera depois de escolher.
+
+### D11 — Documento físico: ordem frente → verso guiada e lado errado barrado na hora
+- A tela de instruções (007) deixa a **ordem explícita**, no título e num desenho de 2 passos (1. Frente, o lado com a foto; 2. Verso). O botão diz "Fotografar a frente".
+- **Câmera:**
+  - mostra "Frente do documento · 1 de 2" / "Verso · 2 de 2" e dá orientação em texto;
+  - a moldura muda de cor (branco, amarelo de alerta, verde quando está bom);
+  - frente **e** verso têm captura automática com contagem (R07).
+- **Lado errado:** o sistema já reconhece o lado (R11). No remake, se a pessoa mostrar o verso na etapa da frente, o aviso aparece **na hora** ("Este é o verso. Vire o documento e mostre a frente") e a foto errada não é tirada. Acaba a falha genérica no fim (011-1).
+- **Revisão:** o título vira "Frente do documento" / "Verso do documento", no lugar de "DNI lado com foto", e diz o que conferir. Os botões são "Usar esta foto" e "Tirar outra".
+
+### D12 — Documento: CNH Digital com regras antes, falhas com motivo e verificação
+- **CNH Digital:**
+  - passo a passo para exportar o PDF no app Carteira Digital de Trânsito;
+  - as regras do arquivo (PDF original, só a CNH, até 4 MB) aparecem **antes** de escolher;
+  - o arquivo escolhido aparece em verde ou vermelho, com uma mensagem que diz **como resolver** o erro.
+- **Falha na foto:**
+  - mostra o motivo provável e o lado que falhou (reflexo, desfocada, documento cortado), com dicas específicas;
+  - mostra as **tentativas restantes**, somando frente e verso (R08);
+  - o botão volta direto para o lado que falhou.
+- **3ª falha:** encerra a assinatura na mesma tela da selfie (D08/D09), que diz que o motivo foi a foto do documento.
+- **Verificação:** diz o tempo estimado e o que está sendo conferido (incluindo a comparação com a selfie), e depois confirma o documento.
+- **Em aberto para o negócio:** aceitar RG digital/CIN digital e passaporte (FEEDBACK.md, tema 7).
+
 ## Cenários futuros (só para conhecimento)
 
 > Ainda **não entram** na réplica nem no remake. Ficam registrados para quando o usuário pedir.

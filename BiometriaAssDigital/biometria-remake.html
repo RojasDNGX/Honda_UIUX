@@ -517,6 +517,61 @@
   .fix-list li { display: flex; gap: 10px; padding: 9px 0; font-size: 14.5px; line-height: 1.45; }
   .fix-list li + li { border-top: 1px solid #ebebeb; }
 
+  /* ===== Etapa 3: documento de identificação ===== */
+  .opt-card { display: flex; gap: 14px; align-items: flex-start; width: 100%; margin-top: 12px; padding: 16px 14px; border: 1.5px solid var(--rk-line); border-radius: 16px; background: #fff; cursor: pointer; text-align: left; color: var(--rk-text); transition: border-color 0.15s ease, background 0.15s ease; }
+  .opt-card.on { border-color: var(--red); background: #fff8f9; }
+  .opt-card .oi { flex: 0 0 46px; height: 46px; border-radius: 12px; background: var(--rk-soft); display: flex; align-items: center; justify-content: center; }
+  .opt-card.on .oi { background: #fff; }
+  .opt-card .ot { flex: 1; min-width: 0; }
+  .opt-card .ot b { display: block; font-size: 15.5px; font-weight: 600; }
+  .opt-card .ot span { display: block; font-size: 13px; color: var(--rk-muted); margin-top: 3px; line-height: 1.4; }
+  .opt-card .radio { flex: 0 0 22px; height: 22px; border-radius: 50%; border: 2px solid #c4c4c4; margin-top: 2px; display: flex; align-items: center; justify-content: center; }
+  .opt-card.on .radio { border-color: var(--red); }
+  .opt-card.on .radio::after { content: ""; width: 11px; height: 11px; border-radius: 50%; background: var(--red); }
+
+  .order-steps { display: flex; gap: 10px; margin-top: 18px; }
+  .order-step { flex: 1; border-radius: 14px; background: var(--rk-soft); padding: 12px 10px; text-align: center; }
+  .order-step .os-n { display: inline-flex; width: 24px; height: 24px; border-radius: 50%; background: var(--red); color: #fff; font-size: 13px; font-weight: 700; align-items: center; justify-content: center; }
+  .order-step svg { display: block; margin: 8px auto 6px auto; }
+  .order-step b { display: block; font-size: 14px; }
+  .order-step span { display: block; font-size: 12px; color: var(--rk-muted); }
+  .check-list { list-style: none; margin-top: 14px; }
+  .check-list li { display: flex; gap: 10px; align-items: flex-start; padding: 6px 0; font-size: 14.5px; line-height: 1.45; }
+  .check-list li svg { flex-shrink: 0; margin-top: 2px; }
+
+  .dframe-wrap { position: relative; z-index: 2; width: 320px; height: 214px; margin: 54px auto 0 auto; }
+  .dframe { position: absolute; inset: 0; border-radius: 16px; box-shadow: 0 0 0 600px rgba(10,11,13,0.68); overflow: hidden; background: #4b4842; display: flex; align-items: center; justify-content: center; }
+  .dframe .dimg { width: 300px; height: 196px; transition: transform 0.5s ease; }
+  .dframe .dimg.flip { transform: rotateY(90deg); }
+  .dframe-wrap .qc { border-color: #fff; }
+  .dframe-wrap.ok .qc { border-color: #5ee35a; }
+  .dframe-wrap.warn .qc { border-color: #ffb020; }
+  .dcount { position: absolute; z-index: 4; left: 50%; top: 50%; width: 72px; height: 72px; margin: -36px 0 0 -36px; border-radius: 50%; background: rgba(255,255,255,0.92); color: #111; font-size: 32px; font-weight: 600; display: flex; align-items: center; justify-content: center; }
+  .dflash { position: absolute; inset: 0; z-index: 6; background: #fff; opacity: 0; pointer-events: none; transition: opacity 0.12s ease; }
+  .dflash.on { opacity: 0.9; }
+
+  .review-img { margin-top: 16px; border-radius: 16px; background: #4b4842; display: flex; align-items: center; justify-content: center; padding: 12px; }
+  .review-img svg { width: 100%; height: auto; display: block; }
+
+  .file-box { display: flex; gap: 12px; align-items: center; width: 100%; margin-top: 18px; padding: 14px; border: 1.5px dashed #c9c9c9; border-radius: 14px; background: #fff; cursor: pointer; text-align: left; color: var(--rk-text); }
+  .file-box.sel { border-style: solid; border-color: var(--rk-line); }
+  .file-box.ok { border-color: var(--rk-green); background: #f6fbf7; }
+  .file-box.err { border-color: var(--red); background: #fff8f9; }
+  .file-box .fi { flex: 0 0 42px; height: 42px; border-radius: 10px; background: var(--rk-soft); display: flex; align-items: center; justify-content: center; }
+  .file-box .fn { flex: 1; min-width: 0; }
+  .file-box .fn b { display: block; font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .file-box .fn span { display: block; font-size: 13px; color: var(--rk-muted); margin-top: 2px; }
+  .file-msg { display: flex; gap: 10px; margin-top: 10px; padding: 11px 13px; border-radius: 12px; font-size: 13.5px; line-height: 1.45; }
+  .file-msg.err { background: #fff0f2; color: #8a1020; }
+  .file-msg.ok { background: var(--rk-green-bg); color: #155d2b; }
+  .rules { margin-top: 16px; border-radius: 14px; background: var(--rk-soft); padding: 4px 14px; }
+  .rules li { display: flex; gap: 10px; padding: 9px 0; font-size: 14px; line-height: 1.4; }
+  .rules li + li { border-top: 1px solid #ebebeb; }
+  .picker-item2 { display: flex; align-items: center; gap: 12px; width: 100%; padding: 11px 24px; border: none; background: none; cursor: pointer; text-align: left; }
+  .picker-item2:hover { background: var(--rk-soft); }
+  .picker-item2 .pn { display: block; font-size: 14.5px; color: #222; }
+  .picker-item2 .ps { display: block; font-size: 12.5px; color: #888; margin-top: 1px; }
+
   /* ===== Painel de simulação (fora do celular; não faz parte do fluxo real) ===== */
   /* O painel ocupa a 1ª coluna inteira, com 15px de respiro, e rola por dentro
      quando o conteúdo não cabe na altura. */
@@ -649,7 +704,7 @@
           Voltar à Home
         </a>
       </h2>
-      <div class="sim-note">Fluxo remodelado, em construção etapa por etapa. Prontas: entrada (token e lista de assinantes), boas-vindas e selfie. Decisões D03 a D09 do REGRAS.md.</div>
+      <div class="sim-note">Fluxo remodelado, em construção etapa por etapa. Prontas: entrada (token e lista de assinantes), boas-vindas, selfie e documento. Decisões D03 a D12 do REGRAS.md.</div>
 
       <div class="sim-now">
         <div class="code" id="simCode">—</div>
@@ -735,6 +790,24 @@
           </select>
         </div>
         <div class="sim-note" id="simSelfieCount" style="margin-top:-2px">Tentativas com falha: 0 de 3. Vale para todas as tentativas até mudar.</div>
+      </div>
+
+      <div class="sim-sec">
+        <div class="sim-sec-title">Documento</div>
+        <div class="sim-field">
+          <span>Resultado da foto</span>
+          <select id="simDoc">
+            <option value="ok">Aprovada</option>
+            <option value="reflexo">Falha: reflexo de luz</option>
+            <option value="desfocada">Falha: foto desfocada</option>
+            <option value="cortada">Falha: documento cortado</option>
+          </select>
+        </div>
+        <label class="sim-field" style="justify-content:flex-start;gap:8px;cursor:pointer">
+          <input type="checkbox" id="simVerso" style="accent-color:#D6001C">
+          <span>Mostrar o verso primeiro (testar a ordem)</span>
+        </label>
+        <div class="sim-note" id="simDocCount" style="margin-top:-2px">Falhas na foto (frente + verso): 0 de 3.</div>
       </div>
 
       <div class="sim-sec" id="listHint">
@@ -1045,7 +1118,7 @@
                   <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#D6001C" stroke-width="2.4"><circle cx="12" cy="12" r="10"/><path d="M12 7v6M12 16.5v.5"/></svg>
                 </div>
                 <h1 class="rk-title">Não foi possível confirmar sua identidade</h1>
-                <p class="rk-text">Por segurança, esta assinatura foi encerrada depois de 3 tentativas de selfie.</p>
+                <p class="rk-text" id="fcancelWhy">Por segurança, esta assinatura foi encerrada depois de 3 tentativas de selfie.</p>
                 <div class="who-card" style="text-align:left;margin-top:22px">
                   <div class="l">O que acontece agora</div>
                   <div class="v" id="fcancelNext" style="font-weight:500;line-height:1.45"></div>
@@ -1093,6 +1166,180 @@
               </div>
             </section>
 
+            <!-- 006 · Qual documento você vai usar? -->
+            <section class="scr" id="s-docchoice">
+              <div class="rk-header"><span class="rk-logo"><b>HONDA</b><span>Serviços Financeiros</span></span></div>
+              <div class="rk-body">
+                <div class="stepbar" data-etapa="1"></div>
+                <h1 class="rk-title">Qual documento você vai usar?</h1>
+                <p class="rk-text">Escolha um documento de identificação com foto, válido.</p>
+                <button type="button" class="opt-card" data-doc="fisico">
+                  <span class="oi"><svg width="26" height="20" viewBox="0 0 26 20" fill="none" stroke="#D6001C" stroke-width="1.8"><rect x="1" y="1" width="24" height="18" rx="3"/><circle cx="8" cy="9" r="2.6"/><path d="M4 15c1-2.6 7-2.6 8 0M15 7h7M15 11h7"/></svg></span>
+                  <span class="ot"><b>Documento físico</b><span>RG, CIN, CNH, RNE ou DNI. Você vai fotografar a frente e depois o verso.</span></span>
+                  <span class="radio"></span>
+                </button>
+                <button type="button" class="opt-card" data-doc="digital">
+                  <span class="oi"><svg width="20" height="24" viewBox="0 0 20 24" fill="none" stroke="#D6001C" stroke-width="1.8"><rect x="1" y="1" width="18" height="22" rx="3"/><path d="M5 7h10M5 11h10M5 15h6"/></svg></span>
+                  <span class="ot"><b>CNH Digital</b><span>Arquivo PDF tirado do app Carteira Digital de Trânsito.</span></span>
+                  <span class="radio"></span>
+                </button>
+                <div class="rk-spacer"></div>
+              </div>
+              <div class="rk-foot"><button type="button" class="rk-btn" id="docChoiceGo" disabled>Continuar</button></div>
+            </section>
+
+            <!-- 007 · Documento físico: como fotografar (ordem frente → verso) -->
+            <section class="scr" id="s-doctips">
+              <div class="rk-header">
+                <button type="button" class="rk-back" data-doc-back aria-label="Voltar"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+                <span class="rk-logo"><b>HONDA</b><span>Serviços Financeiros</span></span>
+              </div>
+              <div class="rk-body">
+                <div class="stepbar" data-etapa="1"></div>
+                <h1 class="rk-title">Fotografe a frente e depois o verso</h1>
+                <p class="rk-text">A foto é tirada sozinha quando o documento estiver bem enquadrado.</p>
+                <div class="order-steps" id="orderSteps">
+                  <div class="order-step"><span class="os-n">1</span>
+                    <svg width="64" height="42" viewBox="0 0 64 42"><rect x="1" y="1" width="62" height="40" rx="5" fill="#e3f0d8" stroke="#3f9a4e" stroke-width="2"/><rect x="6" y="9" width="17" height="22" rx="2" fill="#8a7a6a"/><path d="M28 12h28M28 18h22M28 24h26" stroke="#7a8f72" stroke-width="2.4"/></svg>
+                    <b>Frente</b><span>o lado com a foto</span></div>
+                  <div class="order-step"><span class="os-n">2</span>
+                    <svg width="64" height="42" viewBox="0 0 64 42"><rect x="1" y="1" width="62" height="40" rx="5" fill="#e3f0d8" stroke="#3f9a4e" stroke-width="2"/><path d="M7 11h26M7 17h20M7 23h24" stroke="#7a8f72" stroke-width="2.4"/><g fill="none" stroke="#555" stroke-width="1.2"><ellipse cx="48" cy="21" rx="5" ry="7"/><ellipse cx="48" cy="21" rx="9" ry="12"/></g></svg>
+                    <b>Verso</b><span>o lado sem foto</span></div>
+                </div>
+                <ul class="check-list" id="docTipsList">
+                  <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1e8e3e" stroke-width="3"><path d="M5 12.5l4.5 4.5L19 7"/></svg>Tire o documento do plástico ou da capinha.</li>
+                  <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1e8e3e" stroke-width="3"><path d="M5 12.5l4.5 4.5L19 7"/></svg>Apoie numa mesa de cor escura, em lugar iluminado.</li>
+                  <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1e8e3e" stroke-width="3"><path d="M5 12.5l4.5 4.5L19 7"/></svg>Evite reflexo de luz sobre o documento.</li>
+                </ul>
+                <div class="rk-spacer"></div>
+              </div>
+              <div class="rk-foot"><button type="button" class="rk-btn" id="docTipsGo">Fotografar a frente</button></div>
+            </section>
+
+            <!-- 008 / 010 · Câmera do documento (frente e verso) -->
+            <section class="scr fcam" id="s-doccam">
+              <div class="fcam-bg"></div>
+              <div class="fcam-top">
+                <button type="button" class="fcam-ic" id="docCamClose" aria-label="Fechar"><svg width="18" height="18" viewBox="0 0 22 22" stroke="#fff" stroke-width="2.2"><path d="M4 4l14 14M18 4L4 18"/></svg></button>
+                <span></span>
+              </div>
+              <div class="fcam-step" id="docCamStep">FRENTE DO DOCUMENTO · 1 DE 2</div>
+              <div class="fcam-dots"><i id="ddot1"></i><i id="ddot2"></i></div>
+              <div class="dframe-wrap" id="dframeWrap">
+                <div class="dframe"><span id="docCamImg"></span></div>
+                <i class="qc tl"></i><i class="qc tr"></i><i class="qc bl"></i><i class="qc br"></i>
+                <div class="dcount" id="dcount" hidden>3</div>
+              </div>
+              <div class="fguide" id="docGuide">Encaixe a frente do documento na moldura</div>
+              <div class="dflash" id="dflash"></div>
+            </section>
+
+            <!-- 009 / 011 · Revisão da foto -->
+            <section class="scr" id="s-docreview">
+              <div class="rk-header"><span class="rk-logo"><b>HONDA</b><span>Serviços Financeiros</span></span></div>
+              <div class="rk-body">
+                <div class="stepbar" data-etapa="1"></div>
+                <h1 class="rk-title" id="docRevTitle">Frente do documento</h1>
+                <p class="rk-text">Confira se a foto ficou nítida, sem reflexo e com o documento inteiro.</p>
+                <div class="review-img" id="docRevImg"></div>
+                <ul class="check-list" id="docRevChecks">
+                  <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1e8e3e" stroke-width="3"><path d="M5 12.5l4.5 4.5L19 7"/></svg>Documento inteiro na foto</li>
+                  <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1e8e3e" stroke-width="3"><path d="M5 12.5l4.5 4.5L19 7"/></svg><span>Lado certo: <b id="docRevLado">frente, com a foto</b></span></li>
+                </ul>
+                <div class="rk-spacer"></div>
+              </div>
+              <div class="rk-foot">
+                <button type="button" class="rk-btn" id="docRevUse">Usar esta foto</button>
+                <button type="button" class="rk-btn ghost" id="docRevRedo" style="margin-top:10px">Tirar outra</button>
+              </div>
+            </section>
+
+            <!-- 009-1 · Falha na foto do documento -->
+            <section class="scr" id="s-docfail">
+              <div class="rk-header"><span class="rk-logo"><b>HONDA</b><span>Serviços Financeiros</span></span></div>
+              <div class="rk-body" style="text-align:center">
+                <div class="stepbar" data-etapa="1" style="text-align:left"></div>
+                <div class="rk-hero-ic" style="background:var(--rk-amber-bg);margin-top:6px" id="docFailIc"></div>
+                <h1 class="rk-title" id="docFailTitle"></h1>
+                <p class="rk-text" id="docFailText"></p>
+                <div><span class="tries" id="docFailTries"></span></div>
+                <ul class="fix-list" id="docFailFix"></ul>
+                <div class="rk-spacer"></div>
+              </div>
+              <div class="rk-foot"><button type="button" class="rk-btn" id="docFailGo">Fotografar de novo</button></div>
+            </section>
+
+            <!-- 006-1 · CNH Digital: regras antes de escolher o arquivo -->
+            <section class="scr" id="s-cnh">
+              <div class="rk-header">
+                <button type="button" class="rk-back" data-doc-back aria-label="Voltar"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+                <span class="rk-logo"><b>HONDA</b><span>Serviços Financeiros</span></span>
+              </div>
+              <div class="rk-body">
+                <div class="stepbar" data-etapa="1"></div>
+                <h1 class="rk-title">Envie sua CNH Digital</h1>
+                <p class="rk-text">Exporte o arquivo pelo app <b>Carteira Digital de Trânsito</b>:</p>
+                <ol class="howto" id="cnhHow">
+                  <li><span>Abra o app e toque na sua CNH.</span></li>
+                  <li><span>Toque em <b>Compartilhar</b> e escolha <b>Exportar PDF</b>.</span></li>
+                  <li><span>Volte aqui e escolha o arquivo salvo.</span></li>
+                </ol>
+                <ul class="rules" id="cnhRules" style="list-style:none">
+                  <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1e8e3e" stroke-width="3" style="flex-shrink:0;margin-top:1px"><path d="M5 12.5l4.5 4.5L19 7"/></svg><span>Arquivo <b>PDF original</b> do app (print ou foto da tela não vale)</span></li>
+                  <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1e8e3e" stroke-width="3" style="flex-shrink:0;margin-top:1px"><path d="M5 12.5l4.5 4.5L19 7"/></svg><span>Só a CNH, sem outras páginas juntas</span></li>
+                  <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1e8e3e" stroke-width="3" style="flex-shrink:0;margin-top:1px"><path d="M5 12.5l4.5 4.5L19 7"/></svg><span>Até 4 MB</span></li>
+                </ul>
+                <button type="button" class="file-box" id="cnhFile">
+                  <span class="fi" id="cnhFileIc"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D6001C" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></span>
+                  <span class="fn"><b id="cnhFileName">Escolher arquivo</b><span id="cnhFileMeta">PDF da CNH Digital</span></span>
+                </button>
+                <div class="file-msg" id="cnhMsg" hidden></div>
+                <div class="rk-spacer"></div>
+              </div>
+              <div class="rk-foot"><button type="button" class="rk-btn" id="cnhSend" disabled>Enviar CNH Digital</button></div>
+              <div class="sheet-dim" id="cnhPicker" hidden>
+                <div class="sheet">
+                  <div class="sheet-grab"></div>
+                  <div class="sheet-body" style="padding:4px 0 8px 0">
+                    <h2 style="padding:0 24px;font-size:16px">Selecionar arquivo</h2>
+                    <div style="padding:0 24px 6px 24px;font-size:12px;color:#888">Downloads · simulação do seletor de arquivos do celular</div>
+                    <div id="cnhPickerList"></div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- DOC-V · Verificação do documento -->
+            <section class="scr" id="s-docverify">
+              <div class="rk-header"><span class="rk-logo"><b>HONDA</b><span>Serviços Financeiros</span></span></div>
+              <div class="rk-body">
+                <div class="stepbar" data-etapa="1"></div>
+                <h1 class="rk-title">Conferindo seu documento</h1>
+                <p class="rk-text">Isso leva cerca de 15 segundos. Não feche esta tela.</p>
+                <ol class="verify-list" id="docVerifyList">
+                  <li><span class="vi"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span>Documento recebido</li>
+                  <li><span class="vi"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span>Lendo os dados do documento</li>
+                  <li><span class="vi"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span>Comparando com a sua selfie</li>
+                </ol>
+                <div class="rk-spacer"></div>
+              </div>
+            </section>
+
+            <!-- DOC-OK · Documento confirmado -->
+            <section class="scr" id="s-docok">
+              <div class="rk-header"><span class="rk-logo"><b>HONDA</b><span>Serviços Financeiros</span></span></div>
+              <div class="rk-body" style="text-align:center">
+                <div class="stepbar" data-etapa="1" style="text-align:left"></div>
+                <div class="rk-hero-ic" style="background:var(--rk-green-bg);margin-top:30px">
+                  <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#1e8e3e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"/></svg>
+                </div>
+                <h1 class="rk-title">Documento confirmado</h1>
+                <p class="rk-text">Próxima etapa: <b>autorizações e contrato</b>.</p>
+                <div class="rk-spacer"></div>
+              </div>
+              <div class="rk-foot"><button type="button" class="rk-btn" id="docOkGo">Continuar</button></div>
+            </section>
+
             <!-- Próximas etapas: ainda em construção no remake -->
             <section class="scr" id="s-next">
               <div class="rk-header"><span class="rk-logo"><b>HONDA</b><span>Serviços Financeiros</span></span></div>
@@ -1101,7 +1348,7 @@
                   <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#6b6b6b" stroke-width="2"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z"/></svg>
                 </div>
                 <h1 class="rk-title">Próximas etapas em construção</h1>
-                <p class="rk-text">Documento, autorizações, contrato, termo do seguro e avaliação do remake serão desenhados nas próximas rodadas.</p>
+                <p class="rk-text">Autorizações, contrato, termo do seguro e avaliação do remake serão desenhados nas próximas rodadas.</p>
                 <div class="rk-spacer"></div>
               </div>
               <div class="rk-foot">
@@ -1172,7 +1419,14 @@
       "004-OK": "Selfie confirmada", "004-1": "Selfie: falha com motivo e tentativas",
       "004-2": "Assinatura encerrada (3ª falha na selfie)",
       "004-2E": "Remoto: pedido de novo acesso enviado", "FIM": "Assinatura encerrada (fechando)",
-      "QR": "Presencial: leitura do novo QR Code"
+      "QR": "Presencial: leitura do novo QR Code",
+      "006": "Documento: qual vai usar", "007": "Documento físico: frente e depois verso",
+      "008": "Documento: câmera da frente", "008-L": "Documento: verso mostrado primeiro (aviso na hora)",
+      "009": "Documento: revisão da frente", "010": "Documento: câmera do verso", "011": "Documento: revisão do verso",
+      "009-1": "Documento: falha na foto, com motivo", "006-1": "CNH Digital: regras e como exportar",
+      "006-3": "CNH Digital: PDF com várias páginas", "006-4": "CNH Digital: arquivo acima de 4 MB",
+      "006-5": "CNH Digital: arquivo não é uma CNH", "006-OK": "CNH Digital: arquivo certo",
+      "DOC-V": "Documento: verificação", "DOC-OK": "Documento confirmado"
     };
 
     // Melhorias de cada tela, exibidas na 3ª coluna: o problema no fluxo atual e o que
@@ -1368,17 +1622,114 @@
           { t: "No simulador, volta para a tela inicial (001 no presencial, 000 no remoto). Num celular de verdade, fecha a assinatura digital e o usuário volta para a tela inicial do aparelho." }
         ]
       },
+      docchoice: {
+        titulo: "006 · Qual documento você vai usar?", sub: "Escolha entre documento físico e CNH Digital",
+        antes: [
+          "Dois botões vermelhos soltos (\"CNH Digital\" e \"RG, CNH, DNI, RNE e CIN\"), sem dizer o que vem depois de cada um. <span class='tag'>R07</span>",
+          "Nada diz que o documento físico exige foto da frente e do verso. <span class='tag fb'>Feedback: \"difícil anexar documento\"</span>"
+        ],
+        depois: [
+          { t: "Indicador de etapa: \"Etapa 2 de N · Documento\". <span class='tag'>D06</span>", alvo: "#s-docchoice .stepbar" },
+          { t: "Dois cartões de escolha, cada um dizendo o que a pessoa vai fazer: fotografar frente e verso, ou enviar o PDF do app. <span class='tag'>D10</span>", alvo: "#s-docchoice .opt-card" },
+          { t: "\"Continuar\" só libera depois de escolher.", alvo: "#docChoiceGo" }
+        ]
+      },
+      doctips: {
+        titulo: "007 · Frente e depois verso", sub: "Documento físico",
+        antes: [
+          "Nenhuma tela avisa que a ordem é frente e depois verso. A dica só diz \"fotografe um lado de cada vez\". <span class='tag'>R11</span>",
+          "Os títulos dizem \"DNI lado com foto\" mesmo para quem enviou um RG."
+        ],
+        depois: [
+          { t: "A ordem fica explícita no título e num desenho de 2 passos: 1. Frente (lado com a foto) e 2. Verso. <span class='tag'>D11</span>", alvo: "#s-doctips .rk-title, #orderSteps" },
+          { t: "Avisa que a foto é tirada sozinha quando o documento estiver bem enquadrado.", alvo: "#s-doctips .rk-text" },
+          { t: "Dicas práticas: tirar do plástico, mesa escura e sem reflexo.", alvo: "#docTipsList" },
+          { t: "O botão já diz o primeiro passo: \"Fotografar a frente\".", alvo: "#docTipsGo" }
+        ]
+      },
+      doccam: {
+        titulo: "008 / 010 · Câmera do documento", sub: "Frente (1 de 2) e verso (2 de 2), captura automática",
+        antes: [
+          "O sistema identifica o lado, mas aceita o verso primeiro e só falha no fim, com um aviso genérico de baixa qualidade. <span class='tag'>R11</span>",
+          "O verso às vezes aparece com disparo manual (bug conhecido). <span class='tag'>R07</span>"
+        ],
+        depois: [
+          { t: "\"Frente do documento · 1 de 2\" / \"Verso · 2 de 2\" no topo, com indicador.", alvo: "#docCamStep, #s-doccam .fcam-dots" },
+          { t: "Se a pessoa mostrar o verso primeiro, o aviso aparece na hora: \"Este é o verso. Vire o documento e mostre a frente\". A foto errada não é tirada. <span class='tag'>D11</span>", alvo: "#docGuide, #dframeWrap",
+            visivel: function () { return st.code === "008-L"; },
+            ver: function () { st.invertido = true; openDocCam("frente"); } },
+          { t: "Moldura com cantos que mudam de cor (branco, amarelo de alerta, verde quando está bom) e contagem antes da foto automática.", alvo: "#dframeWrap" },
+          { t: "Orientação em texto, como na selfie: \"Encaixe a frente\", \"Agora vire e encaixe o verso\".", alvo: "#docGuide" }
+        ]
+      },
+      docreview: {
+        titulo: "009 / 011 · Revisão da foto", sub: "Antes: \"DNI lado com foto\" / \"DNI lado sem foto\"",
+        antes: [
+          "Título \"DNI lado com foto\" para qualquer documento.",
+          "Não diz o que conferir na foto."
+        ],
+        depois: [
+          { t: "Título simples, \"Frente do documento\" / \"Verso do documento\", que vale para RG, CIN, CNH, RNE e DNI. <span class='tag'>D11</span>", alvo: "#docRevTitle" },
+          { t: "Diz o que conferir (nítida, sem reflexo, documento inteiro) e confirma o lado reconhecido.", alvo: "#s-docreview .rk-text, #docRevChecks" },
+          { t: "Botões claros: \"Usar esta foto\" e \"Tirar outra\".", alvo: "#docRevUse, #docRevRedo" }
+        ]
+      },
+      docfail: {
+        titulo: "009-1 · Falha na foto do documento", sub: "3 falhas somando frente e verso",
+        antes: [
+          "\"Vamos tentar novamente\", sem dizer o motivo. <span class='tag'>R08</span>",
+          "Não diz quantas tentativas restam antes do cancelamento. <span class='tag'>R08</span>"
+        ],
+        depois: [
+          { t: "Motivo provável e o lado que falhou (reflexo, desfocada, documento cortado). <span class='tag'>D12</span>", alvo: "#docFailIc, #docFailTitle, #docFailText" },
+          { t: "Tentativas restantes, somando frente e verso, com aviso de última tentativa.", alvo: "#docFailTries" },
+          { t: "Dicas específicas para o motivo.", alvo: "#docFailFix" },
+          { t: "O botão volta direto para o lado que falhou (\"Fotografar a frente de novo\").", alvo: "#docFailGo" }
+        ]
+      },
+      cnh: {
+        titulo: "006-1 · CNH Digital", sub: "Antes: instruções + \"Adicione o documento\" + erros 006-3/4/5",
+        antes: [
+          "As regras do arquivo (PDF, arquivo único, 4 MB, só CNH) só aparecem depois do erro. <span class='tag'>R07</span>",
+          "Não ensina a exportar o PDF do app. <span class='tag fb'>Feedback: \"pede pra exportar em PDF e é onde fica complicado\"</span>",
+          "Os erros dizem o problema, mas não como resolver."
+        ],
+        depois: [
+          { t: "Passo a passo de como exportar o PDF no app Carteira Digital de Trânsito. <span class='tag'>D12</span>", alvo: "#cnhHow" },
+          { t: "As regras do arquivo aparecem antes de escolher.", alvo: "#cnhRules" },
+          { t: "O arquivo escolhido aparece com o status (verde ou vermelho), e a mensagem diz como resolver o erro.", alvo: "#cnhFile, #cnhMsg",
+            visivel: function () { return !!st.cnhArq; },
+            ver: function () { openCnh(ARQ_CNH[2]); } },
+          { t: "\"Enviar CNH Digital\" só libera com um arquivo válido.", alvo: "#cnhSend" }
+        ]
+      },
+      docverify: {
+        titulo: "Verificação do documento", sub: "Tela nova",
+        antes: ["Depois da última foto, um \"Aguarde\" genérico ou um erro no fim, sem dizer o que está sendo conferido."],
+        depois: [
+          { t: "Diz quanto tempo leva e marca o que já foi conferido, incluindo a comparação com a selfie. <span class='tag'>D12</span>", alvo: "#docVerifyList, #s-docverify .rk-text" }
+        ]
+      },
+      docok: {
+        titulo: "Documento confirmado", sub: "Tela nova",
+        antes: ["O fluxo pula para as Autorizações sem confirmar que o documento foi aceito."],
+        depois: [{ t: "Confirmação clara e qual é a próxima etapa (autorizações e contrato).", alvo: "#s-docok .rk-hero-ic, #s-docok .rk-title, #s-docok .rk-text" }]
+      },
       next: {
         titulo: "Próximas etapas", sub: "Em construção",
         antes: [],
-        depois: [{ t: "Documento, autorizações, contrato (D02), termo do SPF e avaliação serão desenhados nas próximas rodadas." }]
+        depois: [{ t: "Autorizações, contrato (D02), termo do SPF e avaliação serão desenhados nas próximas rodadas." }]
       }
     };
     var NOTA_POR_CODIGO = {
       "000": "token", "000-E": "token", "000-OK": "token", "000-B": "lock", "000-V": "video",
       "001": "lista", "001-A": "lista", "001-C": "lista", "BV": "welcome", "PRÓX": "next",
       "002": "selfie", "002-T": "selfie", "002-P": "selfie", "002-N": "camoff", "004": "fcam", "005": "fverify",
-      "004-OK": "fok", "004-1": "ffail", "004-2": "fcancel", "004-2E": "fcancel", "FIM": "fend", "QR": "qr"
+      "004-OK": "fok", "004-1": "ffail", "004-2": "fcancel", "004-2E": "fcancel", "FIM": "fend", "QR": "qr",
+      "006": "docchoice", "007": "doctips", "008": "doccam", "008-L": "doccam", "010": "doccam",
+      "009": "docreview", "011": "docreview", "009-1": "docfail",
+      "006-1": "cnh", "006-3": "cnh", "006-4": "cnh", "006-5": "cnh", "006-OK": "cnh",
+      "DOC-V": "docverify", "DOC-OK": "docok"
     };
 
     var notaAtual = null;   // grupo de notas exibido
@@ -1475,7 +1826,14 @@
         "002": openSelfieIntro, "002-T": openSelfieIntro, "002-P": openSelfieIntro, "002-N": openCamOff,
         "004": openSelfieIntro, "005": openSelfieIntro, "004-OK": openFaceOk,
         "004-1": function () { openFaceFail(); }, "004-2": openFaceCancel, "004-2E": openFaceCancel,
-        "FIM": start, "QR": openFaceCancel
+        "FIM": start, "QR": openFaceCancel,
+        "006": openDocChoice, "007": openDocTips, "008": openDocTips, "008-L": openDocTips, "010": openDocTips,
+        "009": function () { openDocReview("frente"); }, "011": function () { openDocReview("verso"); },
+        "009-1": function () { openDocFail($("simDoc").value); },
+        "006-1": function () { openCnh(st.cnhArq); }, "006-3": function () { openCnh(st.cnhArq); },
+        "006-4": function () { openCnh(st.cnhArq); }, "006-5": function () { openCnh(st.cnhArq); },
+        "006-OK": function () { openCnh(st.cnhArq); }, "DOC-V": openDocChoice,
+        "DOC-OK": function () { pintarEtapas("s-docok"); show("s-docok", "DOC-OK"); }
       }[s.code];
       if (reabrir) reabrir(); else start();
     }
@@ -1576,7 +1934,7 @@
       document.querySelectorAll(".scr.active").forEach(function (s) { s.classList.remove("active"); });
       $(sectionId).classList.add("active");
       // Telas de câmera são escuras até a borda inferior do aparelho.
-      $("screenContent").classList.toggle("dark", sectionId === "s-fcam" || sectionId === "s-qr");
+      $("screenContent").classList.toggle("dark", sectionId === "s-fcam" || sectionId === "s-qr" || sectionId === "s-doccam");
       setCode(code);
     }
     function setCode(code) {
@@ -1594,8 +1952,9 @@
       // Reiniciar por conta própria (painel) descarta o estado guardado pelas notas.
       if (!aplicandoVer) snapshot = null;
       var n = 1 + parseInt(cenario.avalistas, 10);
-      st = { signers: [], cur: 0, tentativas: 0, code: "", faceFails: 0 };
+      st = { signers: [], cur: 0, tentativas: 0, code: "", faceFails: 0, docFails: 0 };
       atualizarContSelfie();
+      atualizarContDoc();
       for (var i = 0; i < n; i++) {
         var t = cenario["tipo" + i], d = PESSOAS[i][t];
         st.signers.push({
@@ -1814,7 +2173,10 @@
       // Tentativas de selfie e consentimento valem por assinante.
       st.faceFails = 0;
       st.consentiu = false;
+      st.docFails = 0;
+      st.docTipo = null;
       atualizarContSelfie();
+      atualizarContDoc();
       $("welcomeBack").hidden = isRemoto();
       show("s-welcome", "BV");
     }
@@ -1975,7 +2337,7 @@
       $("fokNext").textContent = "documento de identificação";
       show("s-fok", "004-OK");
     }
-    $("fokGo").addEventListener("click", function () { show("s-next", "PRÓX"); });
+    $("fokGo").addEventListener("click", function () { openDocChoice(); });
 
     // ---------- 004-1 · Falha com motivo, dicas e tentativas restantes (D08) ----------
     var FALHAS = {
@@ -2016,8 +2378,10 @@
     //  - remoto: "Pedir novo acesso", que vira um alerta para o colaborador na plataforma
     //    de assinatura digital (hoje ele não fica sabendo de nada);
     //  - nos dois: "Encerrar processo", que fecha a assinatura digital.
-    function openFaceCancel() {
+    function openFaceCancel(origem) {
       var remoto = isRemoto();
+      $("fcancelWhy").textContent = "Por segurança, esta assinatura foi encerrada depois de 3 tentativas de " +
+        (origem === "doc" ? "foto do documento." : "selfie.");
       $("fcancelNext").textContent = remoto
         ? "Peça um novo acesso: a concessionária recebe um aviso e envia um novo acesso para o seu celular."
         : "Chame o vendedor da concessionária para ter acesso a um novo QR Code de acesso à assinatura digital.";
@@ -2070,6 +2434,218 @@
       later(function () { forcarCanal("presencial"); start(); }, 3200);
     }
     $("qrClose").addEventListener("click", openFaceCancel);
+
+    // ================================================================
+    // Etapa 3 · Documento de identificação (D10 a D12)
+    // ================================================================
+    var MAX_DOC = 3;
+    function atualizarContDoc() {
+      $("simDocCount").textContent = "Falhas na foto (frente + verso): " + (st.docFails || 0) + " de " + MAX_DOC + ".";
+    }
+
+    // Documento fictício, na horizontal (como se segura a carteira em frente à câmera).
+    function svgDoc(lado) {
+      var base = '<svg class="dimg" viewBox="0 0 300 196" aria-hidden="true">' +
+        '<rect x="1" y="1" width="298" height="194" rx="10" fill="#d7ead0" stroke="#3f9a4e" stroke-width="2"/>' +
+        '<rect x="7" y="7" width="286" height="182" rx="7" fill="none" stroke="#7cbf86" stroke-width="3" stroke-dasharray="2 2"/>';
+      if (lado === "frente") {
+        return base +
+          '<text x="150" y="28" text-anchor="middle" font-family="Arial" font-size="11" font-weight="700" fill="#2f7a3c">REPÚBLICA FEDERATIVA DO BRASIL</text>' +
+          '<rect x="18" y="42" width="78" height="100" rx="3" fill="#8a7a6a"/>' +
+          '<circle cx="57" cy="80" r="19" fill="#d2a07c"/><path d="M27 142c4-28 16-38 30-38s26 10 30 38z" fill="#3d4c5c"/><path d="M38 74c2-17 11-23 19-23s17 6 19 23c-6-8-13-10-19-10s-13 2-19 10z" fill="#2b2018"/>' +
+          '<text x="108" y="52" font-family="Arial" font-size="7" fill="#567">NOME</text>' +
+          '<text x="108" y="64" font-family="Arial" font-size="11" font-weight="700" fill="#223">JOÃO DA SILVA SANTOS</text>' +
+          '<text x="108" y="84" font-family="Arial" font-size="7" fill="#567">FILIAÇÃO</text>' +
+          '<text x="108" y="95" font-family="Arial" font-size="8" fill="#223">PAI FICTÍCIO DA SILVA</text>' +
+          '<text x="108" y="106" font-family="Arial" font-size="8" fill="#223">MÃE FICTÍCIA DA SILVA</text>' +
+          '<text x="108" y="126" font-family="Arial" font-size="7" fill="#567">DATA DE NASCIMENTO</text>' +
+          '<text x="108" y="138" font-family="Arial" font-size="9" font-weight="700" fill="#223">01/01/1990</text>' +
+          '<text x="150" y="176" text-anchor="middle" font-family="Arial" font-size="10" font-weight="700" fill="#2f7a3c" letter-spacing="2">CARTEIRA DE IDENTIDADE</text></svg>';
+      }
+      return base +
+        '<text x="20" y="34" font-family="Arial" font-size="7" fill="#567">REGISTRO GERAL</text>' +
+        '<text x="20" y="48" font-family="Arial" font-size="13" font-weight="700" fill="#c0392b">00.000.000-0</text>' +
+        '<text x="130" y="34" font-family="Arial" font-size="7" fill="#567">DATA DE EXPEDIÇÃO</text>' +
+        '<text x="130" y="48" font-family="Arial" font-size="10" font-weight="700" fill="#223">01/01/2020</text>' +
+        '<text x="20" y="74" font-family="Arial" font-size="7" fill="#567">CPF</text>' +
+        '<text x="20" y="86" font-family="Arial" font-size="9" fill="#223">123.456.789-09</text>' +
+        '<text x="20" y="110" font-family="Arial" font-size="7" fill="#567">NATURALIDADE</text>' +
+        '<text x="20" y="122" font-family="Arial" font-size="9" fill="#223">CIDADE FICTÍCIA - UF</text>' +
+        '<rect x="200" y="62" width="80" height="84" fill="#f3f3ee"/>' +
+        '<g fill="none" stroke="#333" stroke-width="1.1"><ellipse cx="240" cy="104" rx="9" ry="12"/><ellipse cx="240" cy="104" rx="16" ry="21"/><ellipse cx="240" cy="104" rx="23" ry="29"/><ellipse cx="240" cy="104" rx="30" ry="36"/></g>' +
+        '<text x="150" y="176" text-anchor="middle" font-family="Arial" font-size="9" font-weight="700" fill="#2f7a3c" letter-spacing="1.5">VÁLIDA EM TODO O TERRITÓRIO NACIONAL</text></svg>';
+    }
+
+    // ---------- 006 · Qual documento? (D10) ----------
+    function openDocChoice() {
+      pintarEtapas("s-docchoice");
+      document.querySelectorAll("[data-doc]").forEach(function (b) { b.classList.toggle("on", b.getAttribute("data-doc") === st.docTipo); });
+      $("docChoiceGo").disabled = !st.docTipo;
+      show("s-docchoice", "006");
+    }
+    document.querySelectorAll("[data-doc]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        st.docTipo = b.getAttribute("data-doc");
+        document.querySelectorAll("[data-doc]").forEach(function (x) { x.classList.toggle("on", x === b); });
+        $("docChoiceGo").disabled = false;
+      });
+    });
+    $("docChoiceGo").addEventListener("click", function () { if (st.docTipo === "digital") openCnh(); else openDocTips(); });
+    document.querySelectorAll("[data-doc-back]").forEach(function (b) { b.addEventListener("click", openDocChoice); });
+
+    // ---------- 007 · Como fotografar: ordem frente → verso (D11, R11) ----------
+    function openDocTips() { pintarEtapas("s-doctips"); show("s-doctips", "007"); }
+    $("docTipsGo").addEventListener("click", function () { st.invertido = $("simVerso").checked; openDocCam("frente"); });
+
+    // ---------- 008 / 010 · Câmera: captura automática e detecção do lado (D11) ----------
+    function openDocCam(lado) {
+      st.lado = lado;
+      var wrap = $("dframeWrap"), cd = $("dcount");
+      // Teste da ordem: na frente, a pessoa aponta o verso primeiro.
+      var ladoErrado = lado === "frente" && st.invertido;
+      $("docCamImg").innerHTML = svgDoc(ladoErrado ? "verso" : lado);
+      $("docCamStep").textContent = lado === "frente" ? "FRENTE DO DOCUMENTO · 1 DE 2" : "VERSO DO DOCUMENTO · 2 DE 2";
+      $("ddot1").className = lado === "frente" ? "on" : "ok";
+      $("ddot2").className = lado === "frente" ? "" : "on";
+      wrap.className = "dframe-wrap";
+      cd.hidden = true;
+      $("dflash").classList.remove("on");
+      show("s-doccam", lado === "frente" ? "008" : "010");
+      var g = $("docGuide");
+      g.className = "fguide";
+      g.textContent = lado === "frente" ? "Encaixe a frente do documento (lado com foto) na moldura" : "Agora vire e encaixe o verso do documento";
+      var t0 = 1300;
+      if (ladoErrado) {
+        // O sistema já sabe qual lado está vendo: avisa na hora, em vez de aceitar e falhar no fim.
+        later(function () {
+          wrap.className = "dframe-wrap warn";
+          g.className = "fguide warn";
+          g.textContent = "Este é o verso. Vire o documento e mostre a frente (lado com foto)";
+          setCode("008-L");
+        }, 1300);
+        later(function () { $("docCamImg").firstChild.classList.add("flip"); }, 3600);
+        later(function () { $("docCamImg").innerHTML = svgDoc("frente"); st.invertido = false; }, 4100);
+        later(function () { wrap.className = "dframe-wrap"; g.className = "fguide"; g.textContent = "Isso! Agora é a frente"; setCode("008"); }, 4300);
+        t0 = 5000;
+      }
+      later(function () { wrap.className = "dframe-wrap ok"; g.className = "fguide ok"; g.textContent = "Segure firme, a foto vai ser tirada"; cd.hidden = false; cd.textContent = "3"; }, t0);
+      later(function () { cd.textContent = "2"; }, t0 + 700);
+      later(function () { cd.textContent = "1"; }, t0 + 1400);
+      later(function () { cd.hidden = true; $("dflash").classList.add("on"); }, t0 + 2100);
+      later(function () { openDocReview(lado); }, t0 + 2300);
+    }
+    $("docCamClose").addEventListener("click", openDocTips);
+
+    // ---------- 009 / 011 · Revisão da foto ----------
+    function openDocReview(lado) {
+      pintarEtapas("s-docreview");
+      $("docRevTitle").textContent = lado === "frente" ? "Frente do documento" : "Verso do documento";
+      $("docRevLado").textContent = lado === "frente" ? "frente, com a foto" : "verso, sem a foto";
+      $("docRevImg").innerHTML = svgDoc(lado);
+      show("s-docreview", lado === "frente" ? "009" : "011");
+    }
+    $("docRevRedo").addEventListener("click", function () { openDocCam(st.lado); });
+    $("docRevUse").addEventListener("click", function () {
+      var res = $("simDoc").value;
+      if (res !== "ok") {
+        st.docFails = (st.docFails || 0) + 1;
+        atualizarContDoc();
+        if (st.docFails >= MAX_DOC) return openFaceCancel("doc");
+        return openDocFail(res);
+      }
+      if (st.lado === "frente") openDocCam("verso"); else openDocVerify();
+    });
+
+    // ---------- 009-1 · Falha na foto: motivo, dicas e tentativas (D12) ----------
+    var FALHAS_DOC = {
+      reflexo: { titulo: "Tem reflexo de luz na foto", texto: "Um brilho cobriu parte do documento e não deu para ler os dados.",
+        ic: '<circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/>',
+        dicas: ["Incline um pouco o celular até o brilho sumir.", "Desligue o flash e evite luz direta sobre o documento.", "Tire o documento do plástico."] },
+      desfocada: { titulo: "A foto ficou desfocada", texto: "Os dados do documento ficaram borrados.",
+        ic: '<rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 10h6M7 14h4" stroke-dasharray="2 2"/>',
+        dicas: ["Apoie o documento numa mesa e segure o celular firme.", "Espere o contorno ficar verde antes da contagem.", "Limpe a lente da câmera."] },
+      cortada: { titulo: "O documento saiu cortado", texto: "Uma parte do documento ficou fora da foto.",
+        ic: '<rect x="3" y="6" width="18" height="12" rx="2"/><path d="M15 3v18" stroke-dasharray="2 2"/>',
+        dicas: ["Afaste um pouco o celular até o documento caber inteiro na moldura.", "Deixe uma pequena margem em volta do documento.", "Centralize o documento antes da contagem."] }
+    };
+    function openDocFail(res) {
+      var f = FALHAS_DOC[res] || FALHAS_DOC.reflexo;
+      pintarEtapas("s-docfail");
+      $("docFailIc").innerHTML = '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#9a5b00" stroke-width="2">' + f.ic + "</svg>";
+      $("docFailTitle").textContent = f.titulo + " (" + (st.lado === "frente" ? "frente" : "verso") + ")";
+      $("docFailText").textContent = f.texto;
+      var restam = MAX_DOC - (st.docFails || 0);
+      var t = $("docFailTries");
+      t.className = "tries" + (restam === 1 ? " last" : "");
+      t.textContent = restam === 1 ? "Última tentativa" : "Você tem mais " + restam + " tentativas";
+      $("docFailFix").innerHTML = f.dicas.map(function (d) {
+        return '<li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1e8e3e" stroke-width="3" style="flex-shrink:0;margin-top:2px"><path d="M5 12.5l4.5 4.5L19 7"/></svg><span>' + d + "</span></li>";
+      }).join("");
+      $("docFailGo").textContent = "Fotografar " + (st.lado === "frente" ? "a frente" : "o verso") + " de novo";
+      show("s-docfail", "009-1");
+    }
+    $("docFailGo").addEventListener("click", function () { openDocCam(st.lado); });
+
+    // ---------- 006-1 · CNH Digital: regras antes do arquivo (D12, R07) ----------
+    var ARQ_CNH = [
+      { nome: "CNH-Digital_JOAO.pdf", tam: "186 KB", ok: true },
+      { nome: "Contrato_Aluguel_2026.pdf", tam: "60 KB", erro: "Este PDF tem várias páginas. Envie só a CNH Digital exportada pelo app.", cod: "006-3" },
+      { nome: "GameStation Escritorio.pdf", tam: "55,5 MB", erro: "O arquivo tem 55,5 MB e o limite é 4 MB. Exporte de novo pelo app: o PDF da CNH tem cerca de 200 KB.", cod: "006-4" },
+      { nome: "DOC-20260916-WA0012.pdf", tam: "198 KB", erro: "Este arquivo não é uma CNH Digital. Exporte o PDF pelo app Carteira Digital de Trânsito.", cod: "006-5" }
+    ];
+    function openCnh(arquivo) {
+      pintarEtapas("s-cnh");
+      $("cnhPicker").hidden = true;
+      var box = $("cnhFile"), msg = $("cnhMsg");
+      st.cnhArq = arquivo || null;
+      if (!arquivo) {
+        box.className = "file-box";
+        $("cnhFileIc").innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D6001C" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>';
+        $("cnhFileName").textContent = "Escolher arquivo";
+        $("cnhFileMeta").textContent = "PDF da CNH Digital";
+        msg.hidden = true;
+        $("cnhSend").disabled = true;
+        return show("s-cnh", "006-1");
+      }
+      box.className = "file-box sel " + (arquivo.ok ? "ok" : "err");
+      $("cnhFileIc").innerHTML = '<svg width="22" height="24" viewBox="0 0 30 34"><path d="M3 1h16l8 8v22a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2z" fill="#e8453c"/><text x="15" y="25" text-anchor="middle" font-family="Arial" font-size="8" font-weight="700" fill="#fff">PDF</text></svg>';
+      $("cnhFileName").textContent = arquivo.nome;
+      $("cnhFileMeta").textContent = arquivo.tam + " · toque para trocar";
+      msg.hidden = false;
+      msg.className = "file-msg " + (arquivo.ok ? "ok" : "err");
+      msg.textContent = arquivo.ok ? "Arquivo certo: CNH Digital em PDF, dentro do limite." : arquivo.erro;
+      $("cnhSend").disabled = !arquivo.ok;
+      show("s-cnh", arquivo.ok ? "006-OK" : arquivo.cod);
+    }
+    (function montarPickerCnh() {
+      var list = $("cnhPickerList");
+      ARQ_CNH.forEach(function (a, i) {
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = "picker-item2";
+        b.innerHTML = '<svg width="28" height="32" viewBox="0 0 30 34"><path d="M3 1h16l8 8v22a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2z" fill="#e8453c"/><text x="15" y="25" text-anchor="middle" font-family="Arial" font-size="8" font-weight="700" fill="#fff">PDF</text></svg>' +
+          '<span><span class="pn">' + a.nome + '</span><span class="ps">' + a.tam + " · " + ["hoje", "ontem", "12 set.", "16 set."][i] + "</span></span>";
+        b.addEventListener("click", function () { openCnh(a); });
+        list.appendChild(b);
+      });
+    })();
+    $("cnhFile").addEventListener("click", function () { $("cnhPicker").hidden = false; });
+    $("cnhPicker").addEventListener("click", function (e) { if (e.target === this) this.hidden = true; });
+    $("cnhSend").addEventListener("click", function () { if (st.cnhArq && st.cnhArq.ok) openDocVerify(); });
+
+    // ---------- DOC-V / DOC-OK · Verificação e confirmação ----------
+    function openDocVerify() {
+      pintarEtapas("s-docverify");
+      var itens = $("docVerifyList").querySelectorAll("li");
+      itens.forEach(function (li) { li.className = ""; });
+      show("s-docverify", "DOC-V");
+      itens[0].className = "cur";
+      later(function () { itens[0].className = "done"; itens[1].className = "cur"; }, 900);
+      later(function () { itens[1].className = "done"; itens[2].className = "cur"; }, 1900);
+      later(function () { itens[2].className = "done"; }, 2800);
+      later(function () { pintarEtapas("s-docok"); show("s-docok", "DOC-OK"); }, 3300);
+    }
+    $("docOkGo").addEventListener("click", function () { show("s-next", "PRÓX"); });
 
     function atualizarContSelfie() {
       $("simSelfieCount").textContent = "Tentativas com falha: " + (st.faceFails || 0) + " de " + MAX_SELFIE + ". Vale para todas as tentativas até mudar.";
@@ -2158,7 +2734,16 @@
       ["004", "004 · Captura guiada", openFaceCam],
       ["004-OK", "004-OK · Selfie confirmada", openFaceOk],
       ["004-1", "004-1 · Falha na selfie", function () { st.faceFails = 1; atualizarContSelfie(); openFaceFail($("simSelfie").value === "ok" ? "luz" : $("simSelfie").value); }],
-      ["004-2", "004-2 · Assinatura encerrada", openFaceCancel]
+      ["004-2", "004-2 · Assinatura encerrada", openFaceCancel],
+      ["006", "006 · Documento: qual vai usar", openDocChoice],
+      ["007", "007 · Documento físico: frente e verso", openDocTips],
+      ["008", "008 · Câmera da frente", function () { st.invertido = $("simVerso").checked; openDocCam("frente"); }],
+      ["009", "009 · Revisão da frente", function () { st.lado = "frente"; openDocReview("frente"); }],
+      ["010", "010 · Câmera do verso", function () { openDocCam("verso"); }],
+      ["009-1", "009-1 · Falha na foto do documento", function () { st.lado = "frente"; st.docFails = 1; atualizarContDoc(); openDocFail($("simDoc").value === "ok" ? "reflexo" : $("simDoc").value); }],
+      ["006-1", "006-1 · CNH Digital", function () { openCnh(); }],
+      ["006-4", "006-4 · CNH Digital: arquivo grande", function () { openCnh(ARQ_CNH[2]); }],
+      ["DOC-OK", "DOC-OK · Documento confirmado", function () { pintarEtapas("s-docok"); show("s-docok", "DOC-OK"); }]
     ];
     (function montarAtalhos() {
       var sel = $("simJump");
