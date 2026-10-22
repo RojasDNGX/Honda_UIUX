@@ -284,6 +284,47 @@ Depois do token (remoto) ou do "Iniciar" (presencial), uma tela mostra:
 
 **Motivo:** críticas de processo longo e burocrático e de falta de explicação (FEEDBACK.md, temas 6 e 9).
 
+### D06 — Selfie: dicas e consentimento numa tela só, com indicador de etapa
+- As telas 002 (termo da captura facial) e 003 (modal de dicas) viram **uma tela**, "Vamos tirar uma selfie":
+  - as dicas aparecem em **4 cards visuais**, sempre à vista;
+  - o consentimento vira **uma frase com a caixa "Autorizo"**, que continua obrigatória para abrir a câmera;
+  - o **termo completo** fica num link e abre numa folha com "Li e concordo".
+- Um **indicador de etapa** ("Etapa 1 de 4 · Selfie", com barra) passa a aparecer em todas as telas do processo. As etapas seguem a lista das boas-vindas (D05).
+- **Motivo:** críticas de processo longo e de selfie difícil (FEEDBACK.md, temas 4 e 6).
+
+### D07 — Selfie: permissão da câmera, captura guiada e verificação com progresso
+- O pedido de **permissão da câmera** aparece ao tocar em "Abrir câmera". Se a pessoa **bloquear**, uma tela explica como liberar e oferece "tentar de novo", sem recomeçar a assinatura.
+- **Captura guiada**, mantendo as 2 capturas:
+  - orientação em tempo real ("posicione o rosto", "aproxime", "fique parado");
+  - aviso do problema na hora (pouca luz, óculos, fora da moldura);
+  - "Captura 1 de 2 / 2 de 2" escrito;
+  - **guia por voz** opcional, para acessibilidade.
+- **Verificação:** diz quanto tempo leva e mostra o que está sendo conferido, no lugar do "Aguarde um instante...".
+- **Selfie confirmada:** uma tela de sucesso diz qual é a próxima etapa.
+
+### D08 — Selfie: falha com motivo, tentativas restantes e encerramento claro
+- Na falha (antes 004-1, genérica), a tela mostra:
+  - o **motivo provável** (pouca luz, rosto fora da moldura, óculos ou boné, movimento);
+  - **dicas específicas** para esse motivo;
+  - **quantas tentativas restam**, com aviso de "última tentativa".
+- "Tentar novamente" abre a câmera direto.
+- Na **3ª falha** (R10), a assinatura é encerrada numa tela sem jargão (sem "IHS") que diz **o que acontece agora** conforme o canal. O botão de saída também muda conforme o canal (D09).
+
+### D09 — Saída da assinatura encerrada: novo acesso ou encerrar
+- **"O que acontece agora"** muda conforme o canal:
+  - **Presencial:** "Chame o vendedor da concessionária para ter acesso a um novo QR Code de acesso à assinatura digital."
+  - **Remoto:** "Peça um novo acesso: a concessionária recebe um aviso e envia um novo acesso para o seu celular."
+- **Botão principal:**
+  - **Presencial — "Ler novo QR Code":** abre o leitor de QR Code dentro do próprio fluxo. Depois da leitura, volta para a lista de assinantes (001) com o novo acesso.
+  - **Remoto — "Pedir novo acesso":** a tela confirma "Pedido enviado" e mostra o celular que vai receber o novo acesso.
+- **Botão "Encerrar processo"** (nos dois canais): fecha a assinatura digital. Mostra "Assinatura encerrada" por 2 segundos e fecha.
+  - No simulador, volta para a tela inicial (001 no presencial, 000 no remoto).
+  - Num celular de verdade, o navegador fecha e o usuário volta para a tela inicial do aparelho.
+  - _Ponto técnico para o time de desenvolvimento:_ os navegadores só deixam uma página fechar a própria aba (`window.close`) se ela tiver sido aberta por script. Quando a pessoa abre o link pelo SMS ou pelo QR Code, isso normalmente não funciona. Pode ser preciso trocar o fechamento por uma página final do tipo "pode fechar esta janela".
+- **Requisito fora das telas mobile:** o pedido de novo acesso precisa gerar um **alerta para o colaborador na plataforma de assinatura digital**, para ele saber que precisa enviar um novo link.
+  - **Problema de hoje:** se a pessoa a distância não termina e não avisa, o colaborador não sabe o que aconteceu nem entende a demora. Ele só descobre por suspeita, entrando em contato com o proponente.
+- **Motivo:** a tela atual (009-2) não tem botão, e no remoto o colaborador fica sem informação.
+
 ## Cenários futuros (só para conhecimento)
 
 > Ainda **não entram** na réplica nem no remake. Ficam registrados para quando o usuário pedir.

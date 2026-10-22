@@ -407,6 +407,116 @@
   .video .bar { position: absolute; left: 0; right: 0; bottom: 0; height: 4px; background: rgba(255,255,255,0.25); }
   .video .bar i { display: block; height: 100%; width: 0; background: var(--red); }
 
+  /* ===== Etapa 2: consentimento e selfie ===== */
+  /* Indicador de etapa ("Etapa 1 de 4 · Selfie"), no topo de cada tela do processo. */
+  .stepbar { margin-bottom: 18px; }
+  .stepbar-t { font-size: 12.5px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: var(--red); }
+  .stepbar-t span { color: var(--rk-muted); font-weight: 600; }
+  .stepbar-segs { display: flex; gap: 4px; margin-top: 8px; }
+  .stepbar-segs i { flex: 1; height: 4px; border-radius: 2px; background: #e8e8e8; }
+  .stepbar-segs i.on { background: var(--red); }
+  .stepbar-segs i.done { background: #f0a0aa; }
+
+  .tips-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 18px; }
+  .tip-card { border-radius: 14px; background: var(--rk-soft); padding: 12px 12px 13px 12px; }
+  .tip-card .ti { width: 34px; height: 34px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; }
+  .tip-card b { display: block; font-size: 14px; font-weight: 600; line-height: 1.3; }
+  .tip-card span { display: block; font-size: 12.5px; color: var(--rk-muted); margin-top: 2px; line-height: 1.35; }
+
+  .consent-box { display: flex; gap: 12px; align-items: flex-start; margin-top: 18px; padding: 14px; border: 1.5px solid var(--rk-line); border-radius: 14px; cursor: pointer; transition: border-color 0.15s ease, background 0.15s ease; }
+  .consent-box.on { border-color: var(--red); background: #fff8f9; }
+  .chk { flex: 0 0 24px; height: 24px; border-radius: 7px; border: 2px solid #b8b8b8; background: #fff; display: flex; align-items: center; justify-content: center; transition: background 0.15s ease, border-color 0.15s ease; }
+  .consent-box.on .chk { background: var(--red); border-color: var(--red); }
+  .chk svg { opacity: 0; }
+  .consent-box.on .chk svg { opacity: 1; }
+  .consent-txt { font-size: 14px; line-height: 1.45; color: var(--rk-text); }
+  .consent-txt button { border: none; background: none; color: var(--red); font-weight: 600; font-size: 14px; cursor: pointer; padding: 0; text-decoration: underline; }
+
+  /* Folha inferior (termo completo) e diálogo de permissão da câmera, dentro do celular. */
+  .sheet-dim { position: absolute; inset: 0; background: rgba(0,0,0,0.45); z-index: 30; display: flex; align-items: flex-end; }
+  .sheet { width: 100%; max-height: 82%; background: #fff; border-radius: 20px 20px 0 0; display: flex; flex-direction: column; }
+  .sheet-grab { width: 38px; height: 4px; border-radius: 2px; background: #d0d0d0; margin: 10px auto 6px auto; flex: 0 0 auto; }
+  .sheet-body { overflow-y: auto; padding: 8px 24px 8px 24px; }
+  .sheet-body h2 { font-size: 19px; font-weight: 700; margin-bottom: 10px; }
+  .sheet-body p { font-size: 14.5px; line-height: 1.6; color: #333; }
+  .sheet-foot { padding: 12px 24px 16px 24px; }
+  .perm-dim { position: absolute; inset: 0; background: rgba(0,0,0,0.35); z-index: 30; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 70px; }
+  .perm { width: 300px; background: #fff; border-radius: 14px; box-shadow: 0 12px 40px rgba(0,0,0,0.3); padding: 18px 18px 12px 18px; font-family: Roboto, Arial, sans-serif; }
+  .perm .ph { display: flex; align-items: center; gap: 10px; font-size: 14px; color: #333; }
+  .perm .ph b { font-weight: 600; }
+  .perm .pq { font-size: 15px; font-weight: 500; margin: 12px 0 14px 0; color: #222; }
+  .perm .pb { display: flex; justify-content: flex-end; gap: 6px; }
+  .perm .pb button { border: none; background: none; color: #1a73e8; font-weight: 600; font-size: 14px; padding: 9px 12px; border-radius: 8px; cursor: pointer; }
+  .perm .pb button:hover { background: #eef3fd; }
+  .perm-note { margin-top: 10px; text-align: center; color: #fff; font-size: 12px; opacity: 0.9; text-shadow: 0 1px 2px rgba(0,0,0,0.4); }
+  .screen-content.dark { background: #17191c; }
+
+  .howto { list-style: none; margin-top: 18px; counter-reset: h; }
+  .howto li { counter-increment: h; display: flex; gap: 12px; align-items: flex-start; padding: 8px 0; font-size: 14.5px; line-height: 1.45; }
+  .howto li::before { content: counter(h); flex: 0 0 26px; height: 26px; border-radius: 50%; background: var(--rk-soft); color: var(--rk-text); font-weight: 700; font-size: 13px; display: flex; align-items: center; justify-content: center; }
+
+  /* Captura guiada: câmera escura com recorte oval, anel de progresso e orientação. */
+  .fcam { background: #15171a; color: #fff; }
+  .fcam-bg { position: absolute; inset: 0; background:
+      radial-gradient(ellipse 70% 45% at 50% 40%, #3d3f44 0%, transparent 70%),
+      linear-gradient(180deg, #2b2d31 0%, #17191c 100%); }
+  .fcam-top { position: relative; z-index: 3; height: 56px; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; }
+  .fcam-ic { border: none; background: rgba(255,255,255,0.12); width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  .fcam-ic.on { background: #fff; }
+  .fcam-step { position: relative; z-index: 3; text-align: center; font-size: 13px; font-weight: 600; letter-spacing: 0.4px; color: rgba(255,255,255,0.75); }
+  .fcam-dots { display: flex; justify-content: center; gap: 6px; margin-top: 8px; }
+  .fcam-dots i { width: 22px; height: 4px; border-radius: 2px; background: rgba(255,255,255,0.25); }
+  .fcam-dots i.on { background: #fff; }
+  .fcam-dots i.ok { background: #5ee35a; }
+  .foval-wrap { position: relative; z-index: 2; width: 250px; height: 330px; margin: 30px auto 0 auto; }
+  .foval { position: absolute; inset: 0; border-radius: 50%; overflow: hidden; box-shadow: 0 0 0 600px rgba(10,11,13,0.72); background: #c9d1d6; }
+  .foval svg { width: 100%; height: 100%; transition: transform 0.7s ease, filter 0.4s ease; transform-origin: 50% 45%; }
+  .foval.closer svg { transform: scale(1.25); }
+  .foval.off svg { transform: translate(64px, 40px) scale(0.9); }
+  .foval.closer.off svg { transform: translate(64px, 40px) scale(1.15); }
+  .foval.dark svg { filter: brightness(0.38) contrast(0.85); }
+  .foval.blur svg { filter: blur(3px); }
+  .foval .acess { display: none; }
+  .foval.acc .acess { display: inline; }
+  .fring { position: absolute; inset: -9px; z-index: 3; }
+  .fring .p { transition: stroke-dashoffset 2s linear; }
+  .fcheck { position: absolute; z-index: 4; top: -22px; left: 50%; width: 44px; height: 44px; margin-left: -22px; border-radius: 50%; background: #5ee35a; display: flex; align-items: center; justify-content: center; transform: scale(0); transition: transform 0.2s ease; }
+  .fcheck.show { transform: scale(1); }
+  .fguide { position: relative; z-index: 3; margin: 30px auto 0 auto; width: fit-content; max-width: 300px; text-align: center; font-size: 16px; font-weight: 600; padding: 10px 18px; border-radius: 999px; background: rgba(255,255,255,0.14); transition: background 0.2s ease; }
+  .fguide.warn { background: #ffb020; color: #1f1400; }
+  .fguide.ok { background: #5ee35a; color: #0b2a0a; }
+  .fvoice { position: relative; z-index: 3; margin: 10px auto 0 auto; width: fit-content; font-size: 12.5px; color: rgba(255,255,255,0.75); display: flex; align-items: center; gap: 6px; }
+
+  /* Leitura de QR Code (simulada). */
+  .qr-box { position: relative; z-index: 2; width: 240px; height: 240px; margin: 60px auto 0 auto; border-radius: 18px; box-shadow: 0 0 0 600px rgba(10,11,13,0.65); display: flex; align-items: center; justify-content: center; }
+  .qr-img { width: 170px; height: 170px; background: #fff; padding: 8px; border-radius: 6px; transform: rotate(-4deg) scale(0.92); transition: transform 0.6s ease; }
+  .qr-box.lido .qr-img { transform: none; }
+  .qr-line { position: absolute; left: 18px; right: 18px; height: 3px; border-radius: 2px; background: #ff3b4e; box-shadow: 0 0 10px #ff3b4e; animation: qrScan 1.6s ease-in-out infinite; }
+  .qr-box.lido .qr-line { display: none; }
+  @keyframes qrScan { 0%, 100% { top: 20px; } 50% { top: 216px; } }
+  .qc { position: absolute; width: 34px; height: 34px; border: 4px solid #fff; transition: border-color 0.2s ease; }
+  .qc.tl { top: 0; left: 0; border-right: none; border-bottom: none; border-radius: 16px 0 0 0; }
+  .qc.tr { top: 0; right: 0; border-left: none; border-bottom: none; border-radius: 0 16px 0 0; }
+  .qc.bl { bottom: 0; left: 0; border-right: none; border-top: none; border-radius: 0 0 0 16px; }
+  .qc.br { bottom: 0; right: 0; border-left: none; border-top: none; border-radius: 0 0 16px 0; }
+  .qr-box.lido .qc { border-color: #5ee35a; }
+
+  .verify-list { list-style: none; margin-top: 24px; text-align: left; }
+  .verify-list li { display: flex; align-items: center; gap: 12px; padding: 10px 0; font-size: 15px; color: #9a9a9a; transition: color 0.2s ease; }
+  .verify-list li.cur { color: var(--rk-text); font-weight: 500; }
+  .verify-list li.done { color: var(--rk-text); }
+  .verify-list .vi { flex: 0 0 26px; height: 26px; border-radius: 50%; border: 2px solid #ddd; display: flex; align-items: center; justify-content: center; }
+  .verify-list li.cur .vi { border-color: var(--red); border-right-color: transparent; animation: spin 0.8s linear infinite; }
+  .verify-list li.done .vi { border-color: var(--rk-green); background: var(--rk-green); }
+  .verify-list li .vi svg { opacity: 0; }
+  .verify-list li.done .vi svg { opacity: 1; }
+
+  .tries { display: inline-flex; align-items: center; gap: 6px; margin: 4px auto 0 auto; font-size: 13px; font-weight: 600; padding: 5px 12px; border-radius: 999px; background: var(--rk-amber-bg); color: var(--rk-amber); }
+  .tries.last { background: #fff0f2; color: var(--red); }
+  .fix-list { list-style: none; margin-top: 18px; text-align: left; border-radius: 14px; background: var(--rk-soft); padding: 6px 14px; }
+  .fix-list li { display: flex; gap: 10px; padding: 9px 0; font-size: 14.5px; line-height: 1.45; }
+  .fix-list li + li { border-top: 1px solid #ebebeb; }
+
   /* ===== Painel de simulação (fora do celular; não faz parte do fluxo real) ===== */
   /* O painel ocupa a 1ª coluna inteira, com 15px de respiro, e rola por dentro
      quando o conteúdo não cabe na altura. */
@@ -539,7 +649,7 @@
           Voltar à Home
         </a>
       </h2>
-      <div class="sim-note">Fluxo remodelado, em construção etapa por etapa. Prontas: entrada (token e lista de assinantes) e boas-vindas. Decisões D03 a D05 do REGRAS.md.</div>
+      <div class="sim-note">Fluxo remodelado, em construção etapa por etapa. Prontas: entrada (token e lista de assinantes), boas-vindas e selfie. Decisões D03 a D09 do REGRAS.md.</div>
 
       <div class="sim-now">
         <div class="code" id="simCode">—</div>
@@ -610,6 +720,21 @@
         <div class="sim-hint">Token válido desta simulação: <code>846504</code>. Qualquer outro código conta como tentativa errada (limite de 5).</div>
         <button type="button" class="sim-btn" id="simSms" style="margin-top:8px">Simular SMS chegando (preenchimento automático)</button>
         <button type="button" class="sim-btn" id="simUnlock">Encerrar bloqueio agora</button>
+      </div>
+
+      <div class="sim-sec">
+        <div class="sim-sec-title">Selfie</div>
+        <div class="sim-field">
+          <span>Resultado da selfie</span>
+          <select id="simSelfie">
+            <option value="ok">Aprovada</option>
+            <option value="luz">Falha: pouca luz</option>
+            <option value="fora">Falha: rosto fora da moldura</option>
+            <option value="acessorio">Falha: óculos ou boné</option>
+            <option value="movimento">Falha: movimento</option>
+          </select>
+        </div>
+        <div class="sim-note" id="simSelfieCount" style="margin-top:-2px">Tentativas com falha: 0 de 3. Vale para todas as tentativas até mudar.</div>
       </div>
 
       <div class="sim-sec" id="listHint">
@@ -755,6 +880,219 @@
               <div class="rk-foot"><button type="button" class="rk-btn" id="welcomeGo">Começar</button></div>
             </section>
 
+            <!-- 002 · Selfie: dicas + consentimento (antes 002 e 003 separados) -->
+            <section class="scr" id="s-selfie">
+              <div class="rk-header">
+                <button type="button" class="rk-back" id="selfieBack" aria-label="Voltar"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+                <span class="rk-logo"><b>HONDA</b><span>Serviços Financeiros</span></span>
+              </div>
+              <div class="rk-body">
+                <div class="stepbar" data-etapa="0"></div>
+                <h1 class="rk-title">Vamos tirar uma selfie</h1>
+                <p class="rk-text">Ela confirma que é você mesmo quem está assinando. Leva menos de 1 minuto.</p>
+                <div class="tips-grid" id="tipsGrid">
+                  <div class="tip-card"><span class="ti"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D6001C" stroke-width="2"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.6 10.8c.8.6 1.1 1.4 1.1 2.2h5c0-.8.4-1.6 1.1-2.2A6 6 0 0 0 12 3z"/></svg></span><b>Lugar iluminado</b><span>Luz de frente, não atrás de você</span></div>
+                  <div class="tip-card"><span class="ti"><svg width="20" height="18" viewBox="0 0 34 26" fill="none" stroke="#D6001C" stroke-width="3"><rect x="2" y="9" width="12" height="10" rx="5"/><rect x="20" y="9" width="12" height="10" rx="5"/><path d="M14 12c2-1.5 4-1.5 6 0M3 3l28 20"/></svg></span><b>Sem acessórios</b><span>Tire óculos, boné ou máscara</span></div>
+                  <div class="tip-card"><span class="ti"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D6001C" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="9" cy="10" r="0.8" fill="#D6001C"/><circle cx="15" cy="10" r="0.8" fill="#D6001C"/><path d="M8.5 15h7"/></svg></span><b>Rosto neutro</b><span>Sem sorrir ou fazer caretas</span></div>
+                  <div class="tip-card"><span class="ti"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D6001C" stroke-width="2"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></svg></span><b>Celular na altura dos olhos</b><span>Segure firme, sem se mexer</span></div>
+                </div>
+                <div class="consent-box" id="consentBox" role="checkbox" aria-checked="false" tabindex="0">
+                  <span class="chk"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span>
+                  <span class="consent-txt">Autorizo a captura da minha imagem facial para minha identificação e para a prevenção a fraudes, conforme o <button type="button" id="termLink">termo de autorização</button></span>
+                </div>
+              </div>
+              <div class="rk-foot"><button type="button" class="rk-btn" id="selfieGo" disabled>Abrir câmera</button></div>
+
+              <!-- 002-T · Termo completo (folha inferior) -->
+              <div class="sheet-dim" id="termSheet" hidden>
+                <div class="sheet">
+                  <div class="sheet-grab"></div>
+                  <div class="sheet-body">
+                    <h2>Termo de autorização da imagem facial</h2>
+                    <p>Autorizo a captura da minha imagem facial com a finalidade única e exclusiva de viabilizar a minha identificação cadastral no momento do cadastro e formalização da(s) contratação(ões) junto à Honda, bem como para fins relacionados à prevenção a fraude e proteção ao crédito por meio da autenticação da minha identidade. Autorizo ainda que a Honda compartilhe a minha imagem facial com outras empresas do grupo Honda ou com terceiros conforme necessário para atingir as finalidades aqui descritas.</p>
+                  </div>
+                  <div class="sheet-foot"><button type="button" class="rk-btn" id="termOk">Li e concordo</button></div>
+                </div>
+              </div>
+
+              <!-- 002-P · Pedido de permissão da câmera (do navegador; simulado) -->
+              <div class="perm-dim" id="permDlg" hidden>
+                <div class="perm">
+                  <div class="ph"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5f6368" stroke-width="2"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg><span><b>assinatura.honda.com.br</b> quer</span></div>
+                  <div class="pq">Usar sua câmera</div>
+                  <div class="pb"><button type="button" id="permBlock">Bloquear</button><button type="button" id="permAllow">Permitir</button></div>
+                </div>
+                <div class="perm-note">Pedido do navegador (simulado)</div>
+              </div>
+            </section>
+
+            <!-- 002-N · Câmera bloqueada -->
+            <section class="scr" id="s-camoff">
+              <div class="rk-header">
+                <button type="button" class="rk-back" id="camoffBack" aria-label="Voltar"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+                <span class="rk-logo"><b>HONDA</b><span>Serviços Financeiros</span></span>
+              </div>
+              <div class="rk-body">
+                <div class="rk-hero-ic" style="background:#fff0f2;margin-top:4px">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#D6001C" stroke-width="2"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/><path d="M2 2l20 20"/></svg>
+                </div>
+                <h1 class="rk-title" style="text-align:center">Precisamos da sua câmera</h1>
+                <p class="rk-text" style="text-align:center">O acesso à câmera foi bloqueado. Sem ele não dá para tirar a selfie. Para liberar:</p>
+                <ol class="howto" id="howtoCam">
+                  <li><span>Toque no ícone de cadeado ou de ajustes ao lado do endereço do site, no topo do navegador.</span></li>
+                  <li><span>Abra <b>Permissões</b> e depois <b>Câmera</b>.</span></li>
+                  <li><span>Escolha <b>Permitir</b> e volte para esta tela.</span></li>
+                </ol>
+                <div class="rk-spacer"></div>
+              </div>
+              <div class="rk-foot"><button type="button" class="rk-btn" id="camoffRetry">Já liberei, tentar de novo</button></div>
+            </section>
+
+            <!-- 004 · Captura guiada (2 capturas) -->
+            <section class="scr fcam" id="s-fcam">
+              <div class="fcam-bg"></div>
+              <div class="fcam-top">
+                <button type="button" class="fcam-ic" id="fcamClose" aria-label="Fechar"><svg width="18" height="18" viewBox="0 0 22 22" stroke="#fff" stroke-width="2.2"><path d="M4 4l14 14M18 4L4 18"/></svg></button>
+                <button type="button" class="fcam-ic" id="fcamVoice" aria-label="Guia por voz" title="Guia por voz"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg></button>
+              </div>
+              <div class="fcam-step" id="fcamStep">CAPTURA 1 DE 2</div>
+              <div class="fcam-dots"><i id="fdot1"></i><i id="fdot2"></i></div>
+              <div class="foval-wrap">
+                <div class="foval" id="foval">
+                  <svg viewBox="0 0 248 326" aria-hidden="true">
+                    <rect width="248" height="326" fill="#cfd6db"/>
+                    <path d="M10 326c8-62 52-86 114-86s106 24 114 86z" fill="#5d6f80"/>
+                    <rect x="104" y="196" width="40" height="48" rx="12" fill="#d9a77e"/>
+                    <ellipse cx="124" cy="142" rx="70" ry="88" fill="#e3b38d"/>
+                    <path d="M54 132c-4-58 30-88 70-88s76 28 70 88c-6-22-20-40-40-46-18 10-50 12-80 6-12 10-18 24-20 40z" fill="#3b2a20"/>
+                    <ellipse cx="54" cy="148" rx="9" ry="16" fill="#d9a77e"/>
+                    <ellipse cx="194" cy="148" rx="9" ry="16" fill="#d9a77e"/>
+                    <path d="M86 122h26M136 122h26" stroke="#3b2a20" stroke-width="5" stroke-linecap="round"/>
+                    <ellipse cx="99" cy="138" rx="6" ry="4.5" fill="#2b2b2b"/>
+                    <ellipse cx="149" cy="138" rx="6" ry="4.5" fill="#2b2b2b"/>
+                    <path d="M124 146v24l-8 4" stroke="#b9876a" stroke-width="3" fill="none" stroke-linecap="round"/>
+                    <path d="M106 196h36" stroke="#a8604f" stroke-width="4" stroke-linecap="round"/>
+                    <g class="acess">
+                      <path d="M44 96c10-44 44-62 80-62s70 18 80 62z" fill="#1f3b63"/>
+                      <path d="M40 96h168l14 10H26z" fill="#173052"/>
+                      <rect x="78" y="124" width="40" height="26" rx="10" fill="#141414"/>
+                      <rect x="130" y="124" width="40" height="26" rx="10" fill="#141414"/>
+                      <path d="M118 134h12" stroke="#141414" stroke-width="5"/>
+                    </g>
+                  </svg>
+                </div>
+                <svg class="fring" viewBox="0 0 268 348" aria-hidden="true">
+                  <ellipse cx="134" cy="174" rx="128" ry="168" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="5"/>
+                  <path class="p" id="fringP" d="M134 6a128 168 0 1 1 0 336a128 168 0 1 1 0-336" fill="none" stroke="#5ee35a" stroke-width="6" stroke-linecap="round" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/>
+                </svg>
+                <div class="fcheck" id="fcheck"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"/></svg></div>
+              </div>
+              <div class="fguide" id="fguide">Posicione o rosto dentro da moldura</div>
+              <div class="fvoice" id="fvoice" hidden><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/></svg><span id="fvoiceTxt"></span></div>
+            </section>
+
+            <!-- 005 · Verificação da selfie -->
+            <section class="scr" id="s-fverify">
+              <div class="rk-header"><span class="rk-logo"><b>HONDA</b><span>Serviços Financeiros</span></span></div>
+              <div class="rk-body">
+                <div class="stepbar" data-etapa="0"></div>
+                <h1 class="rk-title">Verificando sua selfie</h1>
+                <p class="rk-text">Isso leva cerca de 10 segundos. Não feche esta tela.</p>
+                <ol class="verify-list" id="verifyList">
+                  <li><span class="vi"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span>Imagem recebida</li>
+                  <li><span class="vi"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span>Conferindo a qualidade da foto</li>
+                  <li><span class="vi"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span>Confirmando que é uma pessoa real</li>
+                </ol>
+                <div class="rk-spacer"></div>
+              </div>
+            </section>
+
+            <!-- 004-OK · Selfie confirmada -->
+            <section class="scr" id="s-fok">
+              <div class="rk-header"><span class="rk-logo"><b>HONDA</b><span>Serviços Financeiros</span></span></div>
+              <div class="rk-body" style="text-align:center">
+                <div class="stepbar" data-etapa="0" style="text-align:left"></div>
+                <div class="rk-hero-ic" style="background:var(--rk-green-bg);margin-top:30px">
+                  <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#1e8e3e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"/></svg>
+                </div>
+                <h1 class="rk-title">Selfie confirmada</h1>
+                <p class="rk-text">Próxima etapa: <b id="fokNext">documento de identificação</b>.</p>
+                <div class="rk-spacer"></div>
+              </div>
+              <div class="rk-foot"><button type="button" class="rk-btn" id="fokGo">Continuar</button></div>
+            </section>
+
+            <!-- 004-1 · Falha na selfie, com motivo e tentativas restantes -->
+            <section class="scr" id="s-ffail">
+              <div class="rk-header"><span class="rk-logo"><b>HONDA</b><span>Serviços Financeiros</span></span></div>
+              <div class="rk-body" style="text-align:center">
+                <div class="stepbar" data-etapa="0" style="text-align:left"></div>
+                <div class="rk-hero-ic" style="background:var(--rk-amber-bg);margin-top:6px" id="ffailIc"></div>
+                <h1 class="rk-title" id="ffailTitle">Não deu certo desta vez</h1>
+                <p class="rk-text" id="ffailText"></p>
+                <div><span class="tries" id="ffailTries"></span></div>
+                <ul class="fix-list" id="ffailFix"></ul>
+                <div class="rk-spacer"></div>
+              </div>
+              <div class="rk-foot"><button type="button" class="rk-btn" id="ffailGo">Tentar novamente</button></div>
+            </section>
+
+            <!-- 004-2 · Assinatura cancelada (3ª falha) -->
+            <section class="scr" id="s-fcancel">
+              <div class="rk-header"><span class="rk-logo"><b>HONDA</b><span>Serviços Financeiros</span></span></div>
+              <div class="rk-body" style="text-align:center">
+                <div class="rk-hero-ic" style="background:#fff0f2;margin-top:24px">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#D6001C" stroke-width="2.4"><circle cx="12" cy="12" r="10"/><path d="M12 7v6M12 16.5v.5"/></svg>
+                </div>
+                <h1 class="rk-title">Não foi possível confirmar sua identidade</h1>
+                <p class="rk-text">Por segurança, esta assinatura foi encerrada depois de 3 tentativas de selfie.</p>
+                <div class="who-card" style="text-align:left;margin-top:22px">
+                  <div class="l">O que acontece agora</div>
+                  <div class="v" id="fcancelNext" style="font-weight:500;line-height:1.45"></div>
+                </div>
+                <!-- Remoto: confirmação do pedido de novo link -->
+                <div class="all-done" id="fcancelSent" hidden style="text-align:left">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1e8e3e" stroke-width="2.4" style="flex-shrink:0"><circle cx="12" cy="12" r="10"/><path d="M7.5 12.5l3 3 6-6.5"/></svg>
+                  <span id="fcancelSentText"></span>
+                </div>
+                <div class="rk-spacer"></div>
+              </div>
+              <div class="rk-foot">
+                <button type="button" class="rk-btn" id="fcancelBtn">Ler novo QR Code</button>
+                <button type="button" class="rk-btn ghost" id="fcancelEnd" style="margin-top:10px">Encerrar processo</button>
+              </div>
+            </section>
+
+            <!-- QR · Leitura do novo QR Code (presencial; simulada) -->
+            <section class="scr fcam" id="s-qr">
+              <div class="fcam-bg"></div>
+              <div class="fcam-top">
+                <button type="button" class="fcam-ic" id="qrClose" aria-label="Fechar"><svg width="18" height="18" viewBox="0 0 22 22" stroke="#fff" stroke-width="2.2"><path d="M4 4l14 14M18 4L4 18"/></svg></button>
+                <span></span>
+              </div>
+              <div class="fcam-step">LER QR CODE</div>
+              <div class="qr-box" id="qrBox">
+                <svg viewBox="0 0 29 29" class="qr-img" aria-hidden="true" id="qrImg"></svg>
+                <span class="qr-line"></span>
+                <i class="qc tl"></i><i class="qc tr"></i><i class="qc bl"></i><i class="qc br"></i>
+              </div>
+              <div class="fguide" id="qrGuide">Aponte para o QR Code na tela do vendedor</div>
+            </section>
+
+            <!-- FIM · Assinatura encerrada (fecha o sistema de assinatura) -->
+            <section class="scr" id="s-fend">
+              <div class="rk-header"><span class="rk-logo"><b>HONDA</b><span>Serviços Financeiros</span></span></div>
+              <div class="rk-body" style="text-align:center">
+                <div class="rk-hero-ic" style="background:var(--rk-soft);margin-top:60px">
+                  <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#6b6b6b" stroke-width="2.2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                </div>
+                <h1 class="rk-title">Assinatura encerrada</h1>
+                <p class="rk-text">Fechando a assinatura digital…</p>
+                <div style="margin-top:22px;display:flex;justify-content:center"><span class="mini-spin" style="width:22px;height:22px;color:#bbb;border-width:3px"></span></div>
+                <div class="rk-spacer"></div>
+              </div>
+            </section>
+
             <!-- Próximas etapas: ainda em construção no remake -->
             <section class="scr" id="s-next">
               <div class="rk-header"><span class="rk-logo"><b>HONDA</b><span>Serviços Financeiros</span></span></div>
@@ -763,7 +1101,7 @@
                   <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#6b6b6b" stroke-width="2"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z"/></svg>
                 </div>
                 <h1 class="rk-title">Próximas etapas em construção</h1>
-                <p class="rk-text">Selfie, documento, autorizações, contrato e avaliação do remake serão desenhados nas próximas rodadas.</p>
+                <p class="rk-text">Documento, autorizações, contrato, termo do seguro e avaliação do remake serão desenhados nas próximas rodadas.</p>
                 <div class="rk-spacer"></div>
               </div>
               <div class="rk-foot">
@@ -827,7 +1165,14 @@
       "000-OK": "Token: código confirmado", "000-B": "Token: bloqueado após 5 tentativas",
       "000-V": "Vídeo \"Como funciona\"", "001": "Assinaturas da proposta",
       "001-A": "Assinaturas: parte aguardando liberação", "001-C": "Assinaturas: todas concluídas",
-      "BV": "Boas-vindas: quem assina, etapas e tempo", "PRÓX": "Próximas etapas (em construção)"
+      "BV": "Boas-vindas: quem assina, etapas e tempo", "PRÓX": "Próximas etapas (em construção)",
+      "002": "Selfie: dicas e consentimento", "002-T": "Selfie: termo completo",
+      "002-P": "Selfie: pedido de permissão da câmera", "002-N": "Selfie: câmera bloqueada",
+      "004": "Selfie: captura guiada", "005": "Selfie: verificação",
+      "004-OK": "Selfie confirmada", "004-1": "Selfie: falha com motivo e tentativas",
+      "004-2": "Assinatura encerrada (3ª falha na selfie)",
+      "004-2E": "Remoto: pedido de novo acesso enviado", "FIM": "Assinatura encerrada (fechando)",
+      "QR": "Presencial: leitura do novo QR Code"
     };
 
     // Melhorias de cada tela, exibidas na 3ª coluna: o problema no fluxo atual e o que
@@ -909,15 +1254,131 @@
           { t: "Diz o que ter em mãos (documento e local iluminado) antes de começar.", alvo: "#s-welcome .bring" }
         ]
       },
+      selfie: {
+        titulo: "002 · Selfie: dicas e consentimento", sub: "Junta as telas 002 (termo) e 003 (modal de dicas) do fluxo atual",
+        antes: [
+          "Duas telas: um texto jurídico longo (002) e depois um modal com 5 dicas (003).",
+          "As dicas aparecem só num modal que a pessoa fecha rápido e esquece. <span class='tag fb'>Feedback: \"selfie muito difícil de tirar\"</span>",
+          "Nada indica em que ponto do processo a pessoa está. <span class='tag fb'>Feedback: processo longo</span>"
+        ],
+        depois: [
+          { t: "Indicador de etapa (\"Etapa 1 de N · Selfie\") com barra de progresso, presente em todas as telas do processo. <span class='tag'>D06</span>", alvo: "#s-selfie .stepbar" },
+          { t: "Título e frase curta dizendo para que serve a selfie e quanto tempo leva.", alvo: "#s-selfie .rk-title, #s-selfie .rk-text" },
+          { t: "As dicas viram 4 cards visuais na própria tela, sempre à vista antes de abrir a câmera.", alvo: "#tipsGrid" },
+          { t: "Consentimento em uma frase, com caixa de \"Autorizo\". O termo completo continua disponível no link. <span class='tag'>D06</span>", alvo: "#consentBox" },
+          { t: "\"Abrir câmera\" só libera depois do \"Autorizo\": o consentimento continua obrigatório.", alvo: "#selfieGo" },
+          { t: "Termo completo numa folha que sobe de baixo, com \"Li e concordo\", que também marca a autorização.", alvo: "#termSheet .sheet",
+            visivel: function () { return !$("termSheet").hidden; },
+            ver: function () { openSelfieIntro(); abrirTermo(); } },
+          { t: "O pedido de permissão da câmera aparece no momento certo (ao tocar em \"Abrir câmera\"), já com contexto.", alvo: "#permDlg .perm",
+            visivel: function () { return !$("permDlg").hidden; },
+            ver: function () { st.camPerm = null; openSelfieIntro(); marcarConsentimento(true); pedirCamera(); } }
+        ]
+      },
+      camoff: {
+        titulo: "002-N · Câmera bloqueada", sub: "Tela nova",
+        antes: [
+          "Não existe: se a pessoa nega a câmera, a captura simplesmente não funciona. <span class='tag fb'>Feedback: \"não abre no Google Chrome\", \"só no Mozilla funcionou\"</span>"
+        ],
+        depois: [
+          { t: "Explica por que a câmera é necessária, sem culpar o usuário. <span class='tag'>D07</span>", alvo: "#s-camoff .rk-title, #s-camoff .rk-text" },
+          { t: "Passo a passo de como liberar a câmera no navegador.", alvo: "#howtoCam" },
+          { t: "\"Já liberei, tentar de novo\" pede a permissão outra vez, sem recomeçar a assinatura.", alvo: "#camoffRetry" }
+        ]
+      },
+      fcam: {
+        titulo: "004 · Captura guiada", sub: "2 capturas: a 2ª com o rosto mais próximo",
+        antes: [
+          "Só o texto fixo \"Tente não se mexer\", sem dizer o que ajustar. <span class='tag fb'>Feedback: \"não funciona com nenhuma luz\", \"demora muito para capturar\"</span>",
+          "As duas bolinhas no topo não dizem o que significam. <span class='tag'>R10</span>",
+          "Sem apoio para quem enxerga pouco. <span class='tag fb'>Feedback: \"auxílio sonoro na hora da selfie\"</span>"
+        ],
+        depois: [
+          { t: "Orientação em tempo real: \"posicione o rosto\", \"aproxime\", \"fique parado\". Avisa o problema na hora (pouca luz, óculos, fora da moldura). <span class='tag'>D07</span>", alvo: "#fguide" },
+          { t: "\"Captura 1 de 2 / 2 de 2\" escrito, com indicador de progresso.", alvo: "#fcamStep, .fcam-dots" },
+          { t: "Moldura oval sobre a câmera escurecida, com anel que enche enquanto captura e check ao concluir.", alvo: "#s-fcam .foval-wrap" },
+          { t: "Guia por voz opcional (acessibilidade): lê as orientações em voz alta.", alvo: "#fcamVoice" },
+          { t: "X para sair e voltar às dicas, sem perder o consentimento.", alvo: "#fcamClose" }
+        ]
+      },
+      fverify: {
+        titulo: "005 · Verificação da selfie", sub: "Antes: \"Aguarde um instante...\"",
+        antes: ["Só um spinner com \"Aguarde um instante...\", que às vezes demora muito. <span class='tag fb'>Feedback: \"o 'aguarde instantes' demora MUITO\"</span>"],
+        depois: [
+          { t: "Diz quanto tempo leva e pede para não fechar a tela. <span class='tag'>D07</span>", alvo: "#s-fverify .rk-text" },
+          { t: "Lista do que está sendo conferido, marcando cada passo concluído.", alvo: "#verifyList" },
+          { t: "O indicador de etapa continua visível: a pessoa sabe que ainda está na selfie.", alvo: "#s-fverify .stepbar" }
+        ]
+      },
+      fok: {
+        titulo: "004-OK · Selfie confirmada", sub: "Tela nova",
+        antes: ["Depois da verificação, o fluxo pula direto para o documento, sem confirmar que a selfie deu certo."],
+        depois: [
+          { t: "Confirmação clara de sucesso. <span class='tag'>D07</span>", alvo: "#s-fok .rk-hero-ic, #s-fok .rk-title" },
+          { t: "Diz qual é a próxima etapa antes de seguir.", alvo: "#s-fok .rk-text" }
+        ]
+      },
+      ffail: {
+        titulo: "004-1 · Falha na selfie", sub: "Máximo de 3 tentativas",
+        antes: [
+          "Mensagem genérica \"Não foi possível realizar a captura facial\", sem dizer o motivo. <span class='tag'>R10</span>",
+          "Não diz quantas tentativas restam antes do cancelamento. <span class='tag'>R10</span>",
+          "\"Tentar novamente\" volta para as dicas, um passo a mais."
+        ],
+        depois: [
+          { t: "Motivo provável da falha, com ícone (pouca luz, rosto fora da moldura, óculos ou boné, movimento). <span class='tag'>D08</span>", alvo: "#ffailIc, #ffailTitle, #ffailText" },
+          { t: "Quantas tentativas restam, com aviso de última tentativa.", alvo: "#ffailTries" },
+          { t: "Dicas específicas para o motivo, não as 5 dicas genéricas.", alvo: "#ffailFix" },
+          { t: "\"Tentar novamente\" abre direto a câmera.", alvo: "#ffailGo" }
+        ]
+      },
+      fcancel: {
+        titulo: "004-2 · Assinatura encerrada", sub: "3ª falha na selfie",
+        antes: [
+          "\"Desculpe, não foi possível seguir com a assinatura. Por favor, gere um novo QR code ou anexe os documentos via IHS.\" <span class='tag'>R08</span>",
+          "Fala em termos internos (IHS, gerar QR code) para o cliente, e não tem nenhum botão."
+        ],
+        depois: [
+          { t: "Explica o que aconteceu e por quê (segurança), sem jargão. <span class='tag'>D08</span>", alvo: "#s-fcancel .rk-title, #s-fcancel .rk-text" },
+          { t: "Diz o que acontece agora, conforme o canal: no presencial, pedir um novo QR Code ao vendedor; no remoto, pedir um novo acesso.", alvo: "#s-fcancel .who-card" },
+          { t: "Presencial: \"Ler novo QR Code\" abre a câmera para ler o QR que o vendedor gerou e volta para a lista de assinantes. <span class='tag'>D09</span>", alvo: "#fcancelBtn",
+            visivel: function () { return !isRemoto(); },
+            ver: function () { forcarCanal("presencial"); openFaceCancel(); } },
+          { t: "Remoto: \"Pedir novo acesso\" gera um alerta para o colaborador na plataforma de assinatura. Hoje ele não sabe que a pessoa travou. <span class='tag'>D09</span>", alvo: "#fcancelBtn",
+            visivel: function () { return isRemoto(); },
+            ver: function () { forcarCanal("remoto"); st.cur = 0; openFaceCancel(); } },
+          { t: "Remoto: confirmação de que o pedido foi enviado, com o celular que vai receber o novo acesso.", alvo: "#fcancelSent",
+            ver: function () { forcarCanal("remoto"); st.cur = 0; openFaceCancel(); $("fcancelBtn").click(); } },
+          { t: "\"Encerrar processo\" nos dois canais: fecha a assinatura digital em vez de deixar a pessoa parada na tela de erro. <span class='tag'>D09</span>", alvo: "#fcancelEnd" }
+        ]
+      },
+      qr: {
+        titulo: "QR · Leitura do novo QR Code", sub: "Presencial, depois da assinatura encerrada",
+        antes: ["Não existe: a pessoa precisa sair da tela de erro e abrir a câmera do celular por conta própria para ler o novo QR Code."],
+        depois: [
+          { t: "Leitor de QR Code dentro do próprio fluxo, com a orientação \"aponte para o QR Code na tela do vendedor\". <span class='tag'>D09</span>", alvo: "#qrBox, #qrGuide" },
+          { t: "Depois da leitura, volta direto para a lista de assinantes (001) com o novo acesso." }
+        ]
+      },
+      fend: {
+        titulo: "FIM · Assinatura encerrada", sub: "Depois de \"Encerrar processo\"",
+        antes: ["Não existe: a tela de erro não tem nenhum botão e o processo fica parado nela."],
+        depois: [
+          { t: "Mensagem \"Assinatura encerrada\" por 2 segundos antes de fechar. <span class='tag'>D09</span>", alvo: "#s-fend .rk-title, #s-fend .rk-text" },
+          { t: "No simulador, volta para a tela inicial (001 no presencial, 000 no remoto). Num celular de verdade, fecha a assinatura digital e o usuário volta para a tela inicial do aparelho." }
+        ]
+      },
       next: {
         titulo: "Próximas etapas", sub: "Em construção",
         antes: [],
-        depois: [{ t: "Consentimento e selfie, documento, autorizações, contrato (D02) e avaliação serão desenhados nas próximas rodadas." }]
+        depois: [{ t: "Documento, autorizações, contrato (D02), termo do SPF e avaliação serão desenhados nas próximas rodadas." }]
       }
     };
     var NOTA_POR_CODIGO = {
       "000": "token", "000-E": "token", "000-OK": "token", "000-B": "lock", "000-V": "video",
-      "001": "lista", "001-A": "lista", "001-C": "lista", "BV": "welcome", "PRÓX": "next"
+      "001": "lista", "001-A": "lista", "001-C": "lista", "BV": "welcome", "PRÓX": "next",
+      "002": "selfie", "002-T": "selfie", "002-P": "selfie", "002-N": "camoff", "004": "fcam", "005": "fverify",
+      "004-OK": "fok", "004-1": "ffail", "004-2": "fcancel", "004-2E": "fcancel", "FIM": "fend", "QR": "qr"
     };
 
     var notaAtual = null;   // grupo de notas exibido
@@ -1010,7 +1471,11 @@
         "000": openToken, "000-E": openToken, "000-OK": openToken, "000-B": openLock,
         "000-V": function () { openVideo(st.videoFrom); },
         "001": function () { openLista(); }, "001-A": function () { openLista(); }, "001-C": function () { openLista(); },
-        "BV": openWelcome, "PRÓX": function () { show("s-next", "PRÓX"); }
+        "BV": openWelcome, "PRÓX": function () { show("s-next", "PRÓX"); },
+        "002": openSelfieIntro, "002-T": openSelfieIntro, "002-P": openSelfieIntro, "002-N": openCamOff,
+        "004": openSelfieIntro, "005": openSelfieIntro, "004-OK": openFaceOk,
+        "004-1": function () { openFaceFail(); }, "004-2": openFaceCancel, "004-2E": openFaceCancel,
+        "FIM": start, "QR": openFaceCancel
       }[s.code];
       if (reabrir) reabrir(); else start();
     }
@@ -1110,6 +1575,8 @@
       clearTimers();
       document.querySelectorAll(".scr.active").forEach(function (s) { s.classList.remove("active"); });
       $(sectionId).classList.add("active");
+      // Telas de câmera são escuras até a borda inferior do aparelho.
+      $("screenContent").classList.toggle("dark", sectionId === "s-fcam" || sectionId === "s-qr");
       setCode(code);
     }
     function setCode(code) {
@@ -1127,7 +1594,8 @@
       // Reiniciar por conta própria (painel) descarta o estado guardado pelas notas.
       if (!aplicandoVer) snapshot = null;
       var n = 1 + parseInt(cenario.avalistas, 10);
-      st = { signers: [], cur: 0, tentativas: 0, code: "" };
+      st = { signers: [], cur: 0, tentativas: 0, code: "", faceFails: 0 };
+      atualizarContSelfie();
       for (var i = 0; i < n; i++) {
         var t = cenario["tipo" + i], d = PESSOAS[i][t];
         st.signers.push({
@@ -1338,20 +1806,274 @@
       $("wWho").textContent = s.nome;
       $("wPj").hidden = s.tipo !== "cnpj";
       $("wPjText").innerHTML = "Como a assinatura é em nome de uma empresa, a selfie e o documento são do <b>representante legal</b> (" + pessoa + ").";
-      // Etapas: sem rubrica (D01); termo do SPF só para o proponente que contratou (R06).
-      var etapas = [["Selfie", "1 min"], ["Documento de identificação", "2 min"], ["Autorizações e contrato", "2 min"]];
-      var comSpf = st.cur === 0 && cenario.spf === "sim";
-      if (comSpf) etapas.push(["Termo do Seguro Proteção Financeira", "1 min"]);
-      etapas.push(["Avaliação", "opcional"]);
+      var etapas = etapasDoAssinante();
       $("wSteps").innerHTML = etapas.map(function (e, i) {
-        return '<li><span class="n">' + (i + 1) + '</span><span class="t">' + e[0] + '</span><span class="m">' + e[1] + "</span></li>";
+        return '<li><span class="n">' + (i + 1) + '</span><span class="t">' + e.nome + '</span><span class="m">' + e.tempo + "</span></li>";
       }).join("");
-      $("wTime").textContent = "Cerca de " + (comSpf ? 6 : 5) + " minutos no total";
+      $("wTime").textContent = "Cerca de " + (etapas.length === 5 ? 6 : 5) + " minutos no total";
+      // Tentativas de selfie e consentimento valem por assinante.
+      st.faceFails = 0;
+      st.consentiu = false;
+      atualizarContSelfie();
       $("welcomeBack").hidden = isRemoto();
       show("s-welcome", "BV");
     }
     $("welcomeBack").addEventListener("click", function () { openLista(); });
-    $("welcomeGo").addEventListener("click", function () { show("s-next", "PRÓX"); });
+    $("welcomeGo").addEventListener("click", function () { openSelfieIntro(); });
+
+    // Etapas do processo de quem está assinando: sem rubrica (D01); termo do SPF só para
+    // o proponente que contratou (R06). Usadas nas boas-vindas e no indicador de etapa.
+    function etapasDoAssinante() {
+      var e = [
+        { nome: "Selfie", curto: "Selfie", tempo: "1 min" },
+        { nome: "Documento de identificação", curto: "Documento", tempo: "2 min" },
+        { nome: "Autorizações e contrato", curto: "Contrato", tempo: "2 min" }
+      ];
+      if (st.cur === 0 && cenario.spf === "sim") e.push({ nome: "Termo do Seguro Proteção Financeira", curto: "Seguro", tempo: "1 min" });
+      e.push({ nome: "Avaliação", curto: "Avaliação", tempo: "opcional" });
+      return e;
+    }
+    // Preenche os indicadores "Etapa X de N · Nome" da tela (D06).
+    function pintarEtapas(scrId) {
+      var e = etapasDoAssinante();
+      document.querySelectorAll("#" + scrId + " .stepbar").forEach(function (bar) {
+        var i = parseInt(bar.getAttribute("data-etapa"), 10);
+        bar.innerHTML = '<div class="stepbar-t">Etapa ' + (i + 1) + ' de ' + e.length + ' <span>· ' + e[i].curto + "</span></div>" +
+          '<div class="stepbar-segs">' + e.map(function (x, k) { return "<i class='" + (k < i ? "done" : k === i ? "on" : "") + "'></i>"; }).join("") + "</div>";
+      });
+    }
+
+    // ---------- 002 · Selfie: dicas + consentimento (D06) ----------
+    var MAX_SELFIE = 3;
+    function openSelfieIntro() {
+      $("termSheet").hidden = true;
+      $("permDlg").hidden = true;
+      marcarConsentimento(!!st.consentiu);
+      pintarEtapas("s-selfie");
+      $("selfieBack").hidden = false;
+      show("s-selfie", "002");
+    }
+    function marcarConsentimento(on) {
+      st.consentiu = on;
+      $("consentBox").classList.toggle("on", on);
+      $("consentBox").setAttribute("aria-checked", on ? "true" : "false");
+      $("selfieGo").disabled = !on;
+    }
+    $("consentBox").addEventListener("click", function (e) {
+      if (e.target.closest("#termLink")) return;
+      marcarConsentimento(!st.consentiu);
+    });
+    $("consentBox").addEventListener("keydown", function (e) {
+      if (e.key === " " || e.key === "Enter") { e.preventDefault(); marcarConsentimento(!st.consentiu); }
+    });
+    function abrirTermo() { $("termSheet").hidden = false; setCode("002-T"); }
+    $("termLink").addEventListener("click", abrirTermo);
+    $("termOk").addEventListener("click", function () { $("termSheet").hidden = true; marcarConsentimento(true); setCode("002"); });
+    $("termSheet").addEventListener("click", function (e) { if (e.target === this) { this.hidden = true; setCode("002"); } });
+    $("selfieBack").addEventListener("click", openWelcome);
+
+    // Permissão da câmera: o navegador pergunta uma vez por sessão (simulado).
+    $("selfieGo").addEventListener("click", function () {
+      if (st.camPerm === "ok") openFaceCam(); else pedirCamera();
+    });
+    function pedirCamera() { $("permDlg").hidden = false; setCode("002-P"); }
+    $("permAllow").addEventListener("click", function () { st.camPerm = "ok"; $("permDlg").hidden = true; openFaceCam(); });
+    $("permBlock").addEventListener("click", function () { st.camPerm = "bloqueada"; $("permDlg").hidden = true; openCamOff(); });
+
+    // ---------- 002-N · Câmera bloqueada (D07) ----------
+    function openCamOff() { show("s-camoff", "002-N"); }
+    $("camoffBack").addEventListener("click", openSelfieIntro);
+    $("camoffRetry").addEventListener("click", function () { openSelfieIntro(); pedirCamera(); });
+
+    // ---------- 004 · Captura guiada (D07) ----------
+    // O resultado vem do painel: "ok" ou o motivo da falha. A orientação em tempo real já
+    // avisa o problema durante a captura; a reprovação vem na verificação.
+    var AVISO_AO_VIVO = {
+      luz: "Pouca luz: procure um lugar mais iluminado",
+      fora: "Centralize o rosto dentro da moldura",
+      acessorio: "Tire os óculos e o boné",
+      movimento: "Segure o celular firme, sem se mexer"
+    };
+    function falar(txt) {
+      if (!st.voz) return;
+      $("fvoice").hidden = false;
+      $("fvoiceTxt").textContent = "Lendo em voz alta: \"" + txt + "\"";
+    }
+    function guia(txt, tipo) {
+      var g = $("fguide");
+      g.textContent = txt;
+      g.className = "fguide" + (tipo ? " " + tipo : "");
+      falar(txt);
+    }
+    function openFaceCam() {
+      var res = $("simSelfie").value;
+      var oval = $("foval"), p = $("fringP"), chk = $("fcheck");
+      function anel(cheio) {
+        if (!cheio) { p.style.transition = "none"; p.style.strokeDashoffset = "100"; void p.getBoundingClientRect(); p.style.transition = ""; }
+        else p.style.strokeDashoffset = "0";
+      }
+      oval.className = "foval" + (res === "luz" ? " dark" : res === "acessorio" ? " acc" : res === "movimento" ? " blur" : "") + " off";
+      chk.classList.remove("show");
+      anel(false);
+      $("fdot1").className = "on"; $("fdot2").className = "";
+      $("fcamStep").textContent = "CAPTURA 1 DE 2";
+      $("fcamVoice").classList.toggle("on", !!st.voz);
+      $("fcamVoice").querySelector("svg").setAttribute("stroke", st.voz ? "#D6001C" : "#fff");
+      $("fvoice").hidden = true;
+      show("s-fcam", "004");
+      guia("Posicione o rosto dentro da moldura");
+      // 1ª captura: o rosto entra na moldura, o anel enche e confirma.
+      later(function () { if (res !== "fora") oval.classList.remove("off"); }, 700);
+      later(function () {
+        if (res !== "ok") guia(AVISO_AO_VIVO[res], "warn"); else guia("Ótimo! Agora fique parado");
+        anel(true);
+      }, 1500);
+      later(function () { chk.classList.add("show"); $("fdot1").className = "ok"; guia("Captura 1 de 2 concluída", "ok"); }, 3600);
+      // 2ª captura: com o rosto mais próximo.
+      later(function () {
+        chk.classList.remove("show"); anel(false);
+        $("fdot2").className = "on";
+        $("fcamStep").textContent = "CAPTURA 2 DE 2";
+        oval.classList.add("closer");
+        guia("Agora aproxime o rosto da câmera");
+      }, 4400);
+      later(function () {
+        if (res !== "ok") guia(AVISO_AO_VIVO[res], "warn"); else guia("Isso! Fique parado");
+        anel(true);
+      }, 5600);
+      later(function () { chk.classList.add("show"); $("fdot2").className = "ok"; guia("Captura 2 de 2 concluída", "ok"); }, 7700);
+      later(function () { openVerify(res); }, 8400);
+    }
+    $("fcamClose").addEventListener("click", openSelfieIntro);
+    $("fcamVoice").addEventListener("click", function () {
+      st.voz = !st.voz;
+      this.classList.toggle("on", st.voz);
+      this.querySelector("svg").setAttribute("stroke", st.voz ? "#D6001C" : "#fff");
+      if (st.voz) falar($("fguide").textContent); else $("fvoice").hidden = true;
+    });
+
+    // ---------- 005 · Verificação (D07) ----------
+    function openVerify(res) {
+      pintarEtapas("s-fverify");
+      var itens = $("verifyList").querySelectorAll("li");
+      itens.forEach(function (li) { li.className = ""; });
+      show("s-fverify", "005");
+      itens[0].className = "cur";
+      later(function () { itens[0].className = "done"; itens[1].className = "cur"; }, 900);
+      later(function () { itens[1].className = "done"; itens[2].className = "cur"; }, 1900);
+      later(function () {
+        if (res === "ok") { itens[2].className = "done"; later(openFaceOk, 500); return; }
+        st.faceFails = (st.faceFails || 0) + 1;
+        atualizarContSelfie();
+        if (st.faceFails >= MAX_SELFIE) openFaceCancel(); else openFaceFail(res);
+      }, 3000);
+    }
+
+    // ---------- 004-OK · Selfie confirmada ----------
+    function openFaceOk() {
+      pintarEtapas("s-fok");
+      $("fokNext").textContent = "documento de identificação";
+      show("s-fok", "004-OK");
+    }
+    $("fokGo").addEventListener("click", function () { show("s-next", "PRÓX"); });
+
+    // ---------- 004-1 · Falha com motivo, dicas e tentativas restantes (D08) ----------
+    var FALHAS = {
+      luz: { titulo: "Ficou escuro demais", texto: "Não conseguimos ver seu rosto com nitidez por causa da pouca luz.",
+        ic: '<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.6 10.8c.8.6 1.1 1.4 1.1 2.2h5c0-.8.4-1.6 1.1-2.2A6 6 0 0 0 12 3z"/>',
+        dicas: ["Vá para perto de uma janela ou acenda a luz do ambiente.", "Fique de frente para a luz, não de costas para ela.", "Evite sombras no rosto."] },
+      fora: { titulo: "Seu rosto saiu da moldura", texto: "O rosto precisa ficar inteiro dentro do oval durante as duas capturas.",
+        ic: '<ellipse cx="12" cy="12" rx="7" ry="9"/><path d="M15 9l4-4M19 9V5h-4"/>',
+        dicas: ["Segure o celular na altura dos olhos, a um braço de distância.", "Centralize o rosto no oval antes de a captura começar.", "Na 2ª captura, aproxime o rosto devagar."] },
+      acessorio: { titulo: "Algo está cobrindo seu rosto", texto: "Óculos, boné, máscara ou cabelo no rosto atrapalham a identificação.",
+        ic: '<rect x="2" y="9" width="8" height="6" rx="3"/><rect x="14" y="9" width="8" height="6" rx="3"/><path d="M10 11.5h4M2 3l20 18"/>',
+        dicas: ["Tire óculos (inclusive os de grau), boné, chapéu e máscara.", "Prenda o cabelo se ele cobrir a testa ou os olhos.", "Mantenha o rosto neutro, sem sorrir."] },
+      movimento: { titulo: "A imagem ficou tremida", texto: "Houve movimento durante a captura e a foto saiu borrada.",
+        ic: '<path d="M4 12h3l2-6 4 12 2-6h5"/>',
+        dicas: ["Apoie os cotovelos numa mesa ou segure o celular com as duas mãos.", "Fique parado até aparecer o check verde.", "Evite fazer a selfie andando ou dentro de um veículo em movimento."] }
+    };
+    function openFaceFail(res) {
+      var f = FALHAS[res || st.ultimaFalha || "luz"];
+      st.ultimaFalha = res || st.ultimaFalha || "luz";
+      pintarEtapas("s-ffail");
+      $("ffailIc").innerHTML = '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#9a5b00" stroke-width="2">' + f.ic + "</svg>";
+      $("ffailTitle").textContent = f.titulo;
+      $("ffailText").textContent = f.texto;
+      var restam = MAX_SELFIE - (st.faceFails || 0);
+      var t = $("ffailTries");
+      t.className = "tries" + (restam === 1 ? " last" : "");
+      t.textContent = restam === 1 ? "Última tentativa" : "Você tem mais " + restam + " tentativas";
+      $("ffailFix").innerHTML = f.dicas.map(function (d) {
+        return '<li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1e8e3e" stroke-width="3" style="flex-shrink:0;margin-top:2px"><path d="M5 12.5l4.5 4.5L19 7"/></svg><span>' + d + "</span></li>";
+      }).join("");
+      show("s-ffail", "004-1");
+    }
+    $("ffailGo").addEventListener("click", openFaceCam);
+
+    // ---------- 004-2 · Encerrada após 3 falhas (D08, R08/R10) ----------
+    // Saída da assinatura encerrada (D09):
+    //  - presencial: "Ler novo QR Code" (o vendedor gera um novo QR na tela dele);
+    //  - remoto: "Pedir novo acesso", que vira um alerta para o colaborador na plataforma
+    //    de assinatura digital (hoje ele não fica sabendo de nada);
+    //  - nos dois: "Encerrar processo", que fecha a assinatura digital.
+    function openFaceCancel() {
+      var remoto = isRemoto();
+      $("fcancelNext").textContent = remoto
+        ? "Peça um novo acesso: a concessionária recebe um aviso e envia um novo acesso para o seu celular."
+        : "Chame o vendedor da concessionária para ter acesso a um novo QR Code de acesso à assinatura digital.";
+      $("fcancelSent").hidden = true;
+      var b = $("fcancelBtn");
+      b.disabled = false;
+      b.textContent = remoto ? "Pedir novo acesso" : "Ler novo QR Code";
+      show("s-fcancel", "004-2");
+    }
+    $("fcancelBtn").addEventListener("click", function () {
+      if (!isRemoto()) { openQr(); return; }
+      $("fcancelSentText").innerHTML = "<b>Pedido enviado.</b> A Moto Clube Exemplo foi avisada e vai enviar um novo acesso para " + signer().fone + ".";
+      $("fcancelSent").hidden = false;
+      this.disabled = true;
+      this.textContent = "Pedido enviado";
+      setCode("004-2E");
+    });
+    // Encerrar: mensagem por 2 s e volta à tela inicial do simulador. Num celular de
+    // verdade, fecha a assinatura digital e o usuário volta à tela inicial do aparelho.
+    $("fcancelEnd").addEventListener("click", function () {
+      show("s-fend", "FIM");
+      later(start, 2000);
+    });
+
+    // ---------- QR · Leitura do novo QR Code (presencial) ----------
+    function desenharQr() {
+      var n = 29, cel = "", seed = 7;
+      function rnd() { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; }
+      function finder(x, y) {
+        return '<rect x="' + x + '" y="' + y + '" width="7" height="7" fill="#111"/><rect x="' + (x + 1) + '" y="' + (y + 1) + '" width="5" height="5" fill="#fff"/><rect x="' + (x + 2) + '" y="' + (y + 2) + '" width="3" height="3" fill="#111"/>';
+      }
+      for (var y = 0; y < n; y++) for (var x = 0; x < n; x++) {
+        var emFinder = (x < 8 && y < 8) || (x > 20 && y < 8) || (x < 8 && y > 20);
+        if (!emFinder && rnd() > 0.52) cel += '<rect x="' + x + '" y="' + y + '" width="1" height="1" fill="#111"/>';
+      }
+      $("qrImg").innerHTML = cel + finder(0, 0) + finder(22, 0) + finder(0, 22);
+    }
+    function openQr() {
+      desenharQr();
+      $("qrBox").classList.remove("lido");
+      $("qrGuide").textContent = "Aponte para o QR Code na tela do vendedor";
+      $("qrGuide").className = "fguide";
+      show("s-qr", "QR");
+      later(function () {
+        $("qrBox").classList.add("lido");
+        $("qrGuide").textContent = "QR Code lido";
+        $("qrGuide").className = "fguide ok";
+      }, 2200);
+      // Novo acesso: volta para a lista de assinantes (001) do zero.
+      later(function () { forcarCanal("presencial"); start(); }, 3200);
+    }
+    $("qrClose").addEventListener("click", openFaceCancel);
+
+    function atualizarContSelfie() {
+      $("simSelfieCount").textContent = "Tentativas com falha: " + (st.faceFails || 0) + " de " + MAX_SELFIE + ". Vale para todas as tentativas até mudar.";
+    }
 
     // ---------- Próximas etapas (placeholder) ----------
     $("nextDone").addEventListener("click", function () {
@@ -1429,7 +2151,14 @@
       ["001-C", "001-C · Assinaturas: todas concluídas", function () {
         forcarCanal("presencial"); st.signers.forEach(function (s) { s.status = "concluido"; }); openLista();
       }],
-      ["BV", "BV · Boas-vindas", openWelcome]
+      ["BV", "BV · Boas-vindas", openWelcome],
+      ["002", "002 · Selfie: dicas e consentimento", openSelfieIntro],
+      ["002-P", "002-P · Selfie: permissão da câmera", function () { openSelfieIntro(); marcarConsentimento(true); pedirCamera(); }],
+      ["002-N", "002-N · Câmera bloqueada", openCamOff],
+      ["004", "004 · Captura guiada", openFaceCam],
+      ["004-OK", "004-OK · Selfie confirmada", openFaceOk],
+      ["004-1", "004-1 · Falha na selfie", function () { st.faceFails = 1; atualizarContSelfie(); openFaceFail($("simSelfie").value === "ok" ? "luz" : $("simSelfie").value); }],
+      ["004-2", "004-2 · Assinatura encerrada", openFaceCancel]
     ];
     (function montarAtalhos() {
       var sel = $("simJump");
