@@ -403,6 +403,12 @@ _Condicionada à aprovação do jurídico da Honda._
 - Para não parecer que a tela travou, mostram **"Seguindo para a próxima etapa…"** com uma barra de progresso de 4 segundos.
 - **Não vale** para a tela final (017/018), que continua com o botão "Concluir", a avaliação e o download da cópia (D17).
 
+### D19 — Tamanho do texto global, download só no final
+- **A− / A+ no cabeçalho, à direita, em todas as telas** que têm cabeçalho (as telas de câmera ficam de fora). São 4 tamanhos: 90%, 100%, 115% e 130%.
+- A escolha **vale para o fluxo inteiro**: aumentar no contrato mantém o texto maior na assinatura, na avaliação etc. Os botões ficam desabilitados nos limites.
+- Aumenta tudo junto (textos, botões e cards), não só a letra do contrato, para o layout não quebrar.
+- O leitor do contrato **perdeu a barra própria** (A− / A+ / "Baixar PDF"). Um download por documento era redundante: a cópia completa (todos os documentos aceitos) fica no final, em **"Baixar cópia do contrato"** (D17).
+
 ## Cenários futuros (só para conhecimento)
 
 > Ainda **não entram** na réplica nem no remake. Ficam registrados para quando o usuário pedir.
