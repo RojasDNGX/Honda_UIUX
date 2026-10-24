@@ -671,6 +671,9 @@
     .sim-toggle-label { display: none; }
     .sim { top: 50px; left: 8px; right: 8px; width: auto; }
   }
+
+  /* Modo referência (?ref), dentro do remake: só a tela, sem painel nem seletor. */
+  html.ref .sim, html.ref .sim-toggle, html.ref .version-switch { display: none !important; }
 </style>
 </head>
 <body>
@@ -1243,9 +1246,14 @@
       "018": "Assinatura finalizada"
     };
 
+    // Modo referência (?ref): o remake abre esta página num iframe sobre o celular para
+    // comparar com a tela antiga. Mostra só a tela, com o cenário padrão, sem gravar nada.
+    var REF = /[?&]ref\b/.test(location.search);
+    if (REF) document.documentElement.classList.add("ref");
+
     // Cenário escolhido no painel (persistido só como conveniência deste navegador).
     var cenario = { canal: "presencial", tipo0: "cpf", tipo1: "cpf", tipo2: "cpf", avalistas: "1", spf: "sim", aguarde: "sim", parte: "0" };
-    try {
+    if (!REF) try {
       var salvo = JSON.parse(localStorage.getItem("bio_atual_cenario") || "null");
       if (salvo) Object.keys(cenario).forEach(function (k) { if (salvo[k] != null) cenario[k] = String(salvo[k]); });
     } catch (e) {}
@@ -1953,6 +1961,7 @@
     // Painel de simulação
     // ================================================================
     function salvarCenario() {
+      if (REF) return;
       try { localStorage.setItem("bio_atual_cenario", JSON.stringify(cenario)); } catch (e) {}
     }
     function pintarPainel() {
@@ -2079,6 +2088,16 @@
     }
     tickClock();
     setInterval(tickClock, 10000);
+
+    // Modo referência: abre a tela pelo código e congela (sem timers que avancem o fluxo).
+    window.irPara = function (code) {
+      var a = ATALHOS.filter(function (x) { return x[0] === code; })[0];
+      if (!a) return false;
+      start();
+      a[2]();
+      clearTimers();
+      return true;
+    };
 
     pintarPainel();
     fitPhone();

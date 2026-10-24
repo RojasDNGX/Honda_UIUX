@@ -101,6 +101,16 @@
   /* Holofote: escurece só a tela do celular, recorta a área da melhoria e pulsa em volta. */
   .spot { position: absolute; inset: 0; z-index: 55; pointer-events: none; opacity: 0; transition: opacity 0.2s ease; }
   .spot.on { opacity: 1; }
+
+  /* Tela do fluxo atual por cima do celular, enquanto o mouse está em "Problema no
+     fluxo atual" (réplica em modo ?ref, carregada uma vez e escondida). */
+  .ref-frame { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; background: #fff; z-index: 57; opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 0.15s ease, visibility 0.15s; }
+  .ref-badge { position: absolute; left: 50%; bottom: 52px; transform: translateX(-50%); z-index: 58; max-width: 330px; background: rgba(17,17,17,0.88); color: #fff; border-radius: 12px; padding: 7px 12px; font-size: 12px; line-height: 1.35; text-align: center; box-shadow: 0 4px 14px rgba(0,0,0,0.25); opacity: 0; visibility: hidden; transition: opacity 0.15s ease, visibility 0.15s; pointer-events: none; }
+  .ref-badge b { color: #ff8a96; font-weight: 700; }
+  .ref-badge small { display: block; font-size: 11px; color: #c9c9c9; margin-top: 2px; }
+  .screen-content.ref .ref-frame, .screen-content.ref .ref-badge { opacity: 1; visibility: visible; }
+  .notes .n-old { border-radius: 8px; padding: 2px 8px 2px 8px; margin: 0 -8px; transition: background 0.15s ease; }
+  .notes .n-old:hover { background: #f6f6f6; }
   .spot svg { position: absolute; inset: 0; }
   .spot-ring { position: absolute; border: 2px solid #ff3b4e; border-radius: 12px; animation: ringPulse 1.4s ease-out infinite; }
   @keyframes ringPulse {
@@ -1008,6 +1018,8 @@
 
             <!-- Holofote das melhorias (controlado pela 3ª coluna; não faz parte do fluxo) -->
             <div class="spot" id="spot"></div>
+            <iframe class="ref-frame" id="refFrame" src="biometria-atual.html?ref" tabindex="-1" aria-hidden="true" title="Tela do fluxo atual"></iframe>
+            <div class="ref-badge" id="refBadge"></div>
 
             <!-- INTRO · Só no simulador: apresenta a estrutura base das telas. Não faz parte do fluxo real. -->
             <section class="scr" id="s-intro">
@@ -2178,6 +2190,48 @@
       "017": "rate", "017-1": "rate", "017-4": "rate", "017-5": "rate", "018": "final"
     };
 
+    // Tela(s) do fluxo atual (códigos da réplica) mostradas no hover de "Problema no fluxo
+    // atual". Com mais de uma, elas se alternam. "nova": a tela não existe no fluxo atual;
+    // mostra o que a pessoa vê no lugar dela.
+    var REF_ATUAL = {
+      intro: { c: ["000", "002", "013"], obs: "Exemplos da estrutura das telas hoje." }, token: { c: ["000", "000-1", "000-2"] },
+      lock: { c: ["000-1"], nova: true }, video: { c: ["000-V"] }, lista: { c: ["001"] },
+      welcome: { c: ["002"], nova: true }, selfie: { c: ["002", "003"] }, camoff: { c: ["004"], nova: true },
+      fcam: { c: ["004"] }, fverify: { c: ["005"] }, fok: { c: ["006"], nova: true }, ffail: { c: ["004-1"] },
+      fcancel: { c: ["009-2"] }, qr: { c: ["009-2"], nova: true }, fend: { c: ["009-2"], nova: true },
+      docchoice: { c: ["006"] }, doctips: { c: ["007"] }, doccam: { c: ["008", "010"] },
+      docreview: { c: ["009", "011"] }, docfail: { c: ["009-1", "011-1"] },
+      cnh: { c: ["006-1", "006-2", "006-3", "006-4", "006-5"] },
+      docverify: { c: ["005", "011-1"], nova: true }, docok: { c: ["012"], nova: true },
+      auth: { c: ["012"] }, reader: { c: ["013", "014"] }, sign: { c: ["015", "016"] },
+      signed: { c: ["016"], nova: true }, spfdoc: { c: ["016-1", "016-2", "016-4", "016-5"] },
+      rate: { c: ["017"] }, final: { c: ["018"] }
+    };
+    var REF_TROCA_MS = 2500;
+    var refTimer = null;
+    function mostrarAntiga() {
+      var ref = REF_ATUAL[NOTA_POR_CODIGO[st.code]];
+      var win = $("refFrame").contentWindow;
+      if (!ref || !win || !win.irPara) return;
+      var i = 0;
+      function abrir() {
+        var code = ref.c[i];
+        win.irPara(code);
+        $("refBadge").innerHTML = "<b>Fluxo atual</b> · " + code + " " + (win.NOMES[code] || "") +
+          (ref.c.length > 1 ? " (" + (i + 1) + " de " + ref.c.length + ")" : "") +
+          (ref.obs || ref.nova ? "<small>" + (ref.obs || "Esta tela não existe hoje; no lugar dela a pessoa vê esta.") + "</small>" : "");
+        i = (i + 1) % ref.c.length;
+      }
+      clearInterval(refTimer);
+      abrir();
+      if (ref.c.length > 1) refTimer = setInterval(abrir, REF_TROCA_MS);
+      $("screenContent").classList.add("ref");
+    }
+    function esconderAntiga() {
+      clearInterval(refTimer);
+      $("screenContent").classList.remove("ref");
+    }
+
     var notaAtual = null;   // grupo de notas exibido
     var fixado = -1;        // índice do item fixado por clique (-1 = nenhum)
 
@@ -2187,6 +2241,7 @@
       if (n !== notaAtual) {
         notaAtual = n;
         fixado = -1;
+        esconderAntiga();
         // Se o usuário navegou para outra tela por conta própria, o estado guardado
         // deixa de valer (só vale enquanto o clique na nota está aplicando a mudança).
         if (!aplicandoVer) snapshot = null;
@@ -2199,7 +2254,9 @@
         }).join("");
         $("notesBody").innerHTML =
           '<div class="n-screen"><b>' + n.titulo + "</b><span>" + n.sub + "</span></div>" +
-          (antes ? "<h3>Problema no fluxo atual</h3><ul>" + antes + "</ul>" : "") +
+          (antes ? '<div class="n-old" id="nOld"><h3>Problema no fluxo atual' +
+            (REF_ATUAL[NOTA_POR_CODIGO[code]] ? ' <span class="h3-hint">(passe o mouse para ver a tela antiga)</span>' : "") +
+            "</h3><ul>" + antes + "</ul></div>" : "") +
           '<h3>O que mudou <span class="h3-hint">(passe o mouse na descrição para destacar)</span></h3>' +
           '<div class="n-new"><ul>' + depois + "</ul></div>";
       }
@@ -2304,6 +2361,14 @@
       hoverIdx = i;
     });
     $("notesBody").addEventListener("mouseleave", function () { if (fixado < 0) apagarHolofote(); });
+    // "Problema no fluxo atual": com o mouse em cima, o celular mostra a tela antiga.
+    $("notesBody").addEventListener("mouseover", function (e) {
+      if (e.target.closest(".n-old") && !$("screenContent").classList.contains("ref")) mostrarAntiga();
+    });
+    $("notesBody").addEventListener("mouseout", function (e) {
+      var old = e.target.closest(".n-old");
+      if (old && !old.contains(e.relatedTarget)) esconderAntiga();
+    });
     $("notesBody").addEventListener("mouseout", function (e) {
       var li = e.target.closest("li[data-i]");
       if (li && !li.contains(e.relatedTarget) && fixado < 0) apagarHolofote();
