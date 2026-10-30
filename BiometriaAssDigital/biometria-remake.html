@@ -89,12 +89,14 @@
   .notes .tag.fb { color: #7a5200; background: #fff4e0; }
   .notes .h3-hint { text-transform: none; letter-spacing: 0; font-weight: 400; color: #aaa; }
   /* Itens com área na tela: ícone de alvo e destaque ao passar o mouse ou fixar. */
-  .notes .n-new li { border-radius: 8px; padding: 5px 8px 5px 24px; margin-left: -8px; transition: background 0.15s ease; }
-  .notes .n-new li::before { left: 10px; top: 12px; }
+  /* Em "Problema no fluxo atual", o item mostra a tela antiga com a área destacada. */
+  .notes .n-new li, .notes .n-old li { border-radius: 8px; padding: 5px 8px 5px 24px; margin-left: -8px; transition: background 0.15s ease; }
+  .notes .n-new li::before, .notes .n-old li::before { left: 10px; top: 12px; }
   .notes .n-new li.has-alvo { cursor: pointer; }
-  .notes .n-new li.has-alvo::before { display: none; }
+  .notes .n-new li.has-alvo::before, .notes .n-old li.has-alvo::before { display: none; }
   .notes .alvo-ic { position: absolute; left: 7px; top: 4px; color: var(--red); font-size: 13px; }
-  .notes .n-new li.lit { background: rgba(214,0,28,0.06); }
+  .notes .n-old .alvo-ic { color: #999; }
+  .notes .n-new li.lit, .notes .n-old li.lit { background: rgba(214,0,28,0.06); }
   .notes .n-new li.pinned { background: rgba(214,0,28,0.1); box-shadow: inset 3px 0 0 var(--red); }
   .notes .n-ver { color: #999; font-size: 12px; margin-left: 2px; white-space: nowrap; }
 
@@ -109,8 +111,8 @@
   .ref-badge b { color: #ff8a96; font-weight: 700; }
   .ref-badge small { display: block; font-size: 11px; color: #c9c9c9; margin-top: 2px; }
   .screen-content.ref .ref-frame, .screen-content.ref .ref-badge { opacity: 1; visibility: visible; }
-  .notes .n-old { border: 1.5px solid transparent; border-radius: 8px; padding: 2px 8px 2px 8px; margin: 0 -9.5px; transition: border-color 0.15s ease; }
-  .notes .n-old:hover { border-color: rgba(214,0,28,0.45); }
+  .screen-content.ref .spot { z-index: 59; }
+  .screen-content.ref .ref-badge { z-index: 60; }
   .spot svg { position: absolute; inset: 0; }
   .spot-ring { position: absolute; border: 2px solid #ff3b4e; border-radius: 12px; animation: ringPulse 1.4s ease-out infinite; }
   @keyframes ringPulse {
@@ -2190,46 +2192,83 @@
       "017": "rate", "017-1": "rate", "017-4": "rate", "017-5": "rate", "018": "final"
     };
 
-    // Tela(s) do fluxo atual (códigos da réplica) mostradas no hover de "Problema no fluxo
-    // atual". Com mais de uma, elas se alternam. "nova": a tela não existe no fluxo atual;
-    // mostra o que a pessoa vê no lugar dela.
+    // Tela do fluxo atual de cada item de "Problema no fluxo atual", na mesma ordem de
+    // NOTAS[grupo].antes: código da réplica, área que o holofote destaca (seletor dentro
+    // da réplica) e, quando preciso, como deixar a tela no estado certo (recebe a janela
+    // da réplica). Grupos em REF_NOVA são telas que não existem hoje: mostra o que a
+    // pessoa vê no lugar delas.
+    function R(tela, alvo, fazer) { return { tela: tela, alvo: alvo, fazer: fazer }; }
     var REF_ATUAL = {
-      intro: { c: ["000", "002", "013"], obs: "Exemplos da estrutura das telas hoje." }, token: { c: ["000", "000-1", "000-2"] },
-      lock: { c: ["000-1"], nova: true }, video: { c: ["000-V"] }, lista: { c: ["001"] },
-      welcome: { c: ["002"], nova: true }, selfie: { c: ["002", "003"] }, camoff: { c: ["004"], nova: true },
-      fcam: { c: ["004"] }, fverify: { c: ["005"] }, fok: { c: ["006"], nova: true }, ffail: { c: ["004-1"] },
-      fcancel: { c: ["009-2"] }, qr: { c: ["009-2"], nova: true }, fend: { c: ["009-2"], nova: true },
-      docchoice: { c: ["006"] }, doctips: { c: ["007"] }, doccam: { c: ["008", "010"] },
-      docreview: { c: ["009", "011"] }, docfail: { c: ["009-1", "011-1"] },
-      cnh: { c: ["006-1", "006-2", "006-3", "006-4", "006-5"] },
-      docverify: { c: ["005", "011-1"], nova: true }, docok: { c: ["012"], nova: true },
-      auth: { c: ["012"] }, reader: { c: ["013", "014"] }, sign: { c: ["015", "016"] },
-      signed: { c: ["016"], nova: true }, spfdoc: { c: ["016-1", "016-2", "016-4", "016-5"] },
-      rate: { c: ["017"] }, final: { c: ["018"] }
+      intro: [R("006-1", "#s-cnh-info .cp-top, #s-cnh-info .cp-title"), R("006-2", "#cnhBack"), R("013", "#pdfArea"), R("013", "#termNav")],
+      token: [R("000", "#tokenInput, #tokenGo"), R("000-1", "#tokenError"), R("000-1", "#tokenError, #tokenGo"),
+        R("000", "#s-token .scr-body > div:first-of-type, #tokenInput"), R("000", "#s-token .hp-title")],
+      lock: [R("000-1", "#tokenError, #tokenGo")],
+      video: [R("000", "#tokenTips"), R("000-V", "#videoOk")],
+      lista: [R("001", ".sig-table"), R("001", ".sig-wait, #sigRefresh"),
+        R("001", "#sigBody tr:first-child", function (w) { w.st.signers[0].status = "concluido"; w.openLista(); }),
+        R("001", "#sigBody td:nth-child(2)")],
+      welcome: [R("002", "#s-consent .hp-title, #s-consent .hp-text"), R("001", ".sig-table"),
+        R("001", "#sigBody tr:first-child", function (w) { w.cenario.tipo0 = "cnpj"; w.start(); })],
+      selfie: [R("002", "#s-consent .hp-text"), R("003", ".bmodal"), R("002", "#s-consent .hp-header")],
+      camoff: [R("004", ".oval-box")],
+      fcam: [R("004", "#faceMsg"), R("004", ".steps"), R("004", ".oval-box")],
+      fverify: [R("005", ".wait-wrap")],
+      fok: [R("006", "#s-doc-choice .hp-title")],
+      ffail: [R("004-1", "#alertText"), R("004-1", "#s-alert .hp-title, #alertText"), R("004-1", "#alertBtn")],
+      fcancel: [R("009-2", "#alertText"), R("009-2", "#s-alert .scr-body")],
+      qr: [R("009-2", "#alertText")],
+      fend: [R("009-2", "#s-alert .scr-body")],
+      docchoice: [R("006", "#choiceCnh, #choiceFisico"), R("006", "#choiceFisico")],
+      doctips: [R("007", ".doc-tips li:last-child"), R("009", "#reviewTitle")],
+      doccam: [R("010", "#camMsg, #camFrame"), R("010", "#camFrame")],
+      docreview: [R("009", "#reviewTitle"), R("009", "#reviewImg")],
+      docfail: [R("009-1", "#s-doc-fail .cp-title, #s-doc-fail .cp-sub"), R("009-1", "#s-doc-fail .cp-sub")],
+      cnh: [R("006-4", "#fileErr"), R("006-1", ".cp-list"), R("006-5", "#fileErr")],
+      docverify: [R("005", ".wait-wrap")],
+      docok: [R("012", "#s-auth .hp-title")],
+      auth: [R("012", "#s-auth .scr-body > div[style*='display:flex']"), R("012", "#s-auth .hp-title, #s-auth .scr-body > .hp-text"),
+        R("012", "[data-auth=boleto]")],
+      reader: [R("013", "#pdfArea"), R("013", ".pdfv-bar"), R("015", "#termAccept"), R("013", "#pdfArea")],
+      sign: [R("016", "#rubCanvas, #s-rubrica .hp-text")],
+      signed: [R("016", "#s-rubrica .hp-title")],
+      spfdoc: [R("016-1", ".bmodal"), R("016-2", ".oval-box"), R("016-2", "#faceMsg, .oval-box")],
+      rate: [R("017", "#s-obrigado .hp-title, #stars"),
+        R("017", "#stars, #suggestWrap", function (w) { w.document.querySelector('#stars [data-n="3"]').click(); }),
+        R("017", "#rateBlock", function (w) { w.cenario.canal = "remoto"; w.openObrigado(); }),
+        R("017", "#s-obrigado .hp-text")],
+      final: [R("018", "#fimTitle, #fimText")]
     };
-    var REF_TROCA_MS = 3500;
-    var refTimer = null;
-    function mostrarAntiga() {
-      var ref = REF_ATUAL[NOTA_POR_CODIGO[st.code]];
+    var REF_NOVA = { lock: 1, welcome: 1, camoff: 1, fok: 1, qr: 1, fend: 1, docverify: 1, docok: 1, signed: 1 };
+    var refIdx = -1; // item de "Problema no fluxo atual" sob o mouse
+
+    function mostrarAntiga(i) {
+      var grupo = NOTA_POR_CODIGO[st.code], ref = REF_ATUAL[grupo] && REF_ATUAL[grupo][i];
       var win = $("refFrame").contentWindow;
       if (!ref || !win || !win.irPara) return;
-      var i = 0;
-      function abrir() {
-        var code = ref.c[i];
-        win.irPara(code);
-        $("refBadge").innerHTML = "<b>Fluxo atual</b> · " + code + " " + (win.NOMES[code] || "") +
-          (ref.c.length > 1 ? " (" + (i + 1) + " de " + ref.c.length + ")" : "") +
-          (ref.obs || ref.nova ? "<small>" + (ref.obs || "Esta tela não existe hoje; no lugar dela a pessoa vê esta.") + "</small>" : "");
-        i = (i + 1) % ref.c.length;
-      }
-      clearInterval(refTimer);
-      abrir();
-      if (ref.c.length > 1) refTimer = setInterval(abrir, REF_TROCA_MS);
+      refIdx = i;
+      win.irPara(ref.tela);
+      if (ref.fazer) { ref.fazer(win); win.clearTimers(); }
+      $("refBadge").innerHTML = "<b>Fluxo atual</b> · " + ref.tela + " " + (win.NOMES[ref.tela] || "") +
+        (REF_NOVA[grupo] ? "<small>Esta tela não existe hoje; no lugar dela a pessoa vê esta.</small>" : "");
       $("screenContent").classList.add("ref");
+      document.querySelectorAll("#notesBody li.lit").forEach(function (li) { li.classList.remove("lit"); });
+      var li = document.querySelector('#notesBody li[data-a="' + i + '"]');
+      if (li) li.classList.add("lit");
+      // Holofote dentro da réplica: o iframe cobre a tela inteira, então as coordenadas
+      // dele já são as da tela do celular.
+      var els = !ref.alvo ? [] : [].filter.call(win.document.querySelectorAll(ref.alvo), function (el) {
+        return el.offsetWidth > 0 && el.offsetHeight > 0 && el.closest(".scr.active");
+      });
+      if (els.length) els[0].scrollIntoView({ block: "nearest" });
+      desenharHolofote(els.map(function (el) { return el.getBoundingClientRect(); }));
     }
     function esconderAntiga() {
-      clearInterval(refTimer);
+      if (refIdx < 0) return;
+      refIdx = -1;
       $("screenContent").classList.remove("ref");
+      document.querySelectorAll("#notesBody li[data-a].lit").forEach(function (li) { li.classList.remove("lit"); });
+      // Volta ao que estava antes: o destaque fixado da tela remodelada, ou nenhum.
+      if (fixado >= 0) acenderHolofote(fixado); else apagarHolofote();
     }
 
     var notaAtual = null;   // grupo de notas exibido
@@ -2246,7 +2285,10 @@
         // deixa de valer (só vale enquanto o clique na nota está aplicando a mudança).
         if (!aplicandoVer) snapshot = null;
         apagarHolofote();
-        var antes = n.antes.map(function (i) { return "<li>" + i + "</li>"; }).join("");
+        var refs = REF_ATUAL[NOTA_POR_CODIGO[code]] || [];
+        var antes = n.antes.map(function (t, i) {
+          return refs[i] ? '<li data-a="' + i + '" class="has-alvo"><span class="alvo-ic" aria-hidden="true">◎</span>' + t + "</li>" : "<li>" + t + "</li>";
+        }).join("");
         var depois = n.depois.map(function (d, i) {
           return '<li data-i="' + i + '"' + (d.alvo ? ' class="has-alvo"' : "") + ">" +
             (d.alvo ? '<span class="alvo-ic" aria-hidden="true">◎</span>' : "") + d.t +
@@ -2255,7 +2297,7 @@
         $("notesBody").innerHTML =
           '<div class="n-screen"><b>' + n.titulo + "</b><span>" + n.sub + "</span></div>" +
           (antes ? '<div class="n-old" id="nOld"><h3>Problema no fluxo atual' +
-            (REF_ATUAL[NOTA_POR_CODIGO[code]] ? ' <span class="h3-hint">(passe o mouse para ver a tela antiga)</span>' : "") +
+            (refs.length ? ' <span class="h3-hint">(passe o mouse no item para ver a tela antiga)</span>' : "") +
             "</h3><ul>" + antes + "</ul></div>" : "") +
           '<h3>O que mudou <span class="h3-hint">(passe o mouse na descrição para destacar)</span></h3>' +
           '<div class="n-new"><ul>' + depois + "</ul></div>";
@@ -2264,6 +2306,7 @@
       // e reposiciona o holofote fixado (a área pode ter mudado de lugar).
       requestAnimationFrame(function () {
         atualizarVer();
+        if (refIdx >= 0) return; // a tela antiga está à mostra, com o holofote dela
         if (fixado >= 0) acenderHolofote(fixado); else apagarHolofote();
       });
     }
@@ -2295,12 +2338,20 @@
       els[0].scrollIntoView({ block: "nearest" });
       var base = $("screenContent").getBoundingClientRect();
       var esc = base.width / $("screenContent").offsetWidth; // o aparelho está escalado
+      desenharHolofote(els.map(function (el) {
+        var r = el.getBoundingClientRect();
+        return { left: (r.left - base.left) / esc, top: (r.top - base.top) / esc, right: (r.right - base.left) / esc, bottom: (r.bottom - base.top) / esc };
+      }));
+    }
+    // Recorta as áreas (em px da tela do celular, sem a escala do aparelho) e escurece o resto.
+    function desenharHolofote(rects) {
+      var spot = $("spot");
+      if (!rects.length) { spot.classList.remove("on"); return; }
       var W = $("screenContent").offsetWidth, H = $("screenContent").offsetHeight, PAD = 6;
       var buracos = "", contornos = "";
-      els.forEach(function (el) {
-        var r = el.getBoundingClientRect();
-        var x = Math.max(4, (r.left - base.left) / esc - PAD), y = Math.max(4, (r.top - base.top) / esc - PAD);
-        var w = Math.min(W - 4, (r.right - base.left) / esc + PAD) - x, h = Math.min(H - 4, (r.bottom - base.top) / esc + PAD) - y;
+      rects.forEach(function (r) {
+        var x = Math.max(4, r.left - PAD), y = Math.max(4, r.top - PAD);
+        var w = Math.min(W - 4, r.right + PAD) - x, h = Math.min(H - 4, r.bottom + PAD) - y;
         buracos += '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="12" fill="#000"/>';
         contornos += '<span class="spot-ring" style="left:' + x + "px;top:" + y + "px;width:" + w + "px;height:" + h + 'px"></span>';
       });
@@ -2361,13 +2412,17 @@
       hoverIdx = i;
     });
     $("notesBody").addEventListener("mouseleave", function () { if (fixado < 0) apagarHolofote(); });
-    // "Problema no fluxo atual": com o mouse em cima, o celular mostra a tela antiga.
+    // "Problema no fluxo atual": com o mouse num item, o celular mostra a tela antiga
+    // daquele item, com a área citada em destaque.
     $("notesBody").addEventListener("mouseover", function (e) {
-      if (e.target.closest(".n-old") && !$("screenContent").classList.contains("ref")) mostrarAntiga();
+      var li = e.target.closest("li[data-a]");
+      if (!li) return;
+      var i = parseInt(li.getAttribute("data-a"), 10);
+      if (i !== refIdx) mostrarAntiga(i);
     });
     $("notesBody").addEventListener("mouseout", function (e) {
-      var old = e.target.closest(".n-old");
-      if (old && !old.contains(e.relatedTarget)) esconderAntiga();
+      var li = e.target.closest("li[data-a]");
+      if (li && !li.contains(e.relatedTarget)) esconderAntiga();
     });
     $("notesBody").addEventListener("mouseout", function (e) {
       var li = e.target.closest("li[data-i]");

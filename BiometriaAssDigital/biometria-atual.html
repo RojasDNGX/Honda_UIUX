@@ -1253,6 +1253,7 @@
 
     // Cenário escolhido no painel (persistido só como conveniência deste navegador).
     var cenario = { canal: "presencial", tipo0: "cpf", tipo1: "cpf", tipo2: "cpf", avalistas: "1", spf: "sim", aguarde: "sim", parte: "0" };
+    var CENARIO_PADRAO = JSON.stringify(cenario);
     if (!REF) try {
       var salvo = JSON.parse(localStorage.getItem("bio_atual_cenario") || "null");
       if (salvo) Object.keys(cenario).forEach(function (k) { if (salvo[k] != null) cenario[k] = String(salvo[k]); });
@@ -2089,10 +2090,12 @@
     tickClock();
     setInterval(tickClock, 10000);
 
-    // Modo referência: abre a tela pelo código e congela (sem timers que avancem o fluxo).
+    // Modo referência: abre a tela pelo código, sempre a partir do cenário padrão, e
+    // congela (sem timers que avancem o fluxo).
     window.irPara = function (code) {
       var a = ATALHOS.filter(function (x) { return x[0] === code; })[0];
       if (!a) return false;
+      cenario = JSON.parse(CENARIO_PADRAO);
       start();
       a[2]();
       clearTimers();
