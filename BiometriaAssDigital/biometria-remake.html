@@ -112,6 +112,8 @@
   .ref-badge small { display: block; font-size: 11px; color: #c9c9c9; margin-top: 2px; }
   .screen-content.ref .ref-frame, .screen-content.ref .ref-badge { opacity: 1; visibility: visible; }
   .screen-content.ref .spot { z-index: 59; }
+  /* Pausa durante o hover nas notas: animações da tela param (o holofote continua). */
+  .screen-content.pausado .scr, .screen-content.pausado .scr * { animation-play-state: paused !important; }
   .screen-content.ref .ref-badge { z-index: 60; }
   .spot svg { position: absolute; inset: 0; }
   .spot-ring { position: absolute; border: 2px solid #ff3b4e; border-radius: 12px; animation: ringPulse 1.4s ease-out infinite; }
@@ -2411,7 +2413,11 @@
       acenderHolofote(i);
       hoverIdx = i;
     });
-    $("notesBody").addEventListener("mouseleave", function () { if (fixado < 0) apagarHolofote(); });
+    $("notesBody").addEventListener("mouseleave", function () { if (fixado < 0) apagarHolofote(); retomarTela(); });
+    // Qualquer item com ação de hover pausa a tela até o mouse sair das notas.
+    $("notesBody").addEventListener("mouseover", function (e) {
+      if (e.target.closest("li[data-i], li[data-a]")) pausarTela();
+    });
     // "Problema no fluxo atual": com o mouse num item, o celular mostra a tela antiga
     // daquele item, com a área citada em destaque.
     $("notesBody").addEventListener("mouseover", function (e) {
@@ -2469,9 +2475,62 @@
 
     var st = {};
     var timers = [];
-    function later(fn, ms) { var t = setTimeout(fn, ms); timers.push(t); return t; }
-    function every(fn, ms) { var t = setInterval(fn, ms); timers.push(t); return t; }
-    function clearTimers() { timers.forEach(function (t) { clearTimeout(t); clearInterval(t); }); timers = []; }
+    // Timers da tela atual. Podem ser pausados (hover nas notas) e retomados de onde pararam.
+    var pausado = false;
+    function agendar(t) {
+      t.due = Date.now() + t.restante;
+      t.id = t.rep ? setInterval(t.fn, t.ms) : setTimeout(function () { t.id = null; t.fim = true; t.fn(); }, t.restante);
+    }
+    function later(fn, ms) { var t = { fn: fn, ms: ms, restante: ms }; timers.push(t); if (!pausado) agendar(t); return t; }
+    function every(fn, ms) { var t = { fn: fn, ms: ms, restante: ms, rep: true }; timers.push(t); if (!pausado) agendar(t); return t; }
+    function clearTimers() {
+      timers.forEach(function (t) { clearTimeout(t.id); clearInterval(t.id); });
+      timers = [];
+    }
+    // Enquanto a pessoa lê as notas (hover num item), a tela para: as capturas da selfie e
+    // do documento e as confirmações que seguem sozinhas não avançam. As transições
+    // longas (anel da selfie e barra "Seguindo...") ficam congeladas onde estavam.
+    var CONGELAVEIS = [
+      { sel: "#fringP", prop: "strokeDashoffset", css: "stroke-dashoffset", dur: 2000,
+        resta: function (el, alvo) { return Math.abs(parseFloat(getComputedStyle(el).strokeDashoffset) - parseFloat(alvo || 0)) / 100; } },
+      { sel: ".auto-next.run i b", prop: "width", css: "width", dur: 4000, alvoFixo: "100%",
+        resta: function (el) { return 1 - el.offsetWidth / el.parentNode.offsetWidth; } }
+    ];
+    function pausarTela() {
+      if (pausado) return;
+      pausado = true;
+      timers.forEach(function (t) {
+        if (t.id == null) return;
+        if (t.rep) clearInterval(t.id); else { clearTimeout(t.id); t.restante = Math.max(0, t.due - Date.now()); }
+        t.id = null;
+      });
+      document.querySelectorAll(".scr.active").forEach(function (scr) {
+        CONGELAVEIS.forEach(function (c) {
+          scr.querySelectorAll(c.sel).forEach(function (el) {
+            var alvo = c.alvoFixo || el.style[c.prop];
+            el._congelado = { alvo: alvo, ms: c.resta(el, alvo) * c.dur, css: c.css, prop: c.prop };
+            var atual = getComputedStyle(el)[c.prop];
+            el.style.transition = "none";
+            el.style[c.prop] = atual;
+          });
+        });
+      });
+      $("screenContent").classList.add("pausado");
+    }
+    function retomarTela() {
+      if (!pausado) return;
+      pausado = false;
+      timers.forEach(function (t) { if (t.id == null && !t.fim) agendar(t); });
+      document.querySelectorAll("#screenContent [style]").forEach(function (el) {
+        var c = el._congelado;
+        if (!c) return;
+        el._congelado = null;
+        void el.getBoundingClientRect();
+        el.style.transition = c.css + " " + Math.round(c.ms) + "ms linear";
+        el.style[c.prop] = c.alvo;
+      });
+      $("screenContent").classList.remove("pausado");
+    }
     function $(id) { return document.getElementById(id); }
     function isRemoto() { return cenario.canal === "remoto"; }
     function signer() { return st.signers[st.cur]; }
@@ -2948,6 +3007,7 @@
     var AUTO_SEGUIR_MS = 4000;
     function autoSeguir(scrId, proxima) {
       var a = document.querySelector("#" + scrId + " .auto-next");
+      a.querySelector("i b").removeAttribute("style"); // tira o que sobrou de uma pausa
       a.hidden = false;
       a.classList.remove("run");
       void a.offsetWidth;
