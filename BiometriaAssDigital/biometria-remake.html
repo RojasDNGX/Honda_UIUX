@@ -616,7 +616,7 @@
   .auth-detail { font-size: 13px; color: var(--rk-muted); line-height: 1.5; margin-top: 6px; padding-top: 8px; border-top: 1px solid #f0f0f0; }
   .note-box { display: flex; gap: 10px; margin-top: 14px; padding: 11px 13px; border-radius: 12px; background: var(--rk-soft); color: #444; font-size: 13px; line-height: 1.45; }
 
-  /* Leitor do contrato em texto (D02): resumo no topo, progresso da leitura e aceite ao fim. */
+  /* Leitor do contrato em texto: resumo no topo, progresso da leitura e aceite ao fim. */
   .rd-top { flex: 0 0 auto; padding: 14px 20px 0 20px; border-bottom: 1px solid #efefef; background: #fff; }
   .rd-doc { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
   .rd-doc b { font-size: 17px; font-weight: 700; line-height: 1.25; }
@@ -845,7 +845,7 @@
           Voltar à Home
         </a>
       </h2>
-      <div class="sim-note">Fluxo remodelado completo: entrada (token e lista de assinantes), boas-vindas, selfie, documento, autorizações, contrato, seguro e avaliação. Decisões D01 a D19 do REGRAS.md.</div>
+      <div class="sim-note">Fluxo remodelado completo: entrada (token e lista de assinantes), boas-vindas, selfie, documento, autorizações, contrato, seguro e avaliação.</div>
 
       <div class="sim-now">
         <div class="code" id="simCode">—</div>
@@ -987,15 +987,15 @@
         <div class="sim-sec">
           <div class="sim-sec-title">Críticas, da mais citada à menos citada</div>
           <ol class="fb-rank">
-            <li><div class="fr-top"><b>1. Rubrica com o dedo na tela</b><span>73 · 33%</span><span class="prio alta">Alta</span></div><i><b style="width:100%"></b></i><p>rubrica retirada; a assinatura vira uma confirmação (D01, D15).</p></li>
-            <li><div class="fr-top"><b>2. Ler o contrato no celular</b><span>41 · 18%</span><span class="prio alta">Alta</span></div><i><b style="width:55%"></b></i><p>contrato em texto, resumo dos valores no topo, A− / A+ e cópia no final (D02, D14, D19).</p></li>
+            <li><div class="fr-top"><b>1. Rubrica com o dedo na tela</b><span>73 · 33%</span><span class="prio alta">Alta</span></div><i><b style="width:100%"></b></i><p>rubrica retirada; a assinatura vira uma confirmação.</p></li>
+            <li><div class="fr-top"><b>2. Ler o contrato no celular</b><span>41 · 18%</span><span class="prio alta">Alta</span></div><i><b style="width:55%"></b></i><p>contrato em texto, resumo dos valores no topo, A− / A+ e cópia no final.</p></li>
             <li><div class="fr-top"><b>3. Outra forma de assinar (gov.br)</b><span>27 · 12%</span><span class="prio alta">Alta</span></div><i><b style="width:37%"></b></i><p>gov.br levado ao negócio, pois depende de integração. Sem a rubrica, o maior atrito já sai.</p></li>
-            <li><div class="fr-top"><b>4. Selfie difícil</b><span>20 · 9%</span><span class="prio media">Média</span></div><i><b style="width:27%"></b></i><p>captura guiada, motivo da falha e tentativas restantes; uma selfie só com SPF (D07, D08, D16).</p></li>
-            <li><div class="fr-top"><b>4. Lentidão e erros</b><span>20 · 9%</span><span class="prio media">Média</span></div><i><b style="width:27%"></b></i><p>esperas com progresso e confirmações que seguem sozinhas (D07, D18).</p></li>
-            <li><div class="fr-top"><b>6. Processo longo ou confuso</b><span>12 · 5%</span><span class="prio media">Média</span></div><i><b style="width:16%"></b></i><p>boas-vindas com etapas e tempo; barra de etapas em todo o fluxo (D05, D06).</p></li>
-            <li><div class="fr-top"><b>7. Envio do documento</b><span>11 · 5%</span><span class="prio media">Média</span></div><i><b style="width:15%"></b></i><p>regras antes do envio, frente → verso guiada e erros com motivo (D10 a D12).</p></li>
+            <li><div class="fr-top"><b>4. Selfie difícil</b><span>20 · 9%</span><span class="prio media">Média</span></div><i><b style="width:27%"></b></i><p>captura guiada, motivo da falha e tentativas restantes; uma selfie só com SPF.</p></li>
+            <li><div class="fr-top"><b>4. Lentidão e erros</b><span>20 · 9%</span><span class="prio media">Média</span></div><i><b style="width:27%"></b></i><p>esperas com progresso e confirmações que seguem sozinhas.</p></li>
+            <li><div class="fr-top"><b>6. Processo longo ou confuso</b><span>12 · 5%</span><span class="prio media">Média</span></div><i><b style="width:16%"></b></i><p>boas-vindas com etapas e tempo; barra de etapas em todo o fluxo.</p></li>
+            <li><div class="fr-top"><b>7. Envio do documento</b><span>11 · 5%</span><span class="prio media">Média</span></div><i><b style="width:15%"></b></i><p>regras antes do envio, frente → verso guiada e erros com motivo.</p></li>
             <li><div class="fr-top"><b>8. Dispositivo e navegador</b><span>7 · 3%</span><span class="prio baixa">Baixa</span></div><i><b style="width:10%"></b></i><p>fora deste protótipo: depende de tecnologia (leitura no computador, navegadores).</p></li>
-            <li><div class="fr-top"><b>9. Pontuais</b><span>12 · 5%</span><span class="prio baixa">Baixa</span></div><i><b style="width:16%"></b></i><p>token mais claro (D03). Atendimento e preço ficam fora do escopo de UX.</p></li>
+            <li><div class="fr-top"><b>9. Pontuais</b><span>12 · 5%</span><span class="prio baixa">Baixa</span></div><i><b style="width:16%"></b></i><p>token mais claro. Atendimento e preço ficam fora do escopo de UX.</p></li>
           </ol>
         </div>
 
@@ -1722,7 +1722,7 @@
   <script>
     // ================================================================
     // Fluxo remodelado de Biometria / Assinatura Digital (em construção).
-    // Decisões: BiometriaAssDigital/REGRAS.md (D01 a D05).
+    // Decisões: BiometriaAssDigital/REGRAS.md.
     // Todos os nomes, CPFs, CNPJs e telefones são fictícios.
     // ================================================================
 
@@ -1791,7 +1791,7 @@
         depois: [
           { t: "Cabeçalho fixo com a marca em todas as telas; só o conteúdo rola por baixo dele.", alvo: "#s-intro .rk-header" },
           { t: "Voltar sempre à esquerda, no mesmo lugar, em toda tela que tem uma anterior. Nesta introdução, ele volta à Home.", alvo: "#introBack" },
-          { t: "A− / A+ à direita, em todas as telas: 4 tamanhos, e a escolha vale para o fluxo inteiro. <span class='tag'>D19</span>", alvo: "#s-intro .rk-a11y" },
+          { t: "A− / A+ à direita, em todas as telas: 4 tamanhos, e a escolha vale para o fluxo inteiro.", alvo: "#s-intro .rk-a11y" },
           { t: "Área de conteúdo sobre fundo cinza claro, com cards brancos para o que importa em cada etapa.", alvo: "#introArea" },
           { t: "Ação principal sempre embaixo, larga e ao alcance do polegar.", alvo: "#introGo" }
         ]
@@ -1801,12 +1801,12 @@
         antes: [
           "Campo de texto solto, e o \"Continuar\" fica liberado com qualquer coisa digitada.",
           "O erro só aparece depois do toque (000-1 \"código incorreto\" e 000-2 \"token com menos de 6 dígitos\").",
-          "Não há limite de tentativas. <span class='tag'>R01</span>",
+          "Não há limite de tentativas.",
           "A pessoa não sabe para onde o código foi enviado. <span class='tag fb'>Feedback: \"o código tem que ser mais claro\"</span>",
           "Nada diz quantas etapas o processo tem nem quanto tempo leva. <span class='tag fb'>Feedback: processo longo</span>"
         ],
         depois: [
-          { t: "Campo de 6 casas, com teclado numérico e preenchimento automático do código do SMS. <span class='tag'>D03</span>", alvo: "#otp" },
+          { t: "Campo de 6 casas, com teclado numérico e preenchimento automático do código do SMS.", alvo: "#otp" },
           { t: "\"Continuar\" só libera com os 6 dígitos, então o erro de token incompleto deixa de existir.", alvo: "#tokenGo" },
           { t: "A tela mostra o celular para onde o código foi enviado, mascarado, e libera \"Reenviar código\" depois de 30 s.", alvo: "#tokenPhone, #s-token .rk-row-link" },
           { t: "Código errado: as casas ficam vermelhas e a mensagem mostra quantas tentativas restam.", alvo: "#otp, #otpMsg",
@@ -1818,9 +1818,9 @@
       },
       lock: {
         titulo: "000-B · Bloqueio por tentativas", sub: "Tela nova",
-        antes: ["Não existe: dá para tentar códigos sem limite. <span class='tag'>R01</span>"],
+        antes: ["Não existe: dá para tentar códigos sem limite."],
         depois: [
-          { t: "Depois de 5 tentativas erradas, o acesso fica bloqueado por 5 minutos, com contagem regressiva. <span class='tag'>D03</span>", alvo: "#s-lock .rk-text" },
+          { t: "Depois de 5 tentativas erradas, o acesso fica bloqueado por 5 minutos, com contagem regressiva.", alvo: "#s-lock .rk-text" },
           { t: "\"Enviar novo código\" libera na hora e zera as tentativas, para a pessoa não ficar presa.", alvo: "#lockNew" },
           { t: "O texto explica o motivo (segurança) sem culpar o usuário.", alvo: "#s-lock .rk-title" }
         ]
@@ -1839,12 +1839,12 @@
         titulo: "001 · Assinaturas da proposta", sub: "Só no presencial (QR Code)",
         antes: [
           "Tabela de 3 colunas, apertada na tela do celular.",
-          "O status \"Aguarde\" não explica nada, e a lista só atualiza tocando no botão. <span class='tag'>R04</span>",
-          "Quem já assinou fica sem link, mas sem nenhum sinal de que concluiu. <span class='tag'>R03</span>",
+          "O status \"Aguarde\" não explica nada, e a lista só atualiza tocando no botão.",
+          "Quem já assinou fica sem link, mas sem nenhum sinal de que concluiu.",
           "O CPF/CNPJ completo de todas as partes aparece no mesmo aparelho."
         ],
         depois: [
-          { t: "Um card por parte, com iniciais, nome, papel e documento mascarado (empresas têm ícone próprio). <span class='tag'>D04</span>", alvo: "#sigCards .sig-card" },
+          { t: "Um card por parte, com iniciais, nome, papel e documento mascarado (empresas têm ícone próprio).", alvo: "#sigCards .sig-card" },
           { t: "Selo de status claro: Pronto para assinar (com o botão \"Iniciar\"), Aguardando liberação (com explicação) ou Concluído ✓.", alvo: "#sigCards .sig-foot" },
           { t: "Progresso no topo (\"1 de 2 assinaturas concluídas\").", alvo: "#s-lista .prog" },
           { t: "Atualização automática a cada 15 s, com o botão manual como reserva. O card liberado fica destacado.", alvo: "#refreshRow",
@@ -1858,13 +1858,13 @@
         antes: [
           "A pessoa cai direto no termo da captura da foto, sem saber quantas etapas faltam. <span class='tag fb'>Feedback: \"muito burocrático\", \"mais explicação\"</span>",
           "No presencial, não fica claro de quem é a vez de assinar.",
-          "Pessoa jurídica segue o mesmo fluxo da física, sem dizer quem faz a selfie. <span class='tag'>R12</span>"
+          "Pessoa jurídica segue o mesmo fluxo da física, sem dizer quem faz a selfie."
         ],
         depois: [
-          { t: "Mostra quem está assinando (nome e papel) e a proposta (número, moto e concessionária). <span class='tag'>D05</span>", alvo: "#s-welcome .rk-eyebrow, #s-welcome .who-card" },
+          { t: "Mostra quem está assinando (nome e papel) e a proposta (número, moto e concessionária).", alvo: "#s-welcome .rk-eyebrow, #s-welcome .who-card" },
           { t: "Lista as etapas com o tempo estimado de cada uma e o total.", alvo: "#wSteps, #s-welcome .steps-total" },
-          { t: "Sem a rubrica <span class='tag'>D01</span> e sem a 2ª selfie do SPF: o seguro entra na etapa do contrato (\"Autorizações, contrato e seguro\"). <span class='tag'>D16</span>", alvo: "#wSteps" },
-          { t: "Para CNPJ, avisa que a selfie e o documento são do representante legal. <span class='tag'>R12</span>", alvo: "#wPj",
+          { t: "Sem a rubrica e sem a 2ª selfie do SPF: o seguro entra na etapa do contrato (\"Autorizações, contrato e seguro\").", alvo: "#wSteps" },
+          { t: "Para CNPJ, avisa que a selfie e o documento são do representante legal.", alvo: "#wPj",
             ver: function () { cenario["tipo" + st.cur] = "cnpj"; salvarCenario(); pintarPainel(); var cur = st.cur; start(); st.cur = cur; openWelcome(); } },
           { t: "Diz o que ter em mãos (documento e local iluminado) antes de começar.", alvo: "#s-welcome .bring" }
         ]
@@ -1877,10 +1877,10 @@
           "Nada indica em que ponto do processo a pessoa está. <span class='tag fb'>Feedback: processo longo</span>"
         ],
         depois: [
-          { t: "Indicador de etapa (\"Etapa 1 de N · Selfie\") com barra de progresso, presente em todas as telas do processo. <span class='tag'>D06</span>", alvo: "#s-selfie .stepbar" },
+          { t: "Indicador de etapa (\"Etapa 1 de N · Selfie\") com barra de progresso, presente em todas as telas do processo.", alvo: "#s-selfie .stepbar" },
           { t: "Título e frase curta dizendo para que serve a selfie e quanto tempo leva.", alvo: "#s-selfie .rk-title, #s-selfie .rk-text" },
           { t: "As dicas viram 4 cards visuais na própria tela, sempre à vista antes de abrir a câmera.", alvo: "#tipsGrid" },
-          { t: "Consentimento em uma frase, com caixa de \"Autorizo\". O termo completo continua disponível no link. <span class='tag'>D06</span>", alvo: "#consentBox" },
+          { t: "Consentimento em uma frase, com caixa de \"Autorizo\". O termo completo continua disponível no link.", alvo: "#consentBox" },
           { t: "\"Abrir câmera\" só libera depois do \"Autorizo\": o consentimento continua obrigatório.", alvo: "#selfieGo" },
           { t: "Termo completo numa folha que sobe de baixo, com \"Li e concordo\", que também marca a autorização.", alvo: "#termSheet .sheet",
             visivel: function () { return !$("termSheet").hidden; },
@@ -1896,7 +1896,7 @@
           "Não existe: se a pessoa nega a câmera, a captura simplesmente não funciona. <span class='tag fb'>Feedback: \"não abre no Google Chrome\", \"só no Mozilla funcionou\"</span>"
         ],
         depois: [
-          { t: "Explica por que a câmera é necessária, sem culpar o usuário. <span class='tag'>D07</span>", alvo: "#s-camoff .rk-title, #s-camoff .rk-text" },
+          { t: "Explica por que a câmera é necessária, sem culpar o usuário.", alvo: "#s-camoff .rk-title, #s-camoff .rk-text" },
           { t: "Passo a passo de como liberar a câmera no navegador.", alvo: "#howtoCam" },
           { t: "\"Já liberei, tentar de novo\" pede a permissão outra vez, sem recomeçar a assinatura.", alvo: "#camoffRetry" }
         ]
@@ -1905,11 +1905,11 @@
         titulo: "004 · Captura guiada", sub: "2 capturas: a 2ª com o rosto mais próximo",
         antes: [
           "Só o texto fixo \"Tente não se mexer\", sem dizer o que ajustar. <span class='tag fb'>Feedback: \"não funciona com nenhuma luz\", \"demora muito para capturar\"</span>",
-          "As duas bolinhas no topo não dizem o que significam. <span class='tag'>R10</span>",
+          "As duas bolinhas no topo não dizem o que significam.",
           "Sem apoio para quem enxerga pouco. <span class='tag fb'>Feedback: \"auxílio sonoro na hora da selfie\"</span>"
         ],
         depois: [
-          { t: "Orientação em tempo real: \"posicione o rosto\", \"aproxime\", \"fique parado\". Avisa o problema na hora (pouca luz, óculos, fora da moldura). <span class='tag'>D07</span>", alvo: "#fguide" },
+          { t: "Orientação em tempo real: \"posicione o rosto\", \"aproxime\", \"fique parado\". Avisa o problema na hora (pouca luz, óculos, fora da moldura).", alvo: "#fguide" },
           { t: "\"Captura 1 de 2 / 2 de 2\" escrito, com indicador de progresso.", alvo: "#fcamStep, .fcam-dots" },
           { t: "Moldura oval sobre a câmera escurecida, com anel que enche enquanto captura e check ao concluir.", alvo: "#s-fcam .foval-wrap" },
           { t: "Guia por voz opcional (acessibilidade): lê as orientações em voz alta.", alvo: "#fcamVoice" },
@@ -1920,7 +1920,7 @@
         titulo: "005 · Verificação da selfie", sub: "Antes: \"Aguarde um instante...\"",
         antes: ["Só um spinner com \"Aguarde um instante...\", que às vezes demora muito. <span class='tag fb'>Feedback: \"o 'aguarde instantes' demora MUITO\"</span>"],
         depois: [
-          { t: "Diz quanto tempo leva e pede para não fechar a tela. <span class='tag'>D07</span>", alvo: "#s-fverify .rk-text" },
+          { t: "Diz quanto tempo leva e pede para não fechar a tela.", alvo: "#s-fverify .rk-text" },
           { t: "Lista do que está sendo conferido, marcando cada passo concluído.", alvo: "#verifyList" },
           { t: "O indicador de etapa continua visível: a pessoa sabe que ainda está na selfie.", alvo: "#s-fverify .stepbar" }
         ]
@@ -1929,20 +1929,20 @@
         titulo: "004-OK · Selfie confirmada", sub: "Tela nova",
         antes: ["Depois da verificação, o fluxo pula direto para o documento, sem confirmar que a selfie deu certo."],
         depois: [
-          { t: "Confirmação clara de sucesso. <span class='tag'>D07</span>", alvo: "#s-fok .rk-hero-ic, #s-fok .rk-title" },
+          { t: "Confirmação clara de sucesso.", alvo: "#s-fok .rk-hero-ic, #s-fok .rk-title" },
           { t: "Diz qual é a próxima etapa antes de seguir.", alvo: "#s-fok .rk-text" },
-          { t: "Segue sozinha em 4 segundos, com barra de progresso: sem botão, porque não há decisão a tomar. <span class='tag'>D18</span>", alvo: "#s-fok .auto-next" }
+          { t: "Segue sozinha em 4 segundos, com barra de progresso: sem botão, porque não há decisão a tomar.", alvo: "#s-fok .auto-next" }
         ]
       },
       ffail: {
         titulo: "004-1 · Falha na selfie", sub: "Máximo de 3 tentativas",
         antes: [
-          "Mensagem genérica \"Não foi possível realizar a captura facial\", sem dizer o motivo. <span class='tag'>R10</span>",
-          "Não diz quantas tentativas restam antes do cancelamento. <span class='tag'>R10</span>",
+          "Mensagem genérica \"Não foi possível realizar a captura facial\", sem dizer o motivo.",
+          "Não diz quantas tentativas restam antes do cancelamento.",
           "\"Tentar novamente\" volta para as dicas, um passo a mais."
         ],
         depois: [
-          { t: "Motivo provável da falha, com ícone (pouca luz, rosto fora da moldura, óculos ou boné, movimento). <span class='tag'>D08</span>", alvo: "#ffailIc, #ffailTitle, #ffailText" },
+          { t: "Motivo provável da falha, com ícone (pouca luz, rosto fora da moldura, óculos ou boné, movimento).", alvo: "#ffailIc, #ffailTitle, #ffailText" },
           { t: "Quantas tentativas restam, com aviso de última tentativa.", alvo: "#ffailTries" },
           { t: "Dicas específicas para o motivo, não as 5 dicas genéricas.", alvo: "#ffailFix" },
           { t: "\"Tentar novamente\" abre direto a câmera.", alvo: "#ffailGo" }
@@ -1951,28 +1951,28 @@
       fcancel: {
         titulo: "004-2 · Assinatura encerrada", sub: "3ª falha na selfie",
         antes: [
-          "\"Desculpe, não foi possível seguir com a assinatura. Por favor, gere um novo QR code ou anexe os documentos via IHS.\" <span class='tag'>R08</span>",
+          "\"Desculpe, não foi possível seguir com a assinatura. Por favor, gere um novo QR code ou anexe os documentos via IHS.\"",
           "Fala em termos internos (IHS, gerar QR code) para o cliente, e não tem nenhum botão."
         ],
         depois: [
-          { t: "Explica o que aconteceu e por quê (segurança), sem jargão. <span class='tag'>D08</span>", alvo: "#s-fcancel .rk-title, #s-fcancel .rk-text" },
+          { t: "Explica o que aconteceu e por quê (segurança), sem jargão.", alvo: "#s-fcancel .rk-title, #s-fcancel .rk-text" },
           { t: "Diz o que acontece agora, conforme o canal: no presencial, pedir um novo QR Code ao vendedor; no remoto, pedir um novo acesso.", alvo: "#s-fcancel .who-card" },
-          { t: "Presencial: \"Ler novo QR Code\" abre a câmera para ler o QR que o vendedor gerou e volta para a lista de assinantes. <span class='tag'>D09</span>", alvo: "#fcancelBtn",
+          { t: "Presencial: \"Ler novo QR Code\" abre a câmera para ler o QR que o vendedor gerou e volta para a lista de assinantes.", alvo: "#fcancelBtn",
             visivel: function () { return !isRemoto(); },
             ver: function () { forcarCanal("presencial"); openFaceCancel(); } },
-          { t: "Remoto: \"Pedir novo acesso\" gera um alerta para o colaborador na plataforma de assinatura. Hoje ele não sabe que a pessoa travou. <span class='tag'>D09</span>", alvo: "#fcancelBtn",
+          { t: "Remoto: \"Pedir novo acesso\" gera um alerta para o colaborador na plataforma de assinatura. Hoje ele não sabe que a pessoa travou.", alvo: "#fcancelBtn",
             visivel: function () { return isRemoto(); },
             ver: function () { forcarCanal("remoto"); st.cur = 0; openFaceCancel(); } },
           { t: "Remoto: confirmação de que o pedido foi enviado, com o celular que vai receber o novo acesso.", alvo: "#fcancelSent",
             ver: function () { forcarCanal("remoto"); st.cur = 0; openFaceCancel(); $("fcancelBtn").click(); } },
-          { t: "\"Encerrar processo\" nos dois canais: fecha a assinatura digital em vez de deixar a pessoa parada na tela de erro. <span class='tag'>D09</span>", alvo: "#fcancelEnd" }
+          { t: "\"Encerrar processo\" nos dois canais: fecha a assinatura digital em vez de deixar a pessoa parada na tela de erro.", alvo: "#fcancelEnd" }
         ]
       },
       qr: {
         titulo: "QR · Leitura do novo QR Code", sub: "Presencial, depois da assinatura encerrada",
         antes: ["Não existe: a pessoa precisa sair da tela de erro e abrir a câmera do celular por conta própria para ler o novo QR Code."],
         depois: [
-          { t: "Leitor de QR Code dentro do próprio fluxo, com a orientação \"aponte para o QR Code na tela do vendedor\". <span class='tag'>D09</span>", alvo: "#qrBox, #qrGuide" },
+          { t: "Leitor de QR Code dentro do próprio fluxo, com a orientação \"aponte para o QR Code na tela do vendedor\".", alvo: "#qrBox, #qrGuide" },
           { t: "Depois da leitura, volta direto para a lista de assinantes (001) com o novo acesso." }
         ]
       },
@@ -1980,30 +1980,30 @@
         titulo: "FIM · Assinatura encerrada", sub: "Depois de \"Encerrar processo\"",
         antes: ["Não existe: a tela de erro não tem nenhum botão e o processo fica parado nela."],
         depois: [
-          { t: "Mensagem \"Assinatura encerrada\" por 2 segundos antes de fechar. <span class='tag'>D09</span>", alvo: "#s-fend .rk-title, #s-fend .rk-text" },
+          { t: "Mensagem \"Assinatura encerrada\" por 2 segundos antes de fechar.", alvo: "#s-fend .rk-title, #s-fend .rk-text" },
           { t: "No simulador, volta para a tela inicial (001 no presencial, 000 no remoto). Num celular de verdade, fecha a assinatura digital e o usuário volta para a tela inicial do aparelho." }
         ]
       },
       docchoice: {
         titulo: "006 · Qual documento você vai usar?", sub: "Escolha entre documento físico e CNH Digital",
         antes: [
-          "Dois botões vermelhos soltos (\"CNH Digital\" e \"RG, CNH, DNI, RNE e CIN\"), sem dizer o que vem depois de cada um. <span class='tag'>R07</span>",
+          "Dois botões vermelhos soltos (\"CNH Digital\" e \"RG, CNH, DNI, RNE e CIN\"), sem dizer o que vem depois de cada um.",
           "Nada diz que o documento físico exige foto da frente e do verso. <span class='tag fb'>Feedback: \"difícil anexar documento\"</span>"
         ],
         depois: [
-          { t: "Indicador de etapa: \"Etapa 2 de N · Documento\". <span class='tag'>D06</span>", alvo: "#s-docchoice .stepbar" },
-          { t: "Dois cartões de escolha, cada um dizendo o que a pessoa vai fazer: fotografar frente e verso, ou enviar o PDF do app. <span class='tag'>D10</span>", alvo: "#s-docchoice .opt-card" },
+          { t: "Indicador de etapa: \"Etapa 2 de N · Documento\".", alvo: "#s-docchoice .stepbar" },
+          { t: "Dois cartões de escolha, cada um dizendo o que a pessoa vai fazer: fotografar frente e verso, ou enviar o PDF do app.", alvo: "#s-docchoice .opt-card" },
           { t: "\"Continuar\" só libera depois de escolher.", alvo: "#docChoiceGo" }
         ]
       },
       doctips: {
         titulo: "007 · Frente e depois verso", sub: "Documento físico",
         antes: [
-          "Nenhuma tela avisa que a ordem é frente e depois verso. A dica só diz \"fotografe um lado de cada vez\". <span class='tag'>R11</span>",
+          "Nenhuma tela avisa que a ordem é frente e depois verso. A dica só diz \"fotografe um lado de cada vez\".",
           "Os títulos dizem \"DNI lado com foto\" mesmo para quem enviou um RG."
         ],
         depois: [
-          { t: "A ordem fica explícita no título e num desenho de 2 passos: 1. Frente (lado com a foto) e 2. Verso. <span class='tag'>D11</span>", alvo: "#s-doctips .rk-title, #orderSteps" },
+          { t: "A ordem fica explícita no título e num desenho de 2 passos: 1. Frente (lado com a foto) e 2. Verso.", alvo: "#s-doctips .rk-title, #orderSteps" },
           { t: "Avisa que a foto é tirada sozinha quando o documento estiver bem enquadrado.", alvo: "#s-doctips .rk-text" },
           { t: "Dicas práticas: tirar do plástico, mesa escura e sem reflexo.", alvo: "#docTipsList" },
           { t: "O botão já diz o primeiro passo: \"Fotografar a frente\".", alvo: "#docTipsGo" }
@@ -2012,12 +2012,12 @@
       doccam: {
         titulo: "008 / 010 · Câmera do documento", sub: "Frente (1 de 2) e verso (2 de 2), captura automática",
         antes: [
-          "O sistema identifica o lado, mas aceita o verso primeiro e só falha no fim, com um aviso genérico de baixa qualidade. <span class='tag'>R11</span>",
-          "O verso às vezes aparece com disparo manual (bug conhecido). <span class='tag'>R07</span>"
+          "O sistema identifica o lado, mas aceita o verso primeiro e só falha no fim, com um aviso genérico de baixa qualidade.",
+          "O verso às vezes aparece com disparo manual (bug conhecido)."
         ],
         depois: [
           { t: "\"Frente do documento · 1 de 2\" / \"Verso · 2 de 2\" no topo, com indicador.", alvo: "#docCamStep, #s-doccam .fcam-dots" },
-          { t: "Se a pessoa mostrar o verso primeiro, o aviso aparece na hora: \"Este é o verso. Vire o documento e mostre a frente\". A foto errada não é tirada. <span class='tag'>D11</span>", alvo: "#docGuide, #dframeWrap",
+          { t: "Se a pessoa mostrar o verso primeiro, o aviso aparece na hora: \"Este é o verso. Vire o documento e mostre a frente\". A foto errada não é tirada.", alvo: "#docGuide, #dframeWrap",
             visivel: function () { return st.code === "008-L"; },
             ver: function () { st.invertido = true; openDocCam("frente"); } },
           { t: "Moldura com cantos que mudam de cor (branco, amarelo de alerta, verde quando está bom) e contagem antes da foto automática.", alvo: "#dframeWrap" },
@@ -2031,7 +2031,7 @@
           "Não diz o que conferir na foto."
         ],
         depois: [
-          { t: "Título simples, \"Frente do documento\" / \"Verso do documento\", que vale para RG, CIN, CNH, RNE e DNI. <span class='tag'>D11</span>", alvo: "#docRevTitle" },
+          { t: "Título simples, \"Frente do documento\" / \"Verso do documento\", que vale para RG, CIN, CNH, RNE e DNI.", alvo: "#docRevTitle" },
           { t: "Diz o que conferir (nítida, sem reflexo, documento inteiro) e confirma o lado reconhecido.", alvo: "#s-docreview .rk-text, #docRevChecks" },
           { t: "Botões claros: \"Usar esta foto\" e \"Tirar outra\".", alvo: "#docRevUse, #docRevRedo" }
         ]
@@ -2039,11 +2039,11 @@
       docfail: {
         titulo: "009-1 · Falha na foto do documento", sub: "3 falhas somando frente e verso",
         antes: [
-          "\"Vamos tentar novamente\", sem dizer o motivo. <span class='tag'>R08</span>",
-          "Não diz quantas tentativas restam antes do cancelamento. <span class='tag'>R08</span>"
+          "\"Vamos tentar novamente\", sem dizer o motivo.",
+          "Não diz quantas tentativas restam antes do cancelamento."
         ],
         depois: [
-          { t: "Motivo provável e o lado que falhou (reflexo, desfocada, documento cortado). <span class='tag'>D12</span>", alvo: "#docFailIc, #docFailTitle, #docFailText" },
+          { t: "Motivo provável e o lado que falhou (reflexo, desfocada, documento cortado).", alvo: "#docFailIc, #docFailTitle, #docFailText" },
           { t: "Tentativas restantes, somando frente e verso, com aviso de última tentativa.", alvo: "#docFailTries" },
           { t: "Dicas específicas para o motivo.", alvo: "#docFailFix" },
           { t: "O botão volta direto para o lado que falhou (\"Fotografar a frente de novo\").", alvo: "#docFailGo" }
@@ -2052,12 +2052,12 @@
       cnh: {
         titulo: "006-1 · CNH Digital", sub: "Antes: instruções + \"Adicione o documento\" + erros 006-3/4/5",
         antes: [
-          "As regras do arquivo (PDF, arquivo único, 4 MB, só CNH) só aparecem depois do erro. <span class='tag'>R07</span>",
+          "As regras do arquivo (PDF, arquivo único, 4 MB, só CNH) só aparecem depois do erro.",
           "Não ensina a exportar o PDF do app. <span class='tag fb'>Feedback: \"pede pra exportar em PDF e é onde fica complicado\"</span>",
           "Os erros dizem o problema, mas não como resolver."
         ],
         depois: [
-          { t: "Passo a passo de como exportar o PDF no app Carteira Digital de Trânsito. <span class='tag'>D12</span>", alvo: "#cnhHow" },
+          { t: "Passo a passo de como exportar o PDF no app Carteira Digital de Trânsito.", alvo: "#cnhHow" },
           { t: "As regras do arquivo aparecem antes de escolher.", alvo: "#cnhRules" },
           { t: "O arquivo escolhido aparece com o status (verde ou vermelho), e a mensagem diz como resolver o erro.", alvo: "#cnhFile, #cnhMsg",
             visivel: function () { return !!st.cnhArq; },
@@ -2069,7 +2069,7 @@
         titulo: "Verificação do documento", sub: "Tela nova",
         antes: ["Depois da última foto, um \"Aguarde\" genérico ou um erro no fim, sem dizer o que está sendo conferido."],
         depois: [
-          { t: "Diz quanto tempo leva e marca o que já foi conferido, incluindo a comparação com a selfie. <span class='tag'>D12</span>", alvo: "#docVerifyList, #s-docverify .rk-text" }
+          { t: "Diz quanto tempo leva e marca o que já foi conferido, incluindo a comparação com a selfie.", alvo: "#docVerifyList, #s-docverify .rk-text" }
         ]
       },
       docok: {
@@ -2077,18 +2077,18 @@
         antes: ["O fluxo pula para as Autorizações sem confirmar que o documento foi aceito."],
         depois: [
           { t: "Confirmação clara e qual é a próxima etapa (autorizações e contrato).", alvo: "#s-docok .rk-hero-ic, #s-docok .rk-title, #s-docok .rk-text" },
-          { t: "Segue sozinha em 4 segundos, com barra de progresso. <span class='tag'>D18</span>", alvo: "#s-docok .auto-next" }
+          { t: "Segue sozinha em 4 segundos, com barra de progresso.", alvo: "#s-docok .auto-next" }
         ]
       },
       auth: {
-        titulo: "012 · Autorizações", sub: "Nenhuma é obrigatória (R09)",
+        titulo: "012 · Autorizações", sub: "Nenhuma é obrigatória",
         antes: [
-          "Três textos jurídicos longos, um embaixo do outro, com switches pequenos. <span class='tag'>R09</span>",
+          "Três textos jurídicos longos, um embaixo do outro, com switches pequenos.",
           "Não diz que nada é obrigatório, então a pessoa fica na dúvida se pode desligar.",
-          "\"Boleto por e-mail\" já vem ligado, o que pede atenção de LGPD (o consentimento precisa ser ativo). <span class='tag'>R09</span>"
+          "\"Boleto por e-mail\" já vem ligado, o que pede atenção de LGPD (o consentimento precisa ser ativo)."
         ],
         depois: [
-          { t: "Pergunta direta no título e aviso de que nenhuma opção é obrigatória. <span class='tag'>D13</span>", alvo: "#s-auth .rk-title, #s-auth .rk-text" },
+          { t: "Pergunta direta no título e aviso de que nenhuma opção é obrigatória.", alvo: "#s-auth .rk-title, #s-auth .rk-text" },
           { t: "Cada autorização num cartão, com título curto e uma frase simples. O texto completo fica em \"Ver detalhes\".", alvo: "#s-auth .auth-card" },
           { t: "Chave grande e verde quando ligada, fácil de tocar.", alvo: "#s-auth .tgl" },
           { t: "Mantido o padrão atual (boleto digital ligado). Fica como ponto para o jurídico avaliar (LGPD).", alvo: "[data-auth-card=boleto]" }
@@ -2103,24 +2103,24 @@
           "Os valores importantes ficam perdidos no meio da tabela. <span class='tag fb'>Feedback: \"realçar os pontos fundamentais como valores\"</span>"
         ],
         depois: [
-          { t: "Resumo do financiamento no topo: parcela em destaque, valor financiado, juros, CET e total a pagar. <span class='tag'>D14</span>", alvo: "#rdBody .sum-card" },
-          { t: "Contrato reescrito em texto legível no celular, com seções curtas e títulos. <span class='tag'>D02</span>", alvo: "#rdBody" },
+          { t: "Resumo do financiamento no topo: parcela em destaque, valor financiado, juros, CET e total a pagar.", alvo: "#rdBody .sum-card" },
+          { t: "Contrato reescrito em texto legível no celular, com seções curtas e títulos.", alvo: "#rdBody" },
           { t: "\"Documento 1 de 2\" (ou \"de 3\", com o seguro) e barra de leitura que avança com a rolagem.", alvo: "#rdCount, #s-reader .rd-prog" },
-          { t: "A− / A+ no cabeçalho ajusta o tamanho do texto; vale para todas as telas do fluxo. <span class='tag'>D19</span>", alvo: "#s-reader .rk-a11y" },
-          { t: "A cópia completa (todos os documentos) fica para o final, em \"Baixar cópia do contrato\", sem um botão por documento. <span class='tag'>D19</span>", alvo: "#rdTitle" },
-          { t: "\"Aceito\" só libera depois de rolar até o fim do documento. <span class='tag'>D02</span>", alvo: "#rdAccept" }
+          { t: "A− / A+ no cabeçalho ajusta o tamanho do texto; vale para todas as telas do fluxo.", alvo: "#s-reader .rk-a11y" },
+          { t: "A cópia completa (todos os documentos) fica para o final, em \"Baixar cópia do contrato\", sem um botão por documento.", alvo: "#rdTitle" },
+          { t: "\"Aceito\" só libera depois de rolar até o fim do documento.", alvo: "#rdAccept" }
         ]
       },
       sign: {
-        titulo: "015 · Confirmar e assinar", sub: "Sem rubrica (D01)",
+        titulo: "015 · Confirmar e assinar", sub: "Sem rubrica",
         antes: [
-          "Depois do aceite, a tela de rubrica pede para desenhar com o dedo, mesmo sem ser obrigatória. <span class='tag'>R09</span> <span class='tag fb'>Feedback: crítica nº 1 (73 menções)</span>"
+          "Depois do aceite, a tela de rubrica pede para desenhar com o dedo, mesmo sem ser obrigatória. <span class='tag fb'>Feedback: crítica nº 1 (73 menções)</span>"
         ],
         depois: [
-          { t: "Lista do que foi lido e aceito, com a opção de rever cada documento. <span class='tag'>D15</span>", alvo: "#signList" },
-          { t: "Com SPF, o seguro aparece numa linha própria, com o valor e \"contratação aceita\". <span class='tag'>D16</span>", alvo: "#signSpf",
+          { t: "Lista do que foi lido e aceito, com a opção de rever cada documento.", alvo: "#signList" },
+          { t: "Com SPF, o seguro aparece numa linha própria, com o valor e \"contratação aceita\".", alvo: "#signSpf",
             ver: function () { forcarSpf(); st.lidos = { 1: true, 2: true, 3: true }; st.spfOk = true; openSign(); } },
-          { t: "Explica que a assinatura eletrônica usa a selfie e o documento, e que não precisa de rubrica. <span class='tag'>D01</span>", alvo: "#signNote" },
+          { t: "Explica que a assinatura eletrônica usa a selfie e o documento, e que não precisa de rubrica.", alvo: "#signNote" },
           { t: "Um botão claro: \"Assinar contrato\".", alvo: "#signGo" }
         ]
       },
@@ -2128,19 +2128,19 @@
         titulo: "Contrato assinado", sub: "Tela nova",
         antes: ["Depois de assinar, o fluxo pula para a próxima tela sem confirmar a assinatura."],
         depois: [
-          { t: "Confirmação \"Contrato assinado\" (ou \"Contrato e seguro assinados\") e a próxima etapa: avaliação, opcional. <span class='tag'>D15</span>", alvo: "#signedIc, #signedTitle, #signedText" },
-          { t: "Segue sozinha em 4 segundos, com barra de progresso. <span class='tag'>D18</span>", alvo: "#signedAuto" }
+          { t: "Confirmação \"Contrato assinado\" (ou \"Contrato e seguro assinados\") e a próxima etapa: avaliação, opcional.", alvo: "#signedIc, #signedTitle, #signedText" },
+          { t: "Segue sozinha em 4 segundos, com barra de progresso.", alvo: "#signedAuto" }
         ]
       },
       spfdoc: {
         titulo: "016-4 · Seguro Proteção Financeira", sub: "Documento 3 de 3 · só para o proponente com SPF",
         antes: [
-          "Etapa separada depois do contrato: dicas da selfie do SPF, <b>2ª selfie</b>, processamento, termo em PDF e rubrica (016-1 a 016-5). <span class='tag'>R06</span>",
+          "Etapa separada depois do contrato: dicas da selfie do SPF, <b>2ª selfie</b>, processamento, termo em PDF e rubrica (016-1 a 016-5).",
           "A 2ª selfie foi pedido do jurídico: clientes alegavam não saber que tinham contratado o seguro. Ela servia de prova de que a pessoa contratou por vontade própria.",
           "Repetir a selfie é atrito. <span class='tag fb'>Feedback: \"muito burocrático\", \"reconhecimento facial dificulta\"</span>"
         ],
         depois: [
-          { t: "Sem a 2ª selfie: a identidade já foi confirmada pela selfie aprovada no início. O seguro vira o 3º documento do contrato. <span class='tag'>D16</span>", alvo: "#rdCount, #rdTitle" },
+          { t: "Sem a 2ª selfie: a identidade já foi confirmada pela selfie aprovada no início. O seguro vira o 3º documento do contrato.", alvo: "#rdCount, #rdTitle" },
           { t: "Visual próprio (azul, da seguradora) e resumo no topo: \"Seguro incluído na sua proposta\", valor (R$ 512,30 no financiamento), vigência, coberturas e cancelamento.", alvo: "#rdBody .sum-card" },
           { t: "Aceite específico e afirmativo, separado do contrato: \"Li e concordo com a contratação do Seguro Proteção Financeira\". Sem ele, o \"Aceito\" não libera.", alvo: "#spfConsent, #rdAccept" },
           { t: "Sem opção de retirar o seguro aqui: quem ativa ou desativa o SPF é o colaborador, na abertura da proposta. A assinatura só apresenta o que já foi definido lá." },
@@ -2151,18 +2151,18 @@
         titulo: "017 · Assinatura concluída + avaliação", sub: "Avaliação opcional",
         antes: [
           "Título \"Obrigado!\" com estrelas cinza e vermelhas, sem confirmação clara de que a assinatura terminou.",
-          "Com nota até 4: botão \"Sugerir melhorias\", depois um modal com campo de texto livre. Os comentários saem vagos (\"Péssimo\", \"Muito ruim\"), sem dizer o motivo. <span class='tag'>R02</span> <span class='tag fb'>Feedback: 24 críticas genéricas</span>",
-          "No remoto não há botão: quem não avalia fica parado na tela. <span class='tag'>R02</span>",
+          "Com nota até 4: botão \"Sugerir melhorias\", depois um modal com campo de texto livre. Os comentários saem vagos (\"Péssimo\", \"Muito ruim\"), sem dizer o motivo. <span class='tag fb'>Feedback: 24 críticas genéricas</span>",
+          "No remoto não há botão: quem não avalia fica parado na tela.",
           "Não dá para guardar uma cópia do que foi assinado. <span class='tag fb'>Feedback: \"gostaria de poder imprimir o que estou assinando\"</span>"
         ],
         depois: [
-          { t: "Confirmação clara: \"Sua assinatura foi concluída\" (ou \"Contrato e seguro assinados\") e o que acontece agora. <span class='tag'>D17</span>", alvo: "#s-rate .done-head" },
+          { t: "Confirmação clara: \"Sua assinatura foi concluída\" (ou \"Contrato e seguro assinados\") e o que acontece agora.", alvo: "#s-rate .done-head" },
           { t: "\"Baixar cópia do contrato\" em PDF.", alvo: "#rateCopy" },
           { t: "Avaliação marcada como opcional, com rótulo em cada nota (de \"Muito difícil\" a \"Muito fácil\").", alvo: "#rateCard .rq, #rateCard .rs, #rstars" },
           { t: "A nota pode ser trocada à vontade; só vale ao tocar em \"Enviar avaliação\". Hoje o primeiro toque já é definitivo.", alvo: "#rstars, #rateSend",
             visivel: function () { return !$("rateSend").hidden; },
             ver: function () { openRate(); $("rstars").querySelector('[data-n="5"]').click(); } },
-          { t: "Com nota até 4, os motivos aparecem na mesma tela, em botões de um toque (ler o contrato, selfie, foto do documento…), e o texto é opcional. Os comentários passam a dizer o problema. <span class='tag'>R02</span>", alvo: "#rateMore",
+          { t: "Com nota até 4, os motivos aparecem na mesma tela, em botões de um toque (ler o contrato, selfie, foto do documento…), e o texto é opcional. Os comentários passam a dizer o problema.", alvo: "#rateMore",
             visivel: function () { return !$("rateMore").hidden; },
             ver: function () { openRate(); $("rstars").querySelector('[data-n="3"]').click(); } },
           { t: "Botão \"Concluir\" sempre disponível. No presencial: \"Concluir e chamar o próximo\". No remoto, também encerra sozinho depois de avaliar, como hoje.", alvo: "#rateDone" }
@@ -2171,7 +2171,7 @@
       final: {
         titulo: "018 · Fim (remoto)", sub: "Antes: \"Assinatura finalizada com sucesso\"",
         antes: ["Texto simples na mesma tela cinza das outras, sem dizer se pode fechar a página."],
-        depois: [{ t: "Confirmação final com ícone de sucesso e a orientação de que já pode fechar a página. <span class='tag'>D17</span>", alvo: "#s-final .rk-title, #s-final .rk-text" }]
+        depois: [{ t: "Confirmação final com ícone de sucesso e a orientação de que já pode fechar a página.", alvo: "#s-final .rk-title, #s-final .rk-text" }]
       },
       next: {
         titulo: "Próximas etapas", sub: "Em construção",
@@ -2536,7 +2536,7 @@
     function signer() { return st.signers[st.cur]; }
     function mmss(s) { return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); }
 
-    // Documento mascarado (D04): mostra só o começo e o fim.
+    // Documento mascarado: mostra só o começo e o fim.
     function mascara(doc) {
       if (doc.indexOf("/") !== -1) return doc.slice(0, 2) + ".•••.•••/" + doc.slice(-7);
       return doc.slice(0, 3) + ".•••.•••-" + doc.slice(-2);
@@ -2758,7 +2758,7 @@
       var algumAguarde = st.signers.some(function (s) { return s.status === "aguarde"; });
       var todas = st.signers.every(function (s) { return s.status === "concluido"; });
       show("s-lista", todas ? "001-C" : (algumAguarde ? "001-A" : "001"));
-      // Atualização automática a cada 15 s (D04); o contador "Atualizado há X s" corre a cada segundo.
+      // Atualização automática a cada 15 s; o contador "Atualizado há X s" corre a cada segundo.
       st.lastRefresh = Date.now();
       every(function () {
         var s = Math.round((Date.now() - st.lastRefresh) / 1000);
@@ -2800,7 +2800,7 @@
         box.appendChild(card);
       });
     }
-    // Simula a sincronização do banco de propostas: quem estava aguardando é liberado (R04).
+    // Simula a sincronização do banco de propostas: quem estava aguardando é liberado.
     function refreshLista() {
       st.lastRefresh = Date.now();
       $("refreshText").textContent = "Atualizado agora";
@@ -2851,9 +2851,9 @@
     $("welcomeBack").addEventListener("click", function () { openLista(); });
     $("welcomeGo").addEventListener("click", function () { openSelfieIntro(); });
 
-    // Etapas do processo de quem está assinando: sem rubrica (D01). O SPF não é mais uma
-    // etapa à parte com 2ª selfie: entra no contrato como 3º documento (D16), só para o
-    // proponente que contratou (R06). Usadas nas boas-vindas e no indicador de etapa.
+    // Etapas do processo de quem está assinando: sem rubrica. O SPF não é mais uma
+    // etapa à parte com 2ª selfie: entra no contrato como 3º documento, só para o
+    // proponente que contratou. Usadas nas boas-vindas e no indicador de etapa.
     function temSpf() { return st.cur === 0 && cenario.spf === "sim"; }
     function etapasDoAssinante() {
       return [
@@ -2865,7 +2865,7 @@
         { nome: "Avaliação", curto: "Avaliação", tempo: "opcional" }
       ];
     }
-    // Preenche os indicadores "Etapa X de N · Nome" da tela (D06).
+    // Preenche os indicadores "Etapa X de N · Nome" da tela.
     function pintarEtapas(scrId) {
       var e = etapasDoAssinante();
       document.querySelectorAll("#" + scrId + " .stepbar").forEach(function (bar) {
@@ -3002,7 +3002,7 @@
     }
 
     // ---------- 004-OK · Selfie confirmada ----------
-    // Confirmações intermediárias seguem sozinhas em 4 s, com barra de progresso (D18).
+    // Confirmações intermediárias seguem sozinhas em 4 s, com barra de progresso.
     // A duração da barra está no CSS (.auto-next.run); mude os dois juntos.
     var AUTO_SEGUIR_MS = 4000;
     function autoSeguir(scrId, proxima) {
@@ -3055,7 +3055,7 @@
     $("ffailGo").addEventListener("click", openFaceCam);
 
     // ---------- 004-2 · Encerrada após 3 falhas (D08, R08/R10) ----------
-    // Saída da assinatura encerrada (D09):
+    // Saída da assinatura encerrada:
     //  - presencial: "Ler novo QR Code" (o vendedor gera um novo QR na tela dele);
     //  - remoto: "Pedir novo acesso", que vira um alerta para o colaborador na plataforma
     //    de assinatura digital (hoje ele não fica sabendo de nada);
@@ -3376,7 +3376,7 @@
       var aval = st.signers.slice(1).map(function (s) { return s.nome + " (" + s.tipo.toUpperCase() + " " + s.doc + ")"; });
       var spf = cenario.spf === "sim";
       if (n === 3) {
-        // Termo do SPF (D16): visual próprio, resumo do seguro e aceite específico.
+        // Termo do SPF: visual próprio, resumo do seguro e aceite específico.
         return '<div class="sum-card" style="background:#f2f6fd;border-color:#cfdcf3"><div class="st" style="color:#1f5fbf">Seguro incluído na sua proposta</div>' +
           '<div class="big">R$ 512,30 <small>incluído no valor financiado</small></div>' +
           '<div class="sum-grid">' +
@@ -3549,7 +3549,7 @@
       $("rateSend").hidden = true;
       $("rateCard").classList.remove("sent");
       pintarNota(0);
-      // Presencial: volta à lista para a próxima pessoa; remoto: encerra (D17).
+      // Presencial: volta à lista para a próxima pessoa; remoto: encerra.
       var faltam = !isRemoto() && st.signers.some(function (s, i) { return i !== st.cur && s.status !== "concluido"; });
       $("rateDone").textContent = isRemoto() ? "Concluir" : (faltam ? "Concluir e chamar o próximo" : "Concluir");
       show("s-rate", "017");
@@ -3588,7 +3588,7 @@
       $("rateThanks").hidden = false;
       $("rateThanksTxt").textContent = st.nota === 5 ? "Obrigado pela avaliação!" : "Obrigado! Sua opinião vai nos ajudar a melhorar.";
       setCode(st.nota === 5 ? "017-5" : "017-4");
-      // Remoto: depois de avaliar, encerra sozinho, como hoje (R02).
+      // Remoto: depois de avaliar, encerra sozinho, como hoje.
       if (isRemoto()) later(openFinal, 1800);
     }
     $("rateCopy").addEventListener("click", function () { toast("toastRate", "Cópia do contrato salva em Downloads (simulação)"); });
