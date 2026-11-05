@@ -8,6 +8,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<!-- Firebase (Firestore): guarda os feedbacks e os nomes salvos na nuvem, para todos. -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <style>
   :root {
     --red: #D6001C;
@@ -865,6 +868,9 @@
   .fb-done span:last-child { font-size: 15px; color: #666; }
   @keyframes fbDoneIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
   .fb-actions { display: flex; gap: 10px; }
+  .fb-erro { margin: 0; padding: 8px 10px; border-radius: 8px; background: #fdecea; color: #b3261e; font-size: 13px; line-height: 1.35; display: flex; gap: 8px; align-items: flex-start; }
+  .fb-erro[hidden] { display: none; }
+  .fb-erro i { margin-top: 2px; }
   .fb-btn { flex: 1; height: 44px; border-radius: 22px; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer; transition: background 0.15s ease, color 0.15s ease; }
   .fb-btn.primary { border: none; background: var(--red); color: #fff; }
   .fb-btn.primary:hover { background: var(--red-dark); }
@@ -1894,7 +1900,7 @@
       <div class="fb-field">
         <div class="fb-nome-row">
           <div class="fb-float">
-            <input type="text" id="fbNome" autocomplete="name" placeholder=" ">
+            <input type="text" id="fbNome" autocomplete="name" placeholder=" " maxlength="80">
             <label for="fbNome"><span class="inv">Seu nome</span><span class="flt">Nome</span></label>
           </div>
           <button type="button" class="fb-save" id="fbSalvar" aria-label="Salvar nome" title="Salvar nome" disabled><i class="fa-regular fa-floppy-disk" aria-hidden="true"></i></button>
@@ -1902,7 +1908,7 @@
       </div>
       <div class="fb-field grow">
         <div class="fb-float grow">
-          <textarea id="fbTexto" placeholder=" "></textarea>
+          <textarea id="fbTexto" placeholder=" " maxlength="5000"></textarea>
           <label for="fbTexto"><span class="inv">Escreva aqui o seu feedback</span><span class="flt">Feedback</span></label>
         </div>
       </div>
@@ -1912,6 +1918,7 @@
         <b>Feedback registrado</b>
         <span id="fbDoneText"></span>
       </div>
+      <p class="fb-erro" id="fbErro" role="alert" hidden><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i><span id="fbErroTxt"></span></p>
       <div class="fb-actions">
         <button type="button" class="fb-btn primary" id="fbRegistrar" disabled>Registrar Feedback</button>
         <button type="button" class="fb-btn ghost" id="fbLimpar">Limpar Registros</button>
@@ -1929,7 +1936,7 @@
       <div class="fb-list" id="fbList"></div>
       <div class="fb-vazio" id="fbVazio">
         <i class="fa-regular fa-comment-dots" aria-hidden="true"></i>
-        Nenhum feedback registrado para esta tela.
+        <span id="fbVazioTxt">Nenhum feedback registrado para esta tela.</span>
       </div>
     </div>
     <button type="button" class="fb-fab lst" id="fbListFab" aria-label="Ver feedbacks registrados" aria-expanded="false" aria-controls="fbListPanel" title="Feedbacks registrados">
@@ -4064,23 +4071,35 @@
       });
     });
 
+    // Armazenamento central (Firebase Firestore): os feedbacks e os nomes salvos ficam na
+    // nuvem e aparecem para todas as pessoas, em qualquer lugar, em tempo real.
+    // A configuração é pública por natureza; o acesso é limitado pelas regras do Firestore.
+    var FB_CONFIG = {
+      apiKey: "AIzaSyBbDAWtcJiycoRiCnXbNxmJhxpp2aYk1u0",
+      authDomain: "honda-uiux-feedback.firebaseapp.com",
+      projectId: "honda-uiux-feedback",
+      storageBucket: "honda-uiux-feedback.firebasestorage.app",
+      messagingSenderId: "1069381889328",
+      appId: "1:1069381889328:web:2f91832156da76d44fecf5"
+    };
+    var fbDb = null;
+    try {
+      if (window.firebase) { firebase.initializeApp(FB_CONFIG); fbDb = firebase.firestore(); }
+    } catch (err) { fbDb = null; }
+    function agoraServidor() { return firebase.firestore.FieldValue.serverTimestamp(); }
+    // Erros do formulário (falha ao registrar ou salvar nome).
+    function mostrarErro(msg) { $("fbErroTxt").textContent = msg; $("fbErro").hidden = false; }
+    function esconderErro() { $("fbErro").hidden = true; }
+
     // Feedbacks registrados: data, nome e texto, separados por tela, o mais recente primeiro.
-    // Ficam guardados neste navegador.
     // "Tela" é a mesma unidade da coluna "Melhorias desta tela": as variações de estado de
     // uma tela (ex.: lista com alguém aguardando ou com todos concluídos) contam como uma só.
-    var FB_LISTA_KEY = "bio_feedbacks";
     var fbLista = [];
-    try { fbLista = JSON.parse(localStorage.getItem(FB_LISTA_KEY) || "[]") || []; } catch (err) { fbLista = []; }
+    var fbEstado = fbDb ? "carregando" : "erro"; // carregando | ok | erro
     function telaAtual() {
       var chave = NOTA_POR_CODIGO[st.code] || st.code || "intro";
       return { chave: chave, nome: (NOTAS[chave] && NOTAS[chave].titulo) || NOMES[st.code] || "" };
     }
-    // Registros antigos guardavam só o nome da tela: descobre a qual tela pertencem.
-    fbLista.forEach(function (f) {
-      if (f.telaChave) return;
-      var cod = Object.keys(NOMES).filter(function (c) { return NOMES[c] === f.tela; })[0];
-      f.telaChave = (cod && NOTA_POR_CODIGO[cod]) || "";
-    });
     function dataHora(iso) {
       var d = new Date(iso), z = function (n) { return String(n).padStart(2, "0"); };
       return z(d.getDate()) + "/" + z(d.getMonth() + 1) + "/" + d.getFullYear() + " · " + z(d.getHours()) + ":" + z(d.getMinutes());
@@ -4094,6 +4113,9 @@
     }
     function pintarLista() {
       var box = $("fbList"), chave = telaAtual().chave;
+      // Um comentário aberto continua aberto quando a lista se atualiza sozinha.
+      var aberto = box.querySelector(".fb-item p:not(.clamp)");
+      var abertoId = aberto ? aberto.closest(".fb-item").dataset.id : null;
       var daTela = (fbLista || [])
         .filter(function (f) { return f.telaChave === chave; })
         .sort(function (a, b) { return new Date(b.data) - new Date(a.data); });
@@ -4101,6 +4123,7 @@
       daTela.forEach(function (f) {
         var item = document.createElement("article");
         item.className = "fb-item";
+        item.dataset.id = f.id || "";
         var topo = document.createElement("div");
         topo.className = "fb-item-top";
         var nome = document.createElement("b");
@@ -4131,11 +4154,22 @@
       box.querySelectorAll(".fb-item").forEach(function (item) {
         var p = item.querySelector("p");
         item.querySelector(".fb-mais").hidden = p.scrollHeight <= p.clientHeight + 1;
+        if (abertoId && item.dataset.id === abertoId) {
+          p.classList.remove("clamp");
+          p.style.maxHeight = "none";
+          var b = item.querySelector(".fb-mais");
+          b.textContent = "recolher";
+          b.setAttribute("aria-expanded", "true");
+        }
       });
       $("fbCount").textContent = daTela.length > 99 ? "99+" : daTela.length;
       $("fbCount").hidden = !daTela.length; // sem feedbacks na tela, sem contador
       box.hidden = !daTela.length;
       $("fbVazio").hidden = !!daTela.length;
+      $("fbVazioTxt").textContent =
+        fbEstado === "carregando" ? "Carregando feedbacks…" :
+        fbEstado === "erro" ? "Não foi possível carregar os feedbacks. Verifique a conexão e recarregue a página." :
+        "Nenhum feedback registrado para esta tela.";
     }
     // Expande um comentário (e recolhe o que estiver aberto: só um expandido por vez) ou recolhe.
     function expandirItem(item, expandir) {
@@ -4166,18 +4200,50 @@
       b.textContent = expandir ? "recolher" : "ver tudo";
       b.setAttribute("aria-expanded", expandir ? "true" : "false");
     }
+    // Grava na nuvem. Resolve quando o servidor confirma (ou falha em 15 s, sem conexão).
     function guardarFeedback(nome, texto) {
+      if (!fbDb) return Promise.reject(new Error("Firebase indisponível"));
       var t = telaAtual();
-      fbLista.push({ data: new Date().toISOString(), nome: nome, texto: texto, telaChave: t.chave, tela: t.nome });
-      try { localStorage.setItem(FB_LISTA_KEY, JSON.stringify(fbLista)); } catch (err) {}
-      pintarLista();
+      var envio = fbDb.collection("bio_feedbacks").add({
+        telaChave: t.chave, tela: t.nome, nome: nome, texto: texto, data: agoraServidor()
+      });
+      var limite = new Promise(function (_, falha) {
+        setTimeout(function () { falha(new Error("tempo esgotado")); }, 15000);
+      });
+      return Promise.race([envio, limite]);
+    }
+    // Lista em tempo real: um feedback registrado por qualquer pessoa aparece na hora.
+    if (fbDb) {
+      fbDb.collection("bio_feedbacks").onSnapshot(function (snap) {
+        fbLista = snap.docs.map(function (d) {
+          var f = d.data({ serverTimestamps: "estimate" });
+          return {
+            id: d.id,
+            data: (f.data && f.data.toDate ? f.data.toDate() : new Date()).toISOString(),
+            nome: f.nome || "", texto: f.texto || "", telaChave: f.telaChave || "", tela: f.tela || ""
+          };
+        });
+        fbEstado = "ok";
+        pintarLista();
+      }, function () { fbEstado = "erro"; pintarLista(); });
     }
     atualizarTelaFeedback();
 
-    // Nomes salvos (badges): ficam neste navegador, para o próximo feedback ser mais rápido.
-    var FB_NOMES_KEY = "bio_feedback_nomes";
-    var fbNomes = [];
-    try { fbNomes = JSON.parse(localStorage.getItem(FB_NOMES_KEY) || "[]") || []; } catch (err) { fbNomes = []; }
+    // Nomes salvos (badges): ficam na nuvem, valem para todos e em todas as telas.
+    var fbNomesDocs = []; // { id, nome } de cada nome gravado
+    var fbNomes = [];     // nomes sem repetição, na ordem em que foram salvos
+    if (fbDb) {
+      fbDb.collection("bio_nomes").onSnapshot(function (snap) {
+        fbNomesDocs = snap.docs.map(function (d) {
+          var n = d.data({ serverTimestamps: "estimate" });
+          return { id: d.id, nome: n.nome || "", t: n.data && n.data.toMillis ? n.data.toMillis() : Date.now() };
+        }).filter(function (x) { return x.nome; })
+          .sort(function (a, b) { return a.t - b.t; });
+        fbNomes = [];
+        fbNomesDocs.forEach(function (x) { if (!nomeSalvo(x.nome)) fbNomes.push(x.nome); });
+        validarFeedback();
+      }, function () {});
+    }
     function nomeSalvo(nome) {
       var n = nome.trim().toLowerCase();
       return fbNomes.some(function (x) { return x.toLowerCase() === n; });
@@ -4206,9 +4272,15 @@
         apagar.setAttribute("aria-label", "Apagar " + nome);
         apagar.innerHTML = '<i class="fa-solid fa-xmark" aria-hidden="true"></i>';
         apagar.addEventListener("click", function () {
-          fbNomes.splice(i, 1);
-          guardarNomes();
-          validarFeedback();
+          if (!fbDb) { mostrarErro("Sem conexão com o servidor: não foi possível apagar o nome."); return; }
+          esconderErro();
+          // Apaga todas as gravações desse nome (duas pessoas podem ter salvo o mesmo).
+          fbNomesDocs.filter(function (x) { return x.nome.toLowerCase() === nome.toLowerCase(); })
+            .forEach(function (x) {
+              fbDb.collection("bio_nomes").doc(x.id).delete().catch(function () {
+                mostrarErro("Não foi possível apagar o nome. Tente de novo.");
+              });
+            });
         });
         b.appendChild(usar);
         b.appendChild(apagar);
@@ -4216,49 +4288,65 @@
       });
       box.hidden = !fbNomes.length;
     }
-    function guardarNomes() {
-      try { localStorage.setItem(FB_NOMES_KEY, JSON.stringify(fbNomes)); } catch (err) {}
-    }
     $("fbSalvar").addEventListener("click", function () {
       var nome = $("fbNome").value.trim().replace(/\s+/g, " ");
       if (!nome || nomeSalvo(nome)) return;
-      fbNomes.push(nome);
-      guardarNomes();
-      validarFeedback();
+      if (!fbDb) { mostrarErro("Sem conexão com o servidor: não foi possível salvar o nome."); return; }
+      esconderErro();
+      // O badge aparece na hora; se o servidor recusar, ele some e o aviso aparece.
+      fbDb.collection("bio_nomes").add({ nome: nome, data: agoraServidor() }).catch(function () {
+        mostrarErro("Não foi possível salvar o nome. Tente de novo.");
+      });
     });
 
     // "Registrar Feedback" só libera com nome e feedback preenchidos; "salvar nome" só
     // com um nome que ainda não virou badge. Os badges marcam o nome em uso.
     function validarFeedback() {
       var nome = $("fbNome").value.trim();
-      $("fbRegistrar").disabled = !nome || !$("fbTexto").value.trim();
+      $("fbRegistrar").disabled = fbEnviando || !nome || !$("fbTexto").value.trim();
       var salvo = !!nome && nomeSalvo(nome);
       $("fbSalvar").disabled = !nome || salvo;
       $("fbSalvar").title = salvo ? "Nome já salvo" : "Salvar nome";
       pintarBadges();
     }
-    $("fbNome").addEventListener("input", validarFeedback);
-    $("fbTexto").addEventListener("input", validarFeedback);
+    $("fbNome").addEventListener("input", function () { esconderErro(); validarFeedback(); });
+    $("fbTexto").addEventListener("input", function () { esconderErro(); validarFeedback(); });
 
     // Registrado: o painel mostra só a confirmação, centralizada, e fecha sozinho em 3 s.
     // Na próxima abertura, o formulário volta (o nome fica, para o próximo feedback).
     var FB_FECHAR_MS = 3000;
     var fbTimer = null;
+    var fbEnviando = false;
     function voltarAoFormulario() {
       clearTimeout(fbTimer);
       fbTimer = null;
       $("fbPanel").classList.remove("sent");
+      esconderErro();
     }
     $("fbRegistrar").addEventListener("click", function () {
+      if (fbEnviando) return;
       var nome = $("fbNome").value.trim().replace(/\s+/g, " ");
-      guardarFeedback(nome, $("fbTexto").value.trim());
-      $("fbTexto").value = "";
-      validarFeedback();
-      $("fbDoneText").textContent = "Obrigado, " + nome.split(" ")[0] + "!";
-      $("fbPanel").classList.add("sent");
-      fbTimer = setTimeout(function () { abrirFeedback(false); }, FB_FECHAR_MS);
+      var btn = $("fbRegistrar");
+      fbEnviando = true;
+      esconderErro();
+      btn.disabled = true;
+      btn.textContent = "Registrando…";
+      guardarFeedback(nome, $("fbTexto").value.trim()).then(function () {
+        if (!painelAberto("form")) return; // fechado durante o envio: só grava
+        $("fbTexto").value = "";
+        $("fbDoneText").textContent = "Obrigado, " + nome.split(" ")[0] + "!";
+        $("fbPanel").classList.add("sent");
+        fbTimer = setTimeout(function () { abrirFeedback(false); }, FB_FECHAR_MS);
+      }, function () {
+        mostrarErro("Não foi possível registrar o feedback. Verifique a conexão e tente de novo.");
+      }).then(function () {
+        fbEnviando = false;
+        btn.textContent = "Registrar Feedback";
+        validarFeedback();
+      });
     });
     $("fbLimpar").addEventListener("click", function () {
+      esconderErro();
       $("fbNome").value = "";
       $("fbTexto").value = "";
       validarFeedback();
