@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <style>
   :root {
     --red: #D6001C;
@@ -735,6 +736,170 @@
   .sim-hint { background: #fff7e6; border: 1px solid #f0c36d; color: #7a5200; border-radius: 6px; padding: 7px 9px; font-size: 12px; line-height: 1.4; }
   .sim-hint code { font-family: "Courier New", monospace; font-weight: 700; font-size: 13px; }
   .sim-toggle { display: none; }
+
+  /* Feedback: botão flutuante global, fora do celular, presente em todas as telas, e o
+     painel do formulário, que abre a partir dele. Em telas largas o botão fica no vão entre
+     o celular e as notas, na altura da base do aparelho, e o painel cobre a coluna do
+     celular (posicionados pelo JS); abaixo de 1000px, ficam no canto inferior direito.
+     Botão e painel ficam numa camada com uma única sombra (drop-shadow), para que o painel
+     pareça uma extensão do botão: o canto inferior direito do painel é reto e fica sob ele. */
+  .fb-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 80;
+    pointer-events: none;
+    filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.13)); /* mesma elevação dos painéis */
+  }
+  .fb-fab {
+    position: absolute;
+    right: 16px;
+    bottom: 20px;
+    z-index: 2;
+    width: 52px;
+    height: 52px;
+    border: none;
+    border-radius: 50%;
+    background: #fff;
+    color: var(--red);
+    font-size: 22px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    pointer-events: auto;
+    transition: transform 0.15s ease;
+  }
+  .fb-fab:not(.open):hover { transform: translateY(-2px); }
+  .fb-fab:focus-visible { outline: 3px solid rgba(214, 0, 28, 0.35); outline-offset: 3px; }
+  /* Os dois ícones ficam sempre renderizados, um sobre o outro (assim a fonte do X já
+     carrega com a página), e trocam com giro e fade. */
+  .fb-fab i { position: absolute; transition: transform 0.22s ease, opacity 0.18s ease; }
+  .fb-fab .ic-x { opacity: 0; transform: rotate(-90deg) scale(0.6); }
+  .fb-fab.open .ic-abrir { opacity: 0; transform: rotate(90deg) scale(0.6); }
+  .fb-fab.open .ic-x { opacity: 1; transform: none; }
+  .fb-panel {
+    position: absolute;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 22px 22px 34px 22px;
+    background: #fff;
+    border-radius: 16px 16px 0 16px;
+    color: #222;
+    pointer-events: auto;
+    transform-origin: 100% 100%;
+    transform: scale(0.15);
+    opacity: 0;
+    visibility: hidden;
+    transition: transform 0.24s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.16s ease, visibility 0s linear 0.24s;
+  }
+  .fb-panel.open { transform: none; opacity: 1; visibility: visible; transition: transform 0.24s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.16s ease; }
+  .fb-panel h2 { font-size: 18px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+  .fb-panel h2 i { color: var(--red); font-size: 18px; }
+  .fb-badges { display: flex; flex-wrap: wrap; gap: 8px; margin-top: -2px; }
+  /* Badge = nome (preenche o campo) + X (apaga o badge). */
+  .fb-badge { display: inline-flex; align-items: center; border: 1px solid #e3e3e3; background: #f6f6f6; color: #444; border-radius: 999px; font-size: 13px; transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease; }
+  .fb-badge:hover { border-color: #cfcfcf; background: #efefef; }
+  .fb-badge button { border: none; background: none; color: inherit; font-family: inherit; font-size: inherit; font-weight: inherit; cursor: pointer; }
+  .fb-badge .bn { display: inline-flex; align-items: center; gap: 6px; padding: 5px 4px 5px 12px; }
+  .fb-badge .bn i { font-size: 11px; color: #999; }
+  .fb-badge .bx { width: 22px; height: 22px; margin-right: 4px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #999; transition: background 0.15s ease, color 0.15s ease; }
+  .fb-badge .bx:hover { background: rgba(0, 0, 0, 0.08); color: #333; }
+  .fb-badge.on { border-color: var(--red); background: #fff5f6; color: var(--red); font-weight: 600; }
+  .fb-badge.on .bn i, .fb-badge.on .bx { color: var(--red); }
+  .fb-badge.on .bx:hover { background: rgba(214, 0, 28, 0.1); }
+  .fb-nome-row { display: flex; gap: 8px; }
+  .fb-nome-row .fb-float { flex: 1; min-width: 0; }
+  /* Label dinâmica: o convite fica dentro do campo ("Seu nome") e, com foco ou texto,
+     sobe para a borda superior, à esquerda, como rótulo ("Nome"). Vazio e sem foco, volta. */
+  .fb-float { position: relative; display: flex; flex-direction: column; }
+  .fb-float.grow { flex: 1; min-height: 0; }
+  .fb-float label {
+    position: absolute;
+    left: 9px;
+    top: 22px;
+    transform: translateY(-50%);
+    padding: 0 4px;
+    background: #fff;
+    color: #8a8a8a;
+    font-size: 14px;
+    line-height: 1.2;
+    pointer-events: none;
+    transition: top 0.16s ease, font-size 0.16s ease, color 0.16s ease;
+  }
+  .fb-float label .flt { display: none; }
+  .fb-float input:focus + label, .fb-float input:not(:placeholder-shown) + label,
+  .fb-float textarea:focus + label, .fb-float textarea:not(:placeholder-shown) + label { top: 0; font-size: 12px; font-weight: 600; color: #666; }
+  .fb-float input:focus + label, .fb-float textarea:focus + label { color: var(--red); }
+  .fb-float input:focus + label .inv, .fb-float input:not(:placeholder-shown) + label .inv,
+  .fb-float textarea:focus + label .inv, .fb-float textarea:not(:placeholder-shown) + label .inv { display: none; }
+  .fb-float input:focus + label .flt, .fb-float input:not(:placeholder-shown) + label .flt,
+  .fb-float textarea:focus + label .flt, .fb-float textarea:not(:placeholder-shown) + label .flt { display: inline; }
+  .fb-save { flex: 0 0 44px; border: 1px solid #d8d8d8; border-radius: 10px; background: #fff; color: var(--red); font-size: 17px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease; }
+  .fb-save:hover { border-color: var(--red); background: #fff5f6; }
+  .fb-save:disabled { color: #c4c4c4; border-color: #e3e3e3; background: #fff; cursor: default; }
+  .fb-field { display: flex; flex-direction: column; margin-top: 4px; }
+  .fb-field.grow { flex: 1; min-height: 0; }
+  .fb-float input, .fb-float textarea {
+    width: 100%;
+    height: 44px;
+    border: 1px solid #d8d8d8;
+    border-radius: 10px;
+    padding: 11px 13px;
+    font-family: inherit;
+    font-size: 14px;
+    color: #222;
+    background: #fff;
+    outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .fb-float textarea { flex: 1; height: auto; min-height: 120px; padding-top: 13px; resize: none; line-height: 1.5; }
+  .fb-float input:focus, .fb-float textarea:focus { border-color: var(--red); box-shadow: 0 0 0 3px rgba(214, 0, 28, 0.1); }
+  .fb-done { display: none; }
+  .fb-panel.sent > :not(.fb-done) { display: none; }
+  .fb-panel.sent .fb-done { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; text-align: center; animation: fbDoneIn 0.25s ease; }
+  .fb-done-ic { width: 64px; height: 64px; border-radius: 50%; background: #e8f5ec; color: #1e8e3e; font-size: 28px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; }
+  .fb-done b { font-size: 20px; font-weight: 700; color: #222; }
+  .fb-done span:last-child { font-size: 15px; color: #666; }
+  @keyframes fbDoneIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  .fb-actions { display: flex; gap: 10px; }
+  .fb-btn { flex: 1; height: 44px; border-radius: 22px; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer; transition: background 0.15s ease, color 0.15s ease; }
+  .fb-btn.primary { border: none; background: var(--red); color: #fff; }
+  .fb-btn.primary:hover { background: var(--red-dark); }
+  .fb-btn.primary:disabled { background: #dcdfe4; color: #7b7f86; cursor: default; }
+  .fb-btn.ghost { border: 1.5px solid var(--red); background: #fff; color: var(--red); }
+  .fb-btn.ghost:hover { background: #fff5f6; }
+
+  /* Feedbacks registrados: o mesmo conjunto espelhado. O botão fica no vão entre o painel
+     de simulação e o celular, e o painel cresce a partir dele, com o canto inferior
+     esquerdo reto sob o botão. Abaixo de 1000px, o botão fica no canto inferior esquerdo. */
+  .fb-fab.lst { right: auto; left: 16px; }
+  .fb-panel.lst { border-radius: 16px 16px 16px 0; transform-origin: 0 100%; padding: 22px 22px 34px 22px; }
+  /* Quantidade de feedbacks da tela aberta, no canto superior direito do botão da lista. */
+  .fb-count { position: absolute; top: -3px; right: -3px; min-width: 20px; height: 20px; padding: 0 5px; border-radius: 10px; background: var(--red); color: #fff; font-size: 11px; font-weight: 700; line-height: 1; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 0 2px #fff; }
+  .fb-list { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; margin: 0 -6px; padding: 2px 6px; }
+  .fb-item { border: 1px solid #ececec; border-radius: 12px; padding: 12px 14px; background: #fafafa; }
+  .fb-item-top { display: flex; align-items: center; gap: 8px; }
+  .fb-item-top b { font-size: 14px; font-weight: 700; color: #222; }
+  .fb-item-top time { margin-left: auto; font-size: 12px; color: #888; white-space: nowrap; }
+  /* Tela a que o feedback pertence (formulário e lista são separados por tela). */
+  .fb-tela { display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; margin-top: -6px; font-size: 12.5px; font-weight: 600; color: var(--red); background: #fff5f6; border-radius: 6px; padding: 3px 9px; }
+  .fb-tela i { font-size: 11px; }
+  .fb-item p { margin-top: 8px; font-size: 14px; line-height: 1.5; color: #333; white-space: pre-wrap; overflow-wrap: anywhere; }
+  /* Comentário recolhido: só a 1ª linha, sem reticências. O "ver tudo" fica na mesma linha,
+     à direita, sobre um fade que apaga o fim do texto. Expandido, o "recolher" fica no fim. */
+  .fb-txt { position: relative; margin-top: 8px; }
+  .fb-txt p { margin-top: 0; overflow: hidden; transition: max-height 0.32s ease; }
+  .fb-item p.clamp { max-height: 1.5em; }
+  .fb-mais { display: block; margin: 2px 0 -2px auto; padding: 0; border: none; background: none; font-family: inherit; font-size: 13px; font-weight: 600; line-height: 21px; color: var(--red); cursor: pointer; }
+  .fb-item p.clamp + .fb-mais { position: absolute; right: 0; bottom: 0; margin: 0; padding-left: 44px; background: linear-gradient(to right, rgba(250, 250, 250, 0), #fafafa 40px); }
+  .fb-mais:hover { text-decoration: underline; }
+  .fb-mais[hidden] { display: none; }
+  .fb-vazio { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; text-align: center; color: #888; font-size: 14px; }
+  .fb-vazio i { font-size: 30px; color: #c9c9c9; margin-bottom: 4px; }
+  .fb-vazio[hidden] { display: none; }
 
   /* Intro (só no simulador): a 1ª coluna mostra o feedback da pesquisa no lugar do painel. */
   .sim-intro { display: none; }
@@ -1719,6 +1884,61 @@
     </div>
   </div>
 
+  <!-- Feedback: botão flutuante global e o painel do formulário, que abre a partir dele. -->
+  <div class="fb-layer" id="fbLayer">
+    <div class="fb-panel" id="fbPanel" role="dialog" aria-labelledby="fbTitle" aria-hidden="true">
+      <h2 id="fbTitle"><i class="fa-regular fa-comment-dots" aria-hidden="true"></i>Enviar feedback desta tela</h2>
+      <span class="fb-tela"><i class="fa-solid fa-mobile-screen" aria-hidden="true"></i><span data-fb-tela></span></span>
+      <!-- Nomes salvos: um clique preenche o campo Nome. -->
+      <div class="fb-badges" id="fbBadges" aria-label="Nomes salvos" hidden></div>
+      <div class="fb-field">
+        <div class="fb-nome-row">
+          <div class="fb-float">
+            <input type="text" id="fbNome" autocomplete="name" placeholder=" ">
+            <label for="fbNome"><span class="inv">Seu nome</span><span class="flt">Nome</span></label>
+          </div>
+          <button type="button" class="fb-save" id="fbSalvar" aria-label="Salvar nome" title="Salvar nome" disabled><i class="fa-regular fa-floppy-disk" aria-hidden="true"></i></button>
+        </div>
+      </div>
+      <div class="fb-field grow">
+        <div class="fb-float grow">
+          <textarea id="fbTexto" placeholder=" "></textarea>
+          <label for="fbTexto"><span class="inv">Escreva aqui o seu feedback</span><span class="flt">Feedback</span></label>
+        </div>
+      </div>
+      <!-- Depois de registrar: só a confirmação, centralizada (o resto do painel some). -->
+      <div class="fb-done" role="status">
+        <span class="fb-done-ic"><i class="fa-solid fa-check" aria-hidden="true"></i></span>
+        <b>Feedback registrado</b>
+        <span id="fbDoneText"></span>
+      </div>
+      <div class="fb-actions">
+        <button type="button" class="fb-btn primary" id="fbRegistrar" disabled>Registrar Feedback</button>
+        <button type="button" class="fb-btn ghost" id="fbLimpar">Limpar Registros</button>
+      </div>
+    </div>
+    <button type="button" class="fb-fab" id="fbFab" aria-label="Enviar feedback" aria-expanded="false" aria-controls="fbPanel" title="Enviar feedback">
+      <i class="fa-regular fa-comment-dots ic-abrir" aria-hidden="true"></i>
+      <i class="fa-solid fa-xmark ic-x" aria-hidden="true"></i>
+    </button>
+
+    <!-- Feedbacks registrados: lista com data, nome, tela e feedback. -->
+    <div class="fb-panel lst" id="fbListPanel" role="dialog" aria-labelledby="fbListTitle" aria-hidden="true">
+      <h2 id="fbListTitle"><i class="fa-solid fa-list-ul" aria-hidden="true"></i>Feedbacks registrados</h2>
+      <span class="fb-tela"><i class="fa-solid fa-mobile-screen" aria-hidden="true"></i><span data-fb-tela></span></span>
+      <div class="fb-list" id="fbList"></div>
+      <div class="fb-vazio" id="fbVazio">
+        <i class="fa-regular fa-comment-dots" aria-hidden="true"></i>
+        Nenhum feedback registrado para esta tela.
+      </div>
+    </div>
+    <button type="button" class="fb-fab lst" id="fbListFab" aria-label="Ver feedbacks registrados" aria-expanded="false" aria-controls="fbListPanel" title="Feedbacks registrados">
+      <i class="fa-solid fa-list-ul ic-abrir" aria-hidden="true"></i>
+      <i class="fa-solid fa-xmark ic-x" aria-hidden="true"></i>
+      <span class="fb-count" id="fbCount" hidden>0</span>
+    </button>
+  </div>
+
   <script>
     // ================================================================
     // Fluxo remodelado de Biometria / Assinatura Digital (em construção).
@@ -2599,6 +2819,7 @@
       $("simCode").textContent = code;
       $("simName").textContent = NOMES[code] || "";
       renderNotas(code);
+      atualizarTelaFeedback(); // feedbacks são por tela
       var s = st.signers && st.signers[st.cur];
       $("simWho").textContent = s ? "Assinando: " + s.papel + " (" + s.tipo.toUpperCase() + ") · " + s.nome : "";
       var jump = $("simJump");
@@ -3757,6 +3978,293 @@
     pintarPainel();
     fitPhone();
     openIntro();
+
+    // ================================================================
+    // Feedback: botões flutuantes, formulário e lista de feedbacks registrados
+    // ================================================================
+    // Formulário: botão no vão entre o celular e as notas, alinhado à base do aparelho.
+    // Lista: botão no vão entre o painel de simulação e o celular. Cada painel cobre a
+    // coluna do celular e termina com um canto no centro do seu botão, que fica por cima:
+    // botão e painel formam uma peça só.
+    function posicionarFeedback() {
+      var W = window.innerWidth, H = window.innerHeight;
+      var fab = $("fbFab"), panel = $("fbPanel"), lfab = $("fbListFab"), lpanel = $("fbListPanel");
+      var r = fab.offsetWidth / 2, cx, cy, lx;
+      if (W <= 1000) {
+        [fab, lfab].forEach(function (b) { b.style.left = ""; b.style.bottom = ""; b.style.right = ""; });
+        cx = W - 16 - r; lx = 16 + r; cy = H - 20 - r;
+        panel.style.left = Math.max(16, cx - 420) + "px";
+        lpanel.style.right = Math.max(16, W - lx - 420) + "px";
+        panel.style.top = lpanel.style.top = Math.max(16, cy - 600) + "px";
+      } else {
+        var cel = slot.getBoundingClientRect(), notas = $("notes").getBoundingClientRect(), sim = $("sim").getBoundingClientRect();
+        var palco = stage.getBoundingClientRect();
+        var colEsq = Math.round(palco.left + palco.width * 0.33 + 24), colDir = Math.round(palco.left + palco.width * 0.67 - 24);
+        cx = Math.round((cel.right + notas.left) / 2);
+        lx = Math.round((sim.right + cel.left) / 2);
+        cy = Math.round(cel.bottom - r);
+        [[fab, cx], [lfab, lx]].forEach(function (p) {
+          p[0].style.right = "auto";
+          p[0].style.left = (p[1] - r) + "px";
+          p[0].style.bottom = (H - cel.bottom) + "px";
+        });
+        panel.style.left = colEsq + "px";
+        lpanel.style.right = (W - colDir) + "px";
+        panel.style.top = lpanel.style.top = Math.round(cel.top) + "px";
+      }
+      panel.style.right = (W - cx) + "px";
+      lpanel.style.left = lx + "px";
+      panel.style.bottom = lpanel.style.bottom = (H - cy) + "px";
+    }
+    posicionarFeedback();
+    window.addEventListener("resize", posicionarFeedback);
+    // A largura do painel muda com a janela: refaz a lista para saber quem passa de uma linha.
+    window.addEventListener("resize", function () { if (painelAberto("lista")) pintarLista(); });
+
+    // Abre ou fecha um dos painéis; abrir um fecha o outro.
+    var FB_PAINEIS = {
+      form: { panel: "fbPanel", fab: "fbFab", rotulo: "Enviar feedback", fechar: "Fechar feedback" },
+      lista: { panel: "fbListPanel", fab: "fbListFab", rotulo: "Ver feedbacks registrados", fechar: "Fechar feedbacks registrados" }
+    };
+    function painelAberto(qual) { return $(FB_PAINEIS[qual].panel).classList.contains("open"); }
+    function abrirPainel(qual, abrir) {
+      var p = FB_PAINEIS[qual], fab = $(p.fab);
+      if (abrir) Object.keys(FB_PAINEIS).forEach(function (k) { if (k !== qual && painelAberto(k)) abrirPainel(k, false); });
+      $(p.panel).classList.toggle("open", abrir);
+      $(p.panel).setAttribute("aria-hidden", abrir ? "false" : "true");
+      fab.classList.toggle("open", abrir);
+      fab.setAttribute("aria-expanded", abrir ? "true" : "false");
+      fab.setAttribute("aria-label", abrir ? p.fechar : p.rotulo);
+      fab.title = abrir ? "Fechar" : p.rotulo;
+      if (qual === "form") {
+        if (abrir) setTimeout(function () { $("fbNome").focus(); }, 120);
+        // Fechou (pelo X, Esc ou sozinho depois do registro): depois da animação de fechar,
+        // o formulário volta e TODOS os campos ficam vazios para a próxima abertura. Só os
+        // nomes salvos (badges) continuam, e valem para todas as telas.
+        else {
+          clearTimeout(fbTimer);
+          setTimeout(function () {
+            if (painelAberto("form")) return;
+            voltarAoFormulario();
+            $("fbNome").value = "";
+            $("fbTexto").value = "";
+            validarFeedback();
+          }, 260);
+        }
+      }
+      if (qual === "lista" && abrir) pintarLista();
+    }
+    function abrirFeedback(abrir) { abrirPainel("form", abrir); }
+    $("fbFab").addEventListener("click", function () { abrirPainel("form", !painelAberto("form")); });
+    $("fbListFab").addEventListener("click", function () { abrirPainel("lista", !painelAberto("lista")); });
+    document.addEventListener("keydown", function (e) {
+      if (e.key !== "Escape") return;
+      Object.keys(FB_PAINEIS).forEach(function (k) {
+        if (painelAberto(k)) { abrirPainel(k, false); $(FB_PAINEIS[k].fab).focus(); }
+      });
+    });
+
+    // Feedbacks registrados: data, nome e texto, separados por tela, o mais recente primeiro.
+    // Ficam guardados neste navegador.
+    // "Tela" é a mesma unidade da coluna "Melhorias desta tela": as variações de estado de
+    // uma tela (ex.: lista com alguém aguardando ou com todos concluídos) contam como uma só.
+    var FB_LISTA_KEY = "bio_feedbacks";
+    var fbLista = [];
+    try { fbLista = JSON.parse(localStorage.getItem(FB_LISTA_KEY) || "[]") || []; } catch (err) { fbLista = []; }
+    function telaAtual() {
+      var chave = NOTA_POR_CODIGO[st.code] || st.code || "intro";
+      return { chave: chave, nome: (NOTAS[chave] && NOTAS[chave].titulo) || NOMES[st.code] || "" };
+    }
+    // Registros antigos guardavam só o nome da tela: descobre a qual tela pertencem.
+    fbLista.forEach(function (f) {
+      if (f.telaChave) return;
+      var cod = Object.keys(NOMES).filter(function (c) { return NOMES[c] === f.tela; })[0];
+      f.telaChave = (cod && NOTA_POR_CODIGO[cod]) || "";
+    });
+    function dataHora(iso) {
+      var d = new Date(iso), z = function (n) { return String(n).padStart(2, "0"); };
+      return z(d.getDate()) + "/" + z(d.getMonth() + 1) + "/" + d.getFullYear() + " · " + z(d.getHours()) + ":" + z(d.getMinutes());
+    }
+    // Os dois painéis acompanham a tela aberta no celular (mesmo abertos, se a tela mudar).
+    function atualizarTelaFeedback() {
+      if (!$("fbList")) return;
+      var nome = telaAtual().nome;
+      document.querySelectorAll("[data-fb-tela]").forEach(function (el) { el.textContent = nome; });
+      pintarLista();
+    }
+    function pintarLista() {
+      var box = $("fbList"), chave = telaAtual().chave;
+      var daTela = (fbLista || [])
+        .filter(function (f) { return f.telaChave === chave; })
+        .sort(function (a, b) { return new Date(b.data) - new Date(a.data); });
+      box.innerHTML = "";
+      daTela.forEach(function (f) {
+        var item = document.createElement("article");
+        item.className = "fb-item";
+        var topo = document.createElement("div");
+        topo.className = "fb-item-top";
+        var nome = document.createElement("b");
+        nome.textContent = f.nome;
+        var quando = document.createElement("time");
+        quando.dateTime = f.data;
+        quando.textContent = dataHora(f.data);
+        topo.appendChild(nome);
+        topo.appendChild(quando);
+        item.appendChild(topo);
+        var txt = document.createElement("div");
+        txt.className = "fb-txt";
+        var texto = document.createElement("p");
+        texto.className = "clamp";
+        texto.textContent = f.texto;
+        txt.appendChild(texto);
+        var mais = document.createElement("button");
+        mais.type = "button";
+        mais.className = "fb-mais";
+        mais.textContent = "ver tudo";
+        mais.setAttribute("aria-expanded", "false");
+        mais.addEventListener("click", function () { expandirItem(item, texto.classList.contains("clamp")); });
+        txt.appendChild(mais);
+        item.appendChild(txt);
+        box.appendChild(item);
+      });
+      // "ver tudo" só nos comentários que passam de uma linha (medido já recolhido).
+      box.querySelectorAll(".fb-item").forEach(function (item) {
+        var p = item.querySelector("p");
+        item.querySelector(".fb-mais").hidden = p.scrollHeight <= p.clientHeight + 1;
+      });
+      $("fbCount").textContent = daTela.length > 99 ? "99+" : daTela.length;
+      $("fbCount").hidden = !daTela.length; // sem feedbacks na tela, sem contador
+      box.hidden = !daTela.length;
+      $("fbVazio").hidden = !!daTela.length;
+    }
+    // Expande um comentário (e recolhe o que estiver aberto: só um expandido por vez) ou recolhe.
+    function expandirItem(item, expandir) {
+      if (expandir) {
+        $("fbList").querySelectorAll(".fb-item").forEach(function (outro) {
+          if (outro !== item) expandirItem(outro, false);
+        });
+      }
+      // Transição suave (320 ms, no CSS): anima a altura máxima entre 1 linha e o texto todo.
+      var p = item.querySelector("p");
+      if (expandir === !p.classList.contains("clamp")) return;
+      if (expandir) {
+        p.style.maxHeight = p.clientHeight + "px";
+        p.classList.remove("clamp");
+        void p.offsetHeight;
+        p.style.maxHeight = p.scrollHeight + "px";
+        p.addEventListener("transitionend", function fim() {
+          p.removeEventListener("transitionend", fim);
+          if (!p.classList.contains("clamp")) p.style.maxHeight = "none"; // aberto, acompanha a largura
+        });
+      } else {
+        p.style.maxHeight = p.scrollHeight + "px";
+        void p.offsetHeight;
+        p.classList.add("clamp");
+        p.style.maxHeight = "";
+      }
+      var b = item.querySelector(".fb-mais");
+      b.textContent = expandir ? "recolher" : "ver tudo";
+      b.setAttribute("aria-expanded", expandir ? "true" : "false");
+    }
+    function guardarFeedback(nome, texto) {
+      var t = telaAtual();
+      fbLista.push({ data: new Date().toISOString(), nome: nome, texto: texto, telaChave: t.chave, tela: t.nome });
+      try { localStorage.setItem(FB_LISTA_KEY, JSON.stringify(fbLista)); } catch (err) {}
+      pintarLista();
+    }
+    atualizarTelaFeedback();
+
+    // Nomes salvos (badges): ficam neste navegador, para o próximo feedback ser mais rápido.
+    var FB_NOMES_KEY = "bio_feedback_nomes";
+    var fbNomes = [];
+    try { fbNomes = JSON.parse(localStorage.getItem(FB_NOMES_KEY) || "[]") || []; } catch (err) { fbNomes = []; }
+    function nomeSalvo(nome) {
+      var n = nome.trim().toLowerCase();
+      return fbNomes.some(function (x) { return x.toLowerCase() === n; });
+    }
+    function pintarBadges() {
+      var atual = $("fbNome").value.trim().toLowerCase(), box = $("fbBadges");
+      box.innerHTML = "";
+      fbNomes.forEach(function (nome, i) {
+        var b = document.createElement("span");
+        b.className = "fb-badge" + (nome.toLowerCase() === atual ? " on" : "");
+        var usar = document.createElement("button");
+        usar.type = "button";
+        usar.className = "bn";
+        usar.title = "Usar este nome";
+        usar.innerHTML = '<i class="fa-solid fa-user" aria-hidden="true"></i>';
+        usar.appendChild(document.createTextNode(nome));
+        usar.addEventListener("click", function () {
+          $("fbNome").value = nome;
+          validarFeedback();
+          $("fbTexto").focus();
+        });
+        var apagar = document.createElement("button");
+        apagar.type = "button";
+        apagar.className = "bx";
+        apagar.title = "Apagar este nome";
+        apagar.setAttribute("aria-label", "Apagar " + nome);
+        apagar.innerHTML = '<i class="fa-solid fa-xmark" aria-hidden="true"></i>';
+        apagar.addEventListener("click", function () {
+          fbNomes.splice(i, 1);
+          guardarNomes();
+          validarFeedback();
+        });
+        b.appendChild(usar);
+        b.appendChild(apagar);
+        box.appendChild(b);
+      });
+      box.hidden = !fbNomes.length;
+    }
+    function guardarNomes() {
+      try { localStorage.setItem(FB_NOMES_KEY, JSON.stringify(fbNomes)); } catch (err) {}
+    }
+    $("fbSalvar").addEventListener("click", function () {
+      var nome = $("fbNome").value.trim().replace(/\s+/g, " ");
+      if (!nome || nomeSalvo(nome)) return;
+      fbNomes.push(nome);
+      guardarNomes();
+      validarFeedback();
+    });
+
+    // "Registrar Feedback" só libera com nome e feedback preenchidos; "salvar nome" só
+    // com um nome que ainda não virou badge. Os badges marcam o nome em uso.
+    function validarFeedback() {
+      var nome = $("fbNome").value.trim();
+      $("fbRegistrar").disabled = !nome || !$("fbTexto").value.trim();
+      var salvo = !!nome && nomeSalvo(nome);
+      $("fbSalvar").disabled = !nome || salvo;
+      $("fbSalvar").title = salvo ? "Nome já salvo" : "Salvar nome";
+      pintarBadges();
+    }
+    $("fbNome").addEventListener("input", validarFeedback);
+    $("fbTexto").addEventListener("input", validarFeedback);
+
+    // Registrado: o painel mostra só a confirmação, centralizada, e fecha sozinho em 3 s.
+    // Na próxima abertura, o formulário volta (o nome fica, para o próximo feedback).
+    var FB_FECHAR_MS = 3000;
+    var fbTimer = null;
+    function voltarAoFormulario() {
+      clearTimeout(fbTimer);
+      fbTimer = null;
+      $("fbPanel").classList.remove("sent");
+    }
+    $("fbRegistrar").addEventListener("click", function () {
+      var nome = $("fbNome").value.trim().replace(/\s+/g, " ");
+      guardarFeedback(nome, $("fbTexto").value.trim());
+      $("fbTexto").value = "";
+      validarFeedback();
+      $("fbDoneText").textContent = "Obrigado, " + nome.split(" ")[0] + "!";
+      $("fbPanel").classList.add("sent");
+      fbTimer = setTimeout(function () { abrirFeedback(false); }, FB_FECHAR_MS);
+    });
+    $("fbLimpar").addEventListener("click", function () {
+      $("fbNome").value = "";
+      $("fbTexto").value = "";
+      validarFeedback();
+      $("fbNome").focus();
+    });
+    validarFeedback(); // mostra os nomes já salvos
   </script>
 
 </body>
