@@ -4,42 +4,64 @@ Consolidação das avaliações deixadas pelos assinantes ao final do fluxo (tel
 
 ## Base analisada
 
-- **Fonte:** planilha `avaliacoes_assinatura_remota_honda_estudo_caso.xlsx`, aba "Comentarios_Anonimos" (nota, comentário e data).
-- **Período:** 01/09/2026 a 15/10/2026.
-- **Total:** 305 avaliações com comentário.
+- **Fontes** (nota, comentário e data):
+  - planilha `avaliacoes_assinatura_remota_honda_estudo_caso.xlsx`, aba "Comentarios_Anonimos": 305 comentários de 01/09 a 15/10/2026;
+  - exportação `Exportacao_2096.csv`: 21.469 avaliações de 16/10 a 12/11/2026, das quais 202 têm comentário.
+- **Período:** 01/09/2026 a 12/11/2026, sem sobreposição entre as duas fontes.
+- **Total:** 507 avaliações com comentário (305 + 202).
 
 | Nota | Avaliações | % |
 |------|-----------:|--:|
-| ★ 1 | 52 | 17% |
-| ★★ 2 | 43 | 14% |
-| ★★★ 3 | 100 | 33% |
-| ★★★★ 4 | 108 | 35% |
-| ★★★★★ 5 | 2 | 1% |
+| ★ 1 | 95 | 19% |
+| ★★ 2 | 58 | 11% |
+| ★★★ 3 | 169 | 33% |
+| ★★★★ 4 | 181 | 36% |
+| ★★★★★ 5 | 4 | 1% |
 
-**Média: 2,9.** Quase não há notas 5 porque o pedido de comentário só aparece com nota até 4 (R02). A planilha mostra, portanto, **quem teve alguma insatisfação**, e não a satisfação geral de todos os assinantes.
+**Média: 2,9.** Quase não há notas 5 porque o pedido de comentário só aparece com nota até 4 (R02). Os comentários mostram, portanto, **quem teve alguma insatisfação**, e não a satisfação geral de todos os assinantes.
 
-**Do que tratam os 305 comentários:**
-- **82 (27%)** são elogios, comentários neutros ou vazios ("Bom", "Ok", ".");
-- **24 (8%)** são críticas genéricas, sem dizer o motivo ("Péssimo", "Muito ruim");
-- **199** têm crítica ou sugestão específica. Somados às genéricas, são **223 comentários com crítica**, e é sobre esse total que os percentuais abaixo são calculados.
+**Satisfação geral (só na exportação nova):** a exportação traz também as notas sem comentário. Das 21.469 avaliações de 16/10 a 12/11, **90% deram nota 5**, e a **média geral é 4,8**. A planilha original não tem esse dado, então ele não pode ser somado ao período anterior.
+
+| Nota | Avaliações (16/10 a 12/11) | % |
+|------|-----------:|--:|
+| ★ 1 | 269 | 1% |
+| ★★ 2 | 242 | 1% |
+| ★★★ 3 | 566 | 3% |
+| ★★★★ 4 | 1.147 | 5% |
+| ★★★★★ 5 | 19.245 | 90% |
+
+**Do que tratam os 507 comentários:**
+- **141 (28%)** são elogios, comentários neutros ou vazios ("Bom", "Ok", "."): 82 na planilha e 59 na exportação;
+- **43 (8%)** são críticas genéricas, sem dizer o motivo ("Péssimo", "Muito difícil"): 24 + 19;
+- **323** têm crítica ou sugestão específica (199 + 124). Somados às genéricas, são **366 comentários com crítica** (223 + 143), e é sobre esse total que os percentuais abaixo são calculados.
 
 ## Ranking das críticas
 
+Menções somadas: planilha original + exportação nova. Um comentário pode citar mais de um tema.
+
 | # | Tema | Menções | % das críticas | Prioridade |
 |---|------|--------:|---------------:|-----------|
-| 1 | Rubrica / assinar com o dedo na tela | 73 | 33% | **Alta** |
-| 2 | Leitura do contrato e dos termos no celular | 41 | 18% | **Alta** |
-| 3 | Pedido de outra forma de assinar (gov.br, digitada, papel) | 27 | 12% | **Alta** |
-| 4 | Captura facial / selfie difícil | 20 | 9% | Média |
-| 4 | Lentidão, travamentos e erros | 20 | 9% | Média |
-| 6 | Processo longo, burocrático ou em ordem ruim | 12 | 5% | Média |
-| 7 | Envio do documento de identificação | 11 | 5% | Média |
-| 8 | Dispositivo e navegador (só celular, Chrome) | 7 | 3% | Baixa |
-| 9 | Pontuais (token, atendimento, seguro, contraste, acessibilidade…) | 12 | 5% | Baixa |
+| 1 | Rubrica / assinar com o dedo na tela | 120 (73 + 47) | 33% | **Alta** |
+| 2 | Leitura do contrato e dos termos no celular | 65 (41 + 24) | 18% | **Alta** |
+| 3 | Pedido de outra forma de assinar (gov.br, digitada, papel) | 42 (27 + 15) | 11% | **Alta** |
+| 4 | Lentidão, travamentos e erros | 37 (20 + 17) | 10% | Média |
+| 5 | Captura facial / selfie difícil | 35 (20 + 15) | 10% | Média |
+| 6 | Processo longo, burocrático ou em ordem ruim | 18 (12 + 6) | 5% | Média |
+| 6 | Envio do documento de identificação | 18 (11 + 7) | 5% | Média |
+| 8 | Dispositivo e navegador (só celular, Chrome) | 13 (7 + 6) | 4% | Baixa |
+| 9 | Pontuais (token, atendimento, seguro, contraste, acessibilidade…) | 20 (12 + 8) | 5% | Baixa |
+
+**O que a exportação nova reforça:**
+- **Rubrica:** "Espaço maior para assinatura", "Não consigo ver minha assinatura na tela", "sugiro que a assinatura seja de modo horizontal", "poder dar zoom no espaço sem limpar a tela", "ter a opção de voltar um pouco só sem apagar tudo".
+- **Contrato:** "Tive que usar lupa", "mesmo virando o celular não dava pra ampliar direito", "Falta a opção de impressão", "Poderiam enviar por email".
+- **gov.br e alternativas:** "Usar certificado digital ou gov br no lugar de rubrica", "Assinatura digital de verdade padrão ICP Brasil".
+- **Selfie:** "quando redirecionada para que eu mesma fizesse a selfie, não constava 'botão' para fazer a selfie. Tive que solicitar novo link", "Sou idoso com assimetria facial. Foi bem trabalhoso".
+- **Lentidão e erros:** "Estou tentando desde ontem", "quando não lê perde tudo", "voltar apenas um passo invés de voltar tudo".
+- **Processo:** "Não entendi porque teve essa etapa novamente se já tínhamos feito uma ontem".
 
 ---
 
-### 1. Rubrica / assinar com o dedo na tela — 73 menções · prioridade alta
+### 1. Rubrica / assinar com o dedo na tela — 120 menções · prioridade alta
 
 **O que os usuários dizem:**
 - "Campo para assinatura muito pequeno" — o motivo mais citado: espaço, quadrado ou campo pequeno.
@@ -66,7 +88,7 @@ Consolidação das avaliações deixadas pelos assinantes ao final do fluxo (tel
   - oferecer a rubrica digitada (nome em fonte manuscrita);
   - mostrar uma confirmação clara de que a rubrica foi registrada.
 
-### 2. Leitura do contrato e dos termos no celular — 41 menções · prioridade alta
+### 2. Leitura do contrato e dos termos no celular — 65 menções · prioridade alta
 
 **O que os usuários dizem:**
 - "Letras muito pequenas, difíceis de ler", "Letras muuuito miúdas. Tem q ficar maximizado".
@@ -85,7 +107,7 @@ Consolidação das avaliações deixadas pelos assinantes ao final do fluxo (tel
 - Mostrar o progresso entre os documentos ("1 de 2").
 - Avaliar mostrar o contrato **antes** da biometria (ver tema 6).
 
-### 3. Pedido de outra forma de assinar — 27 menções · prioridade alta
+### 3. Pedido de outra forma de assinar — 42 menções · prioridade alta
 
 **O que os usuários dizem:**
 - **gov.br (14):** "Poderia ser assinatura digital pelo gov", "via gov seria melhor e mais moderno".
@@ -98,7 +120,7 @@ Consolidação das avaliações deixadas pelos assinantes ao final do fluxo (tel
 - Oferecer a assinatura via **gov.br** é uma **decisão de negócio e jurídica**, porque depende de integração. Vale levar ao P.O. como um dado de peso: é o pedido espontâneo mais repetido.
 - Enquanto isso não for decidido, o remake pode atender boa parte desse incômodo com a rubrica digitada ou opcional (tema 1).
 
-### 4. Captura facial / selfie — 20 menções · prioridade média
+### 5. Captura facial / selfie — 35 menções · prioridade média
 
 **O que os usuários dizem:**
 - "A parte de tirar a foto não funciona com nenhuma luz do mundo".
@@ -117,7 +139,7 @@ Consolidação das avaliações deixadas pelos assinantes ao final do fluxo (tel
 - Usar uma selfie só quando o SPF permitir (R06).
 - Incluir apoio de acessibilidade, como áudio e vibração.
 
-### 4. Lentidão, travamentos e erros — 20 menções · prioridade média
+### 4. Lentidão, travamentos e erros — 37 menções · prioridade média
 
 **O que os usuários dizem:**
 - "O 'aguarde instantes' demora MUITO, não são instantes".
@@ -136,7 +158,7 @@ Consolidação das avaliações deixadas pelos assinantes ao final do fluxo (tel
 - Tratar o botão "voltar" do celular.
 - Deixar as telas mais leves (é uma questão técnica para o time de desenvolvimento).
 
-### 6. Processo longo, burocrático ou em ordem ruim — 12 menções · prioridade média
+### 6. Processo longo, burocrático ou em ordem ruim — 18 menções · prioridade média
 
 **O que os usuários dizem:**
 - "Muita coisa para formalizar", "Muito burocrático".
@@ -149,7 +171,7 @@ Consolidação das avaliações deixadas pelos assinantes ao final do fluxo (tel
 - Mostrar um indicador de etapas e o tempo estimado logo no início.
 - Validar com o negócio se é possível **ler o contrato primeiro** e fazer a biometria por último, como confirmação de identidade.
 
-### 7. Envio do documento de identificação — 11 menções · prioridade média
+### 6. Envio do documento de identificação — 18 menções · prioridade média
 
 **O que os usuários dizem:**
 - "Difícil anexar documento", "Leitor de documentação não reconhece o documento".
@@ -167,7 +189,7 @@ Consolidação das avaliações deixadas pelos assinantes ao final do fluxo (tel
 - Usar mensagens de erro específicas, incluindo a de lado errado (R11).
 - Levar ao negócio a aceitação do RG digital (CIN) e do passaporte.
 
-### 8. Dispositivo e navegador — 7 menções · prioridade baixa
+### 8. Dispositivo e navegador — 13 menções · prioridade baixa
 
 **O que os usuários dizem:**
 - "Poder fazer via computador", "deixar ler em dispositivo computador".
@@ -176,7 +198,7 @@ Consolidação das avaliações deixadas pelos assinantes ao final do fluxo (tel
 
 **Oportunidade no remake:** a biometria precisa da câmera do celular. Mas a **leitura do contrato** poderia ser feita também no computador, por um link ou PDF enviado antes (ligação com o tema 2). Testar a compatibilidade com os principais navegadores.
 
-### 9. Pontuais — 12 menções · prioridade baixa
+### 9. Pontuais — 20 menções · prioridade baixa
 
 - **Token:** "Sobre o código tem q ser mais claro" (000).
 - **Navegação:** "O botão próximo fica escondido" (termos).

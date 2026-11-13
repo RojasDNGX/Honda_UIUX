@@ -256,7 +256,7 @@ Modelo por regra:
 
 ### D01 — Retirar a rubrica
 A rubrica (016 e 016-5) **sai do remake**, também no presencial e no SPF.
-**Motivo:** ela não precisa ser igual a nenhuma assinatura oficial de documento de identidade, e a selfie e a captura do documento já garantem a identificação. Era a crítica nº 1 do feedback (73 menções, 33%) e já não era obrigatória no fluxo atual (R09).
+**Motivo:** ela não precisa ser igual a nenhuma assinatura oficial de documento de identidade, e a selfie e a captura do documento já garantem a identificação. Era a crítica nº 1 do feedback (120 menções, 33%) e já não era obrigatória no fluxo atual (R09).
 **Efeito no fluxo:** depois do aceite dos termos vem a próxima etapa direto (SPF, se houver, ou a avaliação). A R05 (rubrica só no presencial) deixa de valer no remake.
 
 ### D02 — Contrato em texto, com aceite liberado ao fim da rolagem
@@ -264,7 +264,7 @@ A rubrica (016 e 016-5) **sai do remake**, também no presencial e no SPF.
 - **Formato novo:** o contrato deixa de ser um PDF num visualizador pequeno e passa a ser **reescrito como texto** legível no celular, no estilo dos termos de instalação de jogos e aplicativos.
 - **Aceite:** o botão **"Aceito"** só fica liberado para toque depois que a pessoa **rolar o texto até o fim**.
 
-**Motivo:** a leitura do contrato foi a crítica nº 2 (41 menções, 18%): letras pequenas e falta de zoom.
+**Motivo:** a leitura do contrato foi a crítica nº 2 (65 menções, 18%): letras pequenas e falta de zoom.
 **A definir no desenvolvimento:**
 - como mostrar os dois documentos (Proposta e Orçamento CDC) e o termo do SPF;
 - se o resumo dos valores principais fica no topo.
@@ -441,7 +441,7 @@ Fonte: história do P.O. da Plataforma F&I e de Formalização (print enviado pe
 ### Dúvidas abertas
 
 18. **011-1 (ordem invertida):** o aviso genérico de baixa qualidade tem botão para tentar de novo, ou o processo trava ali? _(O usuário vai verificar; na réplica, sem retorno.)_
-19. **Feedback dos usuários:** a planilha se chama "assinatura_remota", mas 73 comentários criticam a rubrica, que pela R05 só existe no presencial. "Assinatura Remota" é o nome do produto (como no menu do Painel KTA) e a planilha inclui avaliações dos dois canais? _(Ver FEEDBACK.md.)_
+19. **Feedback dos usuários:** a planilha se chama "assinatura_remota", mas 120 comentários criticam a rubrica, que pela R05 só existe no presencial. "Assinatura Remota" é o nome do produto (como no menu do Painel KTA) e a planilha inclui avaliações dos dois canais? _(Ver FEEDBACK.md.)_
 
 ### Prints prometidos pelo usuário
 
