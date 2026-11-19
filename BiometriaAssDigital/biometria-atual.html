@@ -759,6 +759,14 @@
           <span>Link aberto por</span>
           <select id="simParte"></select>
         </div>
+        <!-- Estresse: o link recebido já expirou e foi renovado (foi enviado um link novo). -->
+        <div class="sim-field" id="fieldExpirado">
+          <span>Link expirado</span>
+          <div class="seg" data-key="expirado">
+            <button type="button" data-v="sim">Sim</button>
+            <button type="button" data-v="nao">Não</button>
+          </div>
+        </div>
         <button type="button" class="sim-btn" id="simRestart">Reiniciar fluxo</button>
       </div>
 
@@ -1243,7 +1251,7 @@
       "016-2": "SPF: captura facial", "016-3": "SPF: aguarde", "016-4": "SPF: termo do seguro",
       "016-5": "SPF: rubrica", "017": "Obrigado! (avaliação)", "017-1": "Nota até 4: sugerir melhorias",
       "017-2": "Deixe sua opinião", "017-3": "Opinião digitada", "017-4": "Opinião enviada",
-      "018": "Assinatura finalizada"
+      "018": "Assinatura finalizada", "000-E": "Link expirado (renovado)"
     };
 
     // Modo referência (?ref): o remake abre esta página num iframe sobre o celular para
@@ -1252,7 +1260,7 @@
     if (REF) document.documentElement.classList.add("ref");
 
     // Cenário escolhido no painel (persistido só como conveniência deste navegador).
-    var cenario = { canal: "presencial", tipo0: "cpf", tipo1: "cpf", tipo2: "cpf", avalistas: "1", spf: "sim", aguarde: "sim", parte: "0" };
+    var cenario = { canal: "presencial", tipo0: "cpf", tipo1: "cpf", tipo2: "cpf", avalistas: "1", spf: "sim", aguarde: "sim", parte: "0", expirado: "nao" };
     var CENARIO_PADRAO = JSON.stringify(cenario);
     if (!REF) try {
       var salvo = JSON.parse(localStorage.getItem("bio_atual_cenario") || "null");
@@ -1302,7 +1310,8 @@
       }
       if (isRemoto()) {
         st.cur = Math.min(parseInt(cenario.parte, 10) || 0, n - 1);
-        openToken();
+        if (cenario.expirado === "sim") openExpirado(); // link antigo: não chega ao token
+        else openToken();
       } else {
         openLista();
       }
@@ -1958,6 +1967,15 @@
       show("s-fim", "018");
     }
 
+    // ---------- 000-E · Link expirado (remoto) ----------
+    // O link foi renovado (um link novo foi enviado). Quem abre o antigo cai direto nesta
+    // tela, que não explica o que houve: parece que a assinatura já terminou.
+    function openExpirado() {
+      $("fimTitle").textContent = "Assinantes Concessionária";
+      $("fimText").textContent = "Assinatura finalizada para todos os assinantes";
+      show("s-fim", "000-E");
+    }
+
     // ================================================================
     // Painel de simulação
     // ================================================================
@@ -1976,6 +1994,7 @@
       var temAval = cenario.avalistas !== "0";
       $("fieldAguarde").style.display = (!remoto && temAval) ? "" : "none";
       $("fieldParte").style.display = (remoto && temAval) ? "" : "none";
+      $("fieldExpirado").style.display = remoto ? "" : "none";
       // Linhas de CPF/CNPJ dos avalistas só aparecem conforme a quantidade escolhida.
       document.querySelectorAll("[data-tipo-row]").forEach(function (row) {
         row.style.display = parseInt(row.getAttribute("data-tipo-row"), 10) <= parseInt(cenario.avalistas, 10) ? "" : "none";
@@ -2012,6 +2031,7 @@
       ["000-1", "000-1 · Erro: código incorreto", function () { forcarCanal("remoto"); openToken("000-1"); }],
       ["000-2", "000-2 · Erro: token incompleto", function () { forcarCanal("remoto"); openToken("000-2"); }],
       ["000-V", "000-V · Vídeo tutorial", function () { forcarCanal("remoto"); openVideo(); }],
+      ["000-E", "000-E · Link expirado", function () { forcarCanal("remoto"); openExpirado(); }],
       ["001", "001 · Assinantes Concessionária", function () { forcarCanal("presencial"); openLista(); }],
       ["002", "002 · Captura da Foto (consentimento)", openConsent],
       ["003", "003 · Dicas da selfie", function () { openTips("padrao"); }],

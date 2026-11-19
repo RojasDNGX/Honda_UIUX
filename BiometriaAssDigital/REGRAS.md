@@ -34,6 +34,7 @@ Prints de referência: `C:\Users\Thiago.Rojas\Downloads\UX_Biometria` (Android, 
 | 000-1 | Erro: token incorreto | Mensagem em vermelho "Código incorreto, tente novamente." e campo limpo. |
 | 000-2 | Erro: token incompleto | Mensagem em vermelho "O Token deve possuir 6 dígitos". |
 | 000-V | Vídeo tutorial (_sem print_) | Abre pelo "CLIQUE AQUI E CONFIRA". Vídeo 16:9 centralizado na vertical da tela e botão **"Entendi"** abaixo, que volta para a 000. |
+| 000-E | Link expirado (só envio remoto) | O link recebido expirou e foi renovado (um link novo foi enviado). Abrir o link antigo leva direto a uma tela "Assinantes Concessionária" com o texto "Assinatura finalizada para todos os assinantes", sem token e sem explicar que o link expirou. Cenário de estresse no painel: "Link expirado". |
 | 001 | **Assinantes Concessionária** (só presencial) | Tabela NOME / CPF/CNPJ com link "Assinar" em cada assinante e botão "Atualizar Lista". |
 | 001-1 | Lista com parte não liberada | 2 assinantes: o primeiro com "Assinar", o segundo com **"Aguarde"** (texto sem link). |
 | 001-2 | Lista com todos liberados | 2 assinantes, os dois com "Assinar". |
@@ -96,6 +97,7 @@ Prints de referência: `C:\Users\Thiago.Rojas\Downloads\UX_Biometria` (Android, 
 
 ```
 [remoto]     000 ─(token ok)──────────────────┐   (000-1 / 000-2: erro, volta à 000; 000-V: vídeo → Entendi → 000)
+             (link expirado e renovado: abre direto a 000-E, beco sem saída)
 [presencial] QR Code → 001 ─(Assinar na parte)─┴→ 002 → 003 → 004 (2 capturas) → 005 → 006
                                                          (004-1: falha facial → Tentar novamente → 003)
                        (001-1: "Aguarde" + Atualizar Lista → 001-2)
@@ -408,6 +410,13 @@ _Condicionada à aprovação do jurídico da Honda._
 - A escolha **vale para o fluxo inteiro**: aumentar no contrato mantém o texto maior na assinatura, na avaliação etc. Os botões ficam desabilitados nos limites.
 - Aumenta tudo junto (textos, botões e cards), não só a letra do contrato, para o layout não quebrar.
 - O leitor do contrato **perdeu a barra própria** (A− / A+ / "Baixar PDF"). Um download por documento era redundante: a cópia completa (todos os documentos aceitos) fica no final, em **"Baixar cópia do contrato"** (D17).
+
+### D20 — Link expirado (remoto): dizer o que houve e levar ao link válido
+- Abrir um link já renovado leva à tela nova **000-X**, e não mais à "Assinantes Concessionária" com "Assinatura finalizada para todos os assinantes" (000-E da réplica).
+- A tela diz que **o link expirou**, que **um link novo foi enviado** (com o celular mascarado) e que a **assinatura ainda não foi feita**.
+- Botão **"Atualizar link"**: leva à tela de **Identificação (token)** do link válido (000).
+
+**Motivo:** no fluxo atual a pessoa recebe uma mensagem sem sentido para o cenário e fica num beco sem saída, sem suporte.
 
 ## Cenários futuros (só para conhecimento)
 

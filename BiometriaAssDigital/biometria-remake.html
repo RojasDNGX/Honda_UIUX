@@ -1080,6 +1080,14 @@
           <span>Link aberto por</span>
           <select id="simParte"></select>
         </div>
+        <!-- Estresse: o link recebido já expirou e foi renovado (foi enviado um link novo). -->
+        <div class="sim-field" id="fieldExpirado">
+          <span>Link expirado</span>
+          <div class="seg" data-key="expirado">
+            <button type="button" data-v="sim">Sim</button>
+            <button type="button" data-v="nao">Não</button>
+          </div>
+        </div>
         <button type="button" class="sim-btn" id="simRestart">Reiniciar fluxo</button>
       </div>
 
@@ -1257,6 +1265,24 @@
               <div class="rk-foot">
                 <button type="button" class="rk-btn" id="lockNew">Enviar novo código</button>
               </div>
+            </section>
+
+            <!-- 000-X · Link expirado (remoto): o link foi renovado e um novo foi enviado -->
+            <section class="scr" id="s-expirado">
+              <div class="rk-header"><span class="rk-logo"><b>HONDA</b><span>Serviços Financeiros</span></span></div>
+              <div class="rk-body" style="text-align:center">
+                <div class="rk-hero-ic" style="background:#fff0f2;margin-top:24px">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#D6001C" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1"/><path d="M3 3l18 18"/></svg>
+                </div>
+                <h1 class="rk-title">Este link expirou</h1>
+                <p class="rk-text">Ele foi substituído por um link novo, enviado para <b id="expFone">(11) 9••••-••00</b>. Sua assinatura <b>ainda não foi feita</b>.</p>
+                <div class="who-card" style="text-align:left;margin-top:22px">
+                  <div class="l">O que fazer agora</div>
+                  <div class="v" style="font-weight:500;line-height:1.45">Toque em "Atualizar link" para abrir o link válido e continuar a assinatura.</div>
+                </div>
+                <div class="rk-spacer"></div>
+              </div>
+              <div class="rk-foot"><button type="button" class="rk-btn" id="expAtualizar">Atualizar link</button></div>
             </section>
 
             <!-- 000-V · Vídeo "Como funciona" -->
@@ -1975,7 +2001,7 @@
       "INTRO": "Introdução às melhorias (só no simulador)",
       "000":"Token: digitar o código", "000-E": "Token: código incorreto (tentativas restantes)",
       "000-OK": "Token: código confirmado", "000-B": "Token: bloqueado após 5 tentativas",
-      "000-V": "Vídeo \"Como funciona\"", "001": "Assinaturas da proposta",
+      "000-V": "Vídeo \"Como funciona\"", "000-X": "Link expirado (renovado)", "001": "Assinaturas da proposta",
       "001-A": "Assinaturas: parte aguardando liberação", "001-C": "Assinaturas: todas concluídas",
       "BV": "Boas-vindas: quem assina, etapas e tempo", "PRÓX": "Próximas etapas (em construção)",
       "002": "Selfie: dicas e consentimento", "002-T": "Selfie: termo completo",
@@ -2050,6 +2076,20 @@
           { t: "Depois de 5 tentativas erradas, o acesso fica bloqueado por 5 minutos, com contagem regressiva.", alvo: "#s-lock .rk-text" },
           { t: "\"Enviar novo código\" libera na hora e zera as tentativas, para a pessoa não ficar presa.", alvo: "#lockNew" },
           { t: "O texto explica o motivo (segurança) sem culpar o usuário.", alvo: "#s-lock .rk-title" }
+        ]
+      },
+      expirado: {
+        titulo: "Link expirado", sub: "Só no envio remoto · tela nova",
+        antes: [
+          "Abrir um link que já foi renovado leva a uma tela \"Assinantes Concessionária\", própria do presencial.",
+          "O texto diz \"Assinatura finalizada para todos os assinantes\", mesmo sem a pessoa ter assinado, e não diz que o link expirou.",
+          "Não há botão nem próximo passo: a pessoa fica parada, sem suporte. <span class='tag fb'>Feedback: \"Tive que solicitar novo link\"</span>"
+        ],
+        depois: [
+          { t: "Título direto: o link expirou.", alvo: "#s-expirado .rk-title" },
+          { t: "Explica que um link novo foi enviado (com o celular mascarado) e que a assinatura ainda não foi feita.", alvo: "#s-expirado .rk-text" },
+          { t: "\"O que fazer agora\" diz o próximo passo.", alvo: "#s-expirado .who-card" },
+          { t: "\"Atualizar link\" leva direto à tela do token do link válido, sem a pessoa precisar procurar a mensagem nova.", alvo: "#expAtualizar" }
         ]
       },
       video: {
@@ -2407,7 +2447,7 @@
       }
     };
     var NOTA_POR_CODIGO = {
-      "INTRO": "intro", "000": "token", "000-E": "token", "000-OK": "token", "000-B": "lock", "000-V": "video",
+      "INTRO": "intro", "000": "token", "000-E": "token", "000-OK": "token", "000-B": "lock", "000-V": "video", "000-X": "expirado",
       "001": "lista", "001-A": "lista", "001-C": "lista", "BV": "welcome", "PRÓX": "next",
       "002": "selfie", "002-T": "selfie", "002-P": "selfie", "002-N": "camoff", "004": "fcam", "005": "fverify",
       "004-OK": "fok", "004-1": "ffail", "004-2": "fcancel", "004-2E": "fcancel", "FIM": "fend", "QR": "qr",
@@ -2432,6 +2472,7 @@
       token: [R("000", "#tokenInput, #tokenGo"), R("000-1", "#tokenError"), R("000-1", "#tokenError, #tokenGo"),
         R("000", "#s-token .scr-body > div:first-of-type, #tokenInput"), R("000", "#s-token .hp-title")],
       lock: [R("000-1", "#tokenError, #tokenGo")],
+      expirado: [R("000-E", "#fimTitle"), R("000-E", "#fimText"), R("000-E", "#s-fim .scr-body")],
       video: [R("000", "#tokenTips"), R("000-V", "#videoOk")],
       lista: [R("001", ".sig-table"), R("001", ".sig-wait, #sigRefresh"),
         R("001", "#sigBody tr:first-child", function (w) { w.st.signers[0].status = "concluido"; w.openLista(); }),
@@ -2603,7 +2644,7 @@
       st = s.st;
       var reabrir = {
         "INTRO": openIntro, "000": openToken, "000-E": openToken, "000-OK": openToken, "000-B": openLock,
-        "000-V": function () { openVideo(st.videoFrom); },
+        "000-V": function () { openVideo(st.videoFrom); }, "000-X": openExpirado,
         "001": function () { openLista(); }, "001-A": function () { openLista(); }, "001-C": function () { openLista(); },
         "BV": openWelcome, "PRÓX": function () { show("s-next", "PRÓX"); },
         "002": openSelfieIntro, "002-T": openSelfieIntro, "002-P": openSelfieIntro, "002-N": openCamOff,
@@ -2694,7 +2735,7 @@
       acenderHolofote(i);
     });
 
-    var cenario = { canal: "presencial", tipo0: "cpf", tipo1: "cpf", tipo2: "cpf", avalistas: "1", spf: "sim", aguarde: "sim", parte: "0" };
+    var cenario = { canal: "presencial", tipo0: "cpf", tipo1: "cpf", tipo2: "cpf", avalistas: "1", spf: "sim", aguarde: "sim", parte: "0", expirado: "nao" };
     try {
       var salvo = JSON.parse(localStorage.getItem("bio_remake_cenario") || "null");
       if (salvo) Object.keys(cenario).forEach(function (k) { if (salvo[k] != null) cenario[k] = String(salvo[k]); });
@@ -2850,11 +2891,21 @@
       }
       if (isRemoto()) {
         st.cur = Math.min(parseInt(cenario.parte, 10) || 0, n - 1);
-        openToken();
+        if (cenario.expirado === "sim") openExpirado(); // abriu o link antigo, já renovado
+        else openToken();
       } else {
         openLista();
       }
     }
+
+    // ---------- 000-X · Link expirado (remoto) ----------
+    // O link aberto foi renovado. Em vez do beco sem saída do fluxo atual, a tela diz o que
+    // houve e "Atualizar link" leva ao token do link válido.
+    function openExpirado() {
+      $("expFone").textContent = signer().fone;
+      show("s-expirado", "000-X");
+    }
+    $("expAtualizar").addEventListener("click", function () { openToken(); });
 
     // ---------- INTRO · só no simulador ----------
     function openIntro() {
@@ -3859,6 +3910,7 @@
       var remoto = isRemoto(), temAval = cenario.avalistas !== "0";
       $("fieldAguarde").style.display = (!remoto && temAval) ? "" : "none";
       $("fieldParte").style.display = (remoto && temAval) ? "" : "none";
+      $("fieldExpirado").style.display = remoto ? "" : "none";
       $("tokenHint").style.display = remoto ? "" : "none";
       $("listHint").style.display = (!remoto && temAval) ? "" : "none";
       document.querySelectorAll("[data-tipo-row]").forEach(function (row) {
@@ -3912,6 +3964,7 @@
       ["000","000 · Token", function () { forcarCanal("remoto"); openToken(); }],
       ["000-E", "000-E · Token: código incorreto", function () { forcarCanal("remoto"); openToken(); otpInput.value = "111111"; checkToken(); }],
       ["000-B", "000-B · Token: bloqueado", function () { forcarCanal("remoto"); openLock(); }],
+      ["000-X", "000-X · Link expirado", function () { forcarCanal("remoto"); openExpirado(); }],
       ["000-V", "000-V · Vídeo \"Como funciona\"", function () { openVideo("token"); }],
       ["001", "001 · Assinaturas da proposta", function () { forcarCanal("presencial"); openLista(); }],
       ["001-C", "001-C · Assinaturas: todas concluídas", function () {
