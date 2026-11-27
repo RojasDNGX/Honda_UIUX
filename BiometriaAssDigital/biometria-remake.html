@@ -65,6 +65,8 @@
   .version-switch {
     align-self: flex-end;
     display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
     gap: 6px;
   }
   .notes {
@@ -911,6 +913,24 @@
   .sim-intro { display: none; }
   .stage.intro .sim > :not(.sim-intro) { display: none; }
   .stage.intro .sim-intro { display: block; }
+  .sim-intro h2 { flex-wrap: wrap; gap: 6px 8px; }
+  .sim-title-group { display: inline-flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+  .sim-ver-tudo {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--red);
+    background: rgba(214, 0, 28, 0.06);
+    border: 1px solid rgba(214, 0, 28, 0.25);
+    border-radius: 999px;
+    padding: 3px 9px 3px 10px;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+  .sim-ver-tudo:hover { background: var(--red); border-color: var(--red); color: #fff; }
   .fb-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 14px; }
   .fb-stat { background: #f6f6f6; border-radius: 8px; padding: 9px 10px; }
   .fb-stat b { display: block; font-size: 20px; font-weight: 800; color: #111; line-height: 1.1; }
@@ -1142,8 +1162,14 @@
       <!-- Só na intro: o que a pesquisa de satisfação apontou (resumo do FEEDBACK.md). -->
       <div class="sim-intro">
         <h2>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D6001C" stroke-width="2"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
-          Pesquisa de satisfação
+          <span class="sim-title-group">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D6001C" stroke-width="2"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
+            Pesquisa de satisfação
+            <a class="sim-ver-tudo" href="pesquisa-satisfacao.html">
+              Ver tudo
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+            </a>
+          </span>
           <a class="sim-home" href="../index.html">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
             Voltar à Home
@@ -1902,6 +1928,7 @@
       <nav class="version-switch">
         <a class="version-tag" href="biometria-atual.html">Fluxo atual</a>
         <span class="version-tag active">Fluxo remodelado</span>
+        <a class="version-tag" href="pesquisa-satisfacao.html">Pesquisa de satisfação</a>
       </nav>
 
       <!-- Melhorias da tela aberta no celular: o que era problema e o que mudou. -->

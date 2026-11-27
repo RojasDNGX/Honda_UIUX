@@ -1,0 +1,1987 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Biometria / Ass. Digital - Pesquisa de Satisfação e Comparativo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #D6001C;
+    --red-dark: #AD0016;
+    --text-dark: #1a1a1a;
+    --rk-text: #1f1f1f;
+    --rk-muted: #6b6b6b;
+    --rk-line: #e4e4e4;
+    --rk-bg: #f1f1f1;
+    --rk-soft: #ffffff;
+    --rk-hover: #f7f7f8;
+    --rk-card-shadow: 0 6px 24px rgba(0,0,0,0.08);
+    --rk-card-sm-shadow: 0 1px 3px rgba(16, 24, 40, 0.06), 0 1px 2px rgba(16, 24, 40, 0.04);
+    --rk-green: #1e8e3e;
+    --rk-green-bg: #e8f5ec;
+    --rk-amber: #9a5b00;
+    --rk-amber-bg: #fff4e0;
+    --rk-blue: #1f5fbf;
+    --rk-blue-bg: #e9f0fb;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  [hidden] { display: none !important; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    color: var(--text-dark);
+    background: var(--rk-bg);
+    line-height: 1.5;
+  }
+  button, input, select, textarea { font-family: inherit; }
+
+  /* ===== Topbar (padrão Docs + versão do Biometria) ===== */
+  .topbar-strip { height: 4px; background: var(--red); }
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: #fff;
+    padding: 14px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  }
+  .topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .sim-home {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--red);
+    background: #fff;
+    border: 1px solid rgba(214, 0, 28, 0.25);
+    border-radius: 999px;
+    padding: 5px 12px 5px 9px;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+  .sim-home:hover { background: rgba(214, 0, 28, 0.08); }
+  .sim-home.ghost-btn { padding: 5px 12px; }
+  .scope {
+    font-size: 12.5px;
+    color: #888;
+    font-weight: 600;
+    padding-left: 6px;
+    border-left: 1px solid var(--rk-line);
+  }
+  .version-switch {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .version-tag {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--red);
+    background: #fff;
+    border: 1px solid rgba(214, 0, 28, 0.25);
+    border-radius: 999px;
+    padding: 5px 12px;
+    white-space: nowrap;
+    text-decoration: none;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+  a.version-tag:hover { background: rgba(214, 0, 28, 0.08); }
+  .version-tag.active { background: var(--red); border-color: var(--red); color: #fff; }
+
+  /* ===== Layout principal ===== */
+  .page {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 28px 24px 64px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: var(--rk-card-shadow);
+    padding: 20px 22px;
+  }
+
+  /* ===== Cabeçalho da página ===== */
+  .hero-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .eyebrow {
+    color: var(--red);
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  h1 {
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #111;
+    margin-bottom: 8px;
+  }
+  .lead {
+    color: var(--rk-muted);
+    font-size: 14px;
+    line-height: 1.6;
+    max-width: 780px;
+  }
+  .lead b { color: var(--rk-text); }
+  .hero-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .btn-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12.5px;
+    font-weight: 700;
+    border-radius: 999px;
+    padding: 8px 14px;
+    cursor: pointer;
+    border: 1.5px solid var(--red);
+    background: var(--red);
+    color: #fff;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 0.15s ease, transform 0.1s ease;
+  }
+  .btn-pill:hover { background: var(--red-dark); border-color: var(--red-dark); }
+  .btn-pill:active { transform: scale(0.98); }
+  .btn-pill.outline {
+    background: #fff;
+    color: var(--red);
+    border: 1px solid rgba(214, 0, 28, 0.3);
+  }
+  .btn-pill.outline:hover { background: rgba(214, 0, 28, 0.08); border-color: var(--red); }
+
+  /* ===== Barra de comparação de ondas/lotes ===== */
+  .compare-bar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 18px;
+    background: #fafafa;
+    border: 1px solid var(--rk-line);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-top: 16px;
+  }
+  .compare-fields {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: end;
+    gap: 12px;
+    min-width: 0;
+  }
+  .cmp-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+  }
+  .cmp-field label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: #888;
+  }
+  .cmp-field select {
+    width: 100%;
+    min-width: 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: #1f1f1f;
+    background: #fff;
+    border: 1px solid #d0d0d0;
+    border-radius: 8px;
+    padding: 7px 10px;
+    cursor: pointer;
+    outline: none;
+    text-overflow: ellipsis;
+  }
+  .cmp-field select:focus { border-color: var(--red); box-shadow: 0 0 0 3px rgba(214,0,28,0.1); }
+  .cmp-arrow {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--red);
+    padding-bottom: 7px;
+  }
+  .cmp-meta {
+    font-size: 12px;
+    color: #666;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+    padding-left: 16px;
+    border-left: 1px solid var(--rk-line);
+  }
+
+  /* ===== Section headers ===== */
+  .sec-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
+  .sec-head h2 {
+    font-size: 15px;
+    font-weight: 700;
+    color: #111;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .sec-sub {
+    font-size: 12px;
+    color: var(--rk-muted);
+  }
+  .sim-sec-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: #999;
+    margin-bottom: 10px;
+  }
+
+  /* ===== KPIs ===== */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .kpi-card {
+    background: #f6f6f6;
+    border-radius: 10px;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    border: 1px solid #ececec;
+  }
+  .kpi-card.highlight {
+    background: #fff8f9;
+    border-color: rgba(214, 0, 28, 0.18);
+  }
+  .kpi-label {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+  .kpi-value-row {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .kpi-value {
+    font-size: 26px;
+    font-weight: 800;
+    color: #111;
+    line-height: 1.1;
+  }
+  .kpi-sub {
+    font-size: 12px;
+    color: #666;
+    line-height: 1.4;
+  }
+  .kpi-split {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: auto;
+    padding-top: 4px;
+    font-size: 11.5px;
+    color: #555;
+  }
+
+  /* ===== Badges e pílulas ===== */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: 999px;
+    padding: 2px 8px;
+    white-space: nowrap;
+  }
+  .badge.red { color: var(--red); background: rgba(214, 0, 28, 0.08); }
+  .badge.green { color: var(--rk-green); background: var(--rk-green-bg); }
+  .badge.amber { color: var(--rk-amber); background: var(--rk-amber-bg); }
+  .badge.blue { color: var(--rk-blue); background: var(--rk-blue-bg); }
+  .badge.gray { color: #555; background: #ebebeb; }
+
+  .prio { font-size: 10.5px; font-weight: 700; border-radius: 4px; padding: 2px 6px; white-space: nowrap; }
+  .prio.alta { color: var(--red); background: rgba(214,0,28,0.08); }
+  .prio.media { color: var(--rk-amber); background: var(--rk-amber-bg); }
+  .prio.baixa { color: #666; background: #f0f0f0; }
+
+  /* ===== Segmented control (reutilizado do painel) ===== */
+  .seg { display: inline-flex; border: 1.5px solid var(--red); border-radius: 6px; overflow: hidden; }
+  .seg button { border: none; background: #fff; color: #222; font-size: 12px; font-weight: 600; padding: 5px 11px; cursor: pointer; }
+  .seg button + button { border-left: 1.5px solid var(--red); }
+  .seg button.sel { background: var(--red); color: #fff; }
+
+  /* ===== Grid 2 colunas (Notas + Classificação) ===== */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+  }
+
+  .star-list { display: flex; flex-direction: column; gap: 11px; }
+  .star-row {
+    display: grid;
+    grid-template-columns: 76px 1fr auto;
+    align-items: center;
+    gap: 10px;
+    font-size: 12.5px;
+  }
+  .star-lbl { font-weight: 600; color: #333; white-space: nowrap; }
+  .bar-track {
+    position: relative;
+    height: 10px;
+    border-radius: 999px;
+    background: #eeeeee;
+    overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: var(--red);
+    transition: width 0.25s ease;
+  }
+  .bar-dual {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .bar-track.sm { height: 6px; }
+  .bar-fill.before { background: #a8adb5; }
+  .bar-fill.after { background: var(--red); }
+  .star-nums {
+    text-align: right;
+    font-size: 12px;
+    color: #555;
+    white-space: nowrap;
+  }
+  .star-nums b { color: #111; }
+
+  .legend-inline {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 11.5px;
+    color: #666;
+  }
+  .legend-dot {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .legend-dot i {
+    width: 10px;
+    height: 6px;
+    border-radius: 3px;
+    display: inline-block;
+  }
+
+  /* Composição dos comentários */
+  .comp-list { display: flex; flex-direction: column; gap: 10px; }
+  .comp-row {
+    background: #f8f8f9;
+    border: 1px solid #ececec;
+    border-radius: 8px;
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .comp-row.emphasis {
+    background: #fff8f9;
+    border-color: rgba(214,0,28,0.2);
+  }
+  .comp-title { font-weight: 700; font-size: 13px; color: #1f1f1f; }
+  .comp-desc { font-size: 11.5px; color: #777; margin-top: 2px; }
+  .comp-metrics { text-align: right; white-space: nowrap; }
+  .comp-metrics b { font-size: 16px; color: #111; display: block; line-height: 1.2; }
+  .comp-metrics span { font-size: 11.5px; color: #666; }
+
+  .fb-method {
+    margin-top: 14px;
+    background: #f6f6f6;
+    border-left: 3px solid var(--red);
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: 12px;
+    color: #444;
+    line-height: 1.5;
+  }
+  .fb-method b { color: #111; }
+
+  /* ===== Tabela Comparativa de Tópicos ===== */
+  .table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--rk-line);
+    border-radius: 10px;
+  }
+  table.cmp-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    min-width: 780px;
+  }
+  .cmp-table th {
+    background: #f7f7f8;
+    color: #666;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--rk-line);
+    white-space: nowrap;
+  }
+  .cmp-table th.num, .cmp-table td.num { text-align: right; }
+  .cmp-table td {
+    padding: 12px;
+    border-bottom: 1px solid #f0f0f0;
+    vertical-align: middle;
+  }
+  .cmp-table tr.topic-row {
+    cursor: pointer;
+    transition: background 0.12s ease;
+  }
+  .cmp-table tr.topic-row:hover { background: #fafafa; }
+  .cmp-table tr.topic-row.open { background: #fff8f9; }
+  .cmp-table tr.detail-row td {
+    background: #fbfbfc;
+    padding: 0 14px 14px 48px;
+    border-bottom: 1px solid var(--rk-line);
+  }
+  .rank-cell {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+  }
+  .rank-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    background: #f1f1f2;
+    font-weight: 800;
+    font-size: 12px;
+    color: #222;
+  }
+  .rank-num.top3 { background: rgba(214,0,28,0.1); color: var(--red); }
+  .topic-name { font-weight: 700; color: #111; display: flex; align-items: center; gap: 6px; }
+  .topic-sub { font-size: 11.5px; color: #777; margin-top: 2px; }
+  .topic-chevron {
+    color: #999;
+    transition: transform 0.15s ease;
+    flex-shrink: 0;
+  }
+  tr.topic-row.open .topic-chevron { transform: rotate(90deg); color: var(--red); }
+
+  .delta-pos { color: var(--red); font-weight: 700; }
+  .delta-neg { color: var(--rk-green); font-weight: 700; }
+  .delta-eq { color: #888; font-weight: 600; }
+  .rank-move { font-size: 11px; font-weight: 700; }
+  .rank-move.up { color: var(--red); }
+  .rank-move.down { color: var(--rk-green); }
+  .rank-move.eq { color: #999; }
+
+  .detail-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    padding-top: 10px;
+  }
+  .detail-box {
+    background: #fff;
+    border: 1px solid var(--rk-line);
+    border-radius: 8px;
+    padding: 10px 12px;
+  }
+  .detail-box h4 {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #888;
+    margin-bottom: 6px;
+  }
+  .detail-box ul { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+  .detail-box li {
+    position: relative;
+    padding-left: 12px;
+    font-size: 12.5px;
+    color: #333;
+    line-height: 1.45;
+  }
+  .detail-box li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 7px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--red);
+  }
+  .detail-box p { font-size: 12.5px; color: #333; line-height: 1.5; }
+
+  /* ===== Linha do tempo dos lotes ===== */
+  .waves-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+    gap: 14px;
+  }
+  .wave-card {
+    background: #f8f8f9;
+    border: 1px solid var(--rk-line);
+    border-radius: 10px;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .wave-card.latest {
+    background: #fff;
+    border-color: rgba(214,0,28,0.28);
+    box-shadow: var(--rk-card-sm-shadow);
+  }
+  .wave-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .wave-title { font-size: 14px; font-weight: 700; color: #111; }
+  .wave-meta { font-size: 12px; color: #666; }
+  .wave-meta code {
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 11.5px;
+    background: #efefef;
+    padding: 1px 5px;
+    border-radius: 4px;
+    color: #333;
+    word-break: break-all;
+  }
+  .wave-stats {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding-top: 4px;
+  }
+  .wave-stat {
+    background: #fff;
+    border: 1px solid #e6e6e6;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+  .wave-card.latest .wave-stat { background: #f8f8f9; }
+  .wave-stat b { color: #111; font-size: 14px; }
+  .wave-highlights {
+    margin-top: 4px;
+    border-top: 1px solid #ececec;
+    padding-top: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 12px;
+    color: #444;
+  }
+  .wave-actions {
+    margin-top: auto;
+    padding-top: 6px;
+    display: flex;
+    justify-content: flex-end;
+  }
+  .btn-xs {
+    border: 1px solid #d5d5d5;
+    background: #fff;
+    color: #444;
+    border-radius: 6px;
+    padding: 4px 9px;
+    font-size: 11.5px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .btn-xs:hover { border-color: var(--red); color: var(--red); }
+
+  /* ===== Diretrizes no remake ===== */
+  .dir-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 10px;
+  }
+  .dir-item {
+    background: #f8f8f9;
+    border: 1px solid #ececec;
+    border-radius: 8px;
+    padding: 11px 13px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .dir-num {
+    flex: 0 0 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--red);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .dir-item b { font-size: 13px; color: #111; display: block; margin-bottom: 2px; }
+  .dir-item p { font-size: 12px; color: #555; line-height: 1.45; }
+
+  /* ===== Modal: Adicionar / Simular futuro lote ===== */
+  .modal-back {
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    background: rgba(17, 17, 17, 0.48);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
+  .modal {
+    width: 100%;
+    max-width: 720px;
+    max-height: 90vh;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.28);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .modal-head {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--rk-line);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .modal-head h3 { font-size: 16px; font-weight: 700; color: #111; }
+  .modal-close {
+    border: none;
+    background: #f2f2f2;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    font-size: 16px;
+    cursor: pointer;
+    color: #444;
+  }
+  .modal-close:hover { background: #e5e5e5; }
+  .modal-body {
+    padding: 18px 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px 14px;
+  }
+  .form-field { display: flex; flex-direction: column; gap: 4px; }
+  .form-field.full { grid-column: 1 / -1; }
+  .form-field label { font-size: 11.5px; font-weight: 700; color: #555; }
+  .form-field input, .form-field textarea {
+    border: 1px solid #d0d0d0;
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-size: 13px;
+    color: #111;
+    outline: none;
+  }
+  .form-field input:focus, .form-field textarea:focus { border-color: var(--red); box-shadow: 0 0 0 3px rgba(214,0,28,0.1); }
+  .mini-grid-5 {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .mini-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .mini-grid-topics {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px 10px;
+  }
+  .form-err {
+    background: #fff4f5;
+    border: 1px solid rgba(214,0,28,0.3);
+    color: var(--red);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 12.5px;
+    font-weight: 600;
+  }
+  .modal-foot {
+    padding: 14px 20px;
+    border-top: 1px solid var(--rk-line);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+    background: #fafafa;
+  }
+  .code-box {
+    background: #1a1c20;
+    color: #e6edf3;
+    border-radius: 8px;
+    padding: 12px;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 12px;
+    line-height: 1.5;
+    overflow-x: auto;
+    max-height: 220px;
+    white-space: pre;
+  }
+
+  .footer {
+    text-align: center;
+    padding: 10px 0 34px 0;
+    font-size: 12px;
+    color: #888;
+  }
+
+  @media (max-width: 960px) {
+    .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-2 { grid-template-columns: 1fr; }
+    .detail-grid { grid-template-columns: 1fr; }
+    .compare-bar { grid-template-columns: 1fr; gap: 12px; }
+    .cmp-meta { flex-direction: row; flex-wrap: wrap; padding-left: 0; border-left: none; padding-top: 10px; border-top: 1px solid var(--rk-line); }
+  }
+  @media (max-width: 640px) {
+    .topbar { padding: 12px 16px; }
+    .page { padding: 18px 14px 48px 14px; }
+    .kpi-grid { grid-template-columns: 1fr; }
+    .form-grid, .mini-grid-3, .mini-grid-topics { grid-template-columns: 1fr; }
+    .mini-grid-5 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .compare-fields { grid-template-columns: 1fr; gap: 10px; }
+    .cmp-arrow { display: none; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="topbar-strip"></div>
+  <header class="topbar">
+    <div class="topbar-left">
+      <a class="sim-home" href="biometria-remake.html">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        Voltar ao Fluxo remodelado
+      </a>
+      <a class="sim-home ghost-btn" href="../index.html">Home</a>
+      <span class="scope">Biometria / Assinatura Digital</span>
+    </div>
+    <nav class="version-switch" aria-label="Navegação do módulo Biometria">
+      <a class="version-tag" href="biometria-atual.html">Fluxo atual</a>
+      <a class="version-tag" href="biometria-remake.html">Fluxo remodelado</a>
+      <span class="version-tag active">Pesquisa de satisfação</span>
+    </nav>
+  </header>
+
+  <main class="page">
+
+    <!-- Cabeçalho e seletor de comparação -->
+    <section class="card">
+      <div class="hero-head">
+        <div>
+          <div class="eyebrow">Consolidação e evolução de feedbacks</div>
+          <h1>Pesquisa de satisfação — Comparativo entre lotes</h1>
+          <p class="lead" id="heroLead">
+            Análise comparativa das avaliações deixadas pelos assinantes ao final do fluxo de assinatura digital (tela de avaliação).
+            Estruturado por lotes cronológicos para comparar o cenário <b>antes</b>, o <b>novo montante adicionado</b> e o <b>consolidado</b>, pronto para receber futuras ondas de pesquisa.
+          </p>
+        </div>
+        <div class="hero-actions">
+          <button type="button" class="btn-pill outline" id="btnSchema">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg>
+            Estrutura JSON p/ futuros lotes
+          </button>
+          <button type="button" class="btn-pill" id="btnAddLote">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>
+            Adicionar novo lote
+          </button>
+        </div>
+      </div>
+
+      <div class="compare-bar">
+        <div class="compare-fields">
+          <div class="cmp-field">
+            <label for="selBase">Base de comparação (Antes)</label>
+            <select id="selBase"></select>
+          </div>
+          <div class="cmp-arrow" aria-hidden="true">+</div>
+          <div class="cmp-field">
+            <label for="selNovo">Lote adicionado (Depois / Novo)</label>
+            <select id="selNovo"></select>
+          </div>
+        </div>
+        <div class="cmp-meta" id="cmpMeta"></div>
+      </div>
+    </section>
+
+    <!-- KPIs principais -->
+    <section class="card">
+      <div class="sec-head">
+        <h2>
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#D6001C" stroke-width="2"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
+          Resumo comparativo
+        </h2>
+        <span class="sec-sub" id="kpiSubtitle"></span>
+      </div>
+      <div class="kpi-grid" id="kpiGrid"></div>
+    </section>
+
+    <!-- Distribuição de notas + Composição dos comentários -->
+    <section class="grid-2">
+      <div class="card">
+        <div class="sec-head">
+          <h2>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D6001C" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            Distribuição das notas
+          </h2>
+          <div class="seg" id="segNotas">
+            <button type="button" class="sel" data-mode="comentarios">Com comentário</button>
+            <button type="button" data-mode="geral">Satisfação geral</button>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
+          <span class="sec-sub" id="notasDesc"></span>
+          <div class="legend-inline" id="notasLegend">
+            <span class="legend-dot"><i style="background:#a8adb5"></i> Antes</span>
+            <span class="legend-dot"><i style="background:var(--red)"></i> Consolidado</span>
+          </div>
+        </div>
+        <div class="star-list" id="starList"></div>
+      </div>
+
+      <div class="card">
+        <div class="sec-head">
+          <h2>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D6001C" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            Composição dos comentários
+          </h2>
+          <span class="sec-sub">Classificação por tipo de retorno</span>
+        </div>
+        <div class="comp-list" id="compList"></div>
+        <div class="fb-method">
+          <b>Por que a média com comentário é baixa?</b> O pedido de comentário só é exibido quando o assinante dá nota até <b>4 estrelas</b> (regra R02). Por isso, os comentários concentram quem teve algum atrito, enquanto a <b>satisfação geral</b> (disponível nas exportações completas) mostra a percepção de toda a base.
+        </div>
+      </div>
+    </section>
+
+    <!-- Tabela comparativa por tópico -->
+    <section class="card">
+      <div class="sec-head">
+        <h2>
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#D6001C" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+          Ranking das críticas por tópico — Antes × Adicionado × Consolidado
+        </h2>
+        <span class="sec-sub">Clique em qualquer tópico para ver exemplos reais de fala e o que mudou no remake</span>
+      </div>
+      <div class="table-wrap">
+        <table class="cmp-table">
+          <thead>
+            <tr>
+              <th>Posição</th>
+              <th>Tópico</th>
+              <th>Prioridade</th>
+              <th class="num">Antes</th>
+              <th class="num">Adicionado</th>
+              <th class="num">Consolidado</th>
+              <th class="num">% Críticas (Antes → Depois)</th>
+              <th style="min-width:130px;">Peso relativo</th>
+            </tr>
+          </thead>
+          <tbody id="topicsBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Histórico dos lotes (timeline extensível) -->
+    <section class="card">
+      <div class="sec-head">
+        <h2>
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#D6001C" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          Lotes de feedback registrados
+        </h2>
+        <span class="sec-sub">Cada nova planilha ou exportação adicionada aparece aqui e entra automaticamente no comparador</span>
+      </div>
+      <div class="waves-grid" id="wavesGrid"></div>
+    </section>
+
+    <!-- Diretrizes aplicadas no remake -->
+    <section class="card">
+      <div class="sec-head">
+        <h2>
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#D6001C" stroke-width="2"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.6 10.8c.8.6 1.1 1.4 1.1 2.2h5c0-.8.4-1.6 1.1-2.2A6 6 0 0 0 12 3z"/></svg>
+          Diretrizes aplicadas no fluxo remodelado (em ordem de prioridade)
+        </h2>
+        <a class="sim-home" href="biometria-remake.html">Abrir protótipo remodelado</a>
+      </div>
+      <div class="dir-grid" id="dirGrid"></div>
+    </section>
+
+  </main>
+
+  <div class="footer">Processos e desenvolvimento de propostas: Thiago Rojas - DNGX Consultoria &amp; Sistemas® - 2026.</div>
+
+  <!-- Modal: Adicionar / Simular novo lote -->
+  <div class="modal-back" id="modalAdd" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalAddTitle">
+      <div class="modal-head">
+        <h3 id="modalAddTitle">Adicionar novo lote de feedback para comparação</h3>
+        <button type="button" class="modal-close" data-close="modalAdd" aria-label="Fechar">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="sec-sub">
+          Os dados preenchidos ficam salvos localmente no navegador (<code>localStorage</code>) para testar comparações imediatas. Ao final, você também pode copiar o JSON gerado para incorporar definitivamente no arquivo.
+        </p>
+        <div class="form-grid">
+          <div class="form-field">
+            <label for="inNome">Nome do lote *</label>
+            <input id="inNome" type="text" placeholder="Ex.: Exportação pós-remake (Dez/2026)">
+          </div>
+          <div class="form-field">
+            <label for="inPeriodo">Período *</label>
+            <input id="inPeriodo" type="text" placeholder="Ex.: 13/11/2026 a 12/12/2026">
+          </div>
+          <div class="form-field full">
+            <label for="inFonte">Arquivo / fonte de origem</label>
+            <input id="inFonte" type="text" placeholder="Ex.: Exportacao_2150.csv">
+          </div>
+        </div>
+
+        <div>
+          <div class="sim-sec-title">Notas das avaliações com comentário (obrigatório)</div>
+          <div class="mini-grid-5">
+            <div class="form-field"><label for="inN1">★ 1</label><input id="inN1" type="number" min="0" value="0"></div>
+            <div class="form-field"><label for="inN2">★ 2</label><input id="inN2" type="number" min="0" value="0"></div>
+            <div class="form-field"><label for="inN3">★ 3</label><input id="inN3" type="number" min="0" value="0"></div>
+            <div class="form-field"><label for="inN4">★ 4</label><input id="inN4" type="number" min="0" value="0"></div>
+            <div class="form-field"><label for="inN5">★ 5</label><input id="inN5" type="number" min="0" value="0"></div>
+          </div>
+        </div>
+
+        <div>
+          <div class="sim-sec-title">Notas totais (opcional — se o relatório trouxer avaliações sem comentário)</div>
+          <div class="mini-grid-5">
+            <div class="form-field"><label for="inG1">★ 1</label><input id="inG1" type="number" min="0" placeholder="—"></div>
+            <div class="form-field"><label for="inG2">★ 2</label><input id="inG2" type="number" min="0" placeholder="—"></div>
+            <div class="form-field"><label for="inG3">★ 3</label><input id="inG3" type="number" min="0" placeholder="—"></div>
+            <div class="form-field"><label for="inG4">★ 4</label><input id="inG4" type="number" min="0" placeholder="—"></div>
+            <div class="form-field"><label for="inG5">★ 5</label><input id="inG5" type="number" min="0" placeholder="—"></div>
+          </div>
+        </div>
+
+        <div>
+          <div class="sim-sec-title">Classificação dos comentários (a soma deve bater com o total de comentários)</div>
+          <div class="mini-grid-3">
+            <div class="form-field"><label for="inElogios">Elogios / neutros / vazios</label><input id="inElogios" type="number" min="0" value="0"></div>
+            <div class="form-field"><label for="inGen">Críticas genéricas</label><input id="inGen" type="number" min="0" value="0"></div>
+            <div class="form-field"><label for="inEsp">Críticas específicas</label><input id="inEsp" type="number" min="0" value="0"></div>
+          </div>
+        </div>
+
+        <div>
+          <div class="sim-sec-title">Menções por tópico</div>
+          <div class="mini-grid-topics" id="inTopicsGrid"></div>
+        </div>
+
+        <div class="form-field">
+          <label for="inDestaques">Destaques / citações novas (opcional, uma por linha)</label>
+          <textarea id="inDestaques" rows="3" placeholder="Ex.: Rubrica: menos reclamações após área em tela cheia"></textarea>
+        </div>
+
+        <div class="form-err" id="formErr" hidden></div>
+      </div>
+      <div class="modal-foot">
+        <button type="button" class="btn-xs" id="btnResetCustom">Limpar lotes salvos no navegador</button>
+        <div style="display:flex;gap:8px;">
+          <button type="button" class="btn-pill outline" data-close="modalAdd">Cancelar</button>
+          <button type="button" class="btn-pill" id="btnSalvarLote">Salvar e comparar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Estrutura JSON -->
+  <div class="modal-back" id="modalSchema" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalSchemaTitle">
+      <div class="modal-head">
+        <h3 id="modalSchemaTitle">Estrutura de dados para novos lotes (LOTES_BASE)</h3>
+        <button type="button" class="modal-close" data-close="modalSchema" aria-label="Fechar">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="sec-sub">
+          Para incorporar uma nova onda permanentemente ao projeto, basta adicionar um novo objeto ao array <code>LOTES_BASE</code> em <code>BiometriaAssDigital/pesquisa-satisfacao.html</code> (seguindo o modelo abaixo). Todos os totais, médias, rankings e variações são recalculados automaticamente.
+        </p>
+        <div class="code-box" id="schemaCode"></div>
+      </div>
+      <div class="modal-foot">
+        <span class="sec-sub" id="copyStatus"></span>
+        <div style="display:flex;gap:8px;">
+          <button type="button" class="btn-pill outline" id="btnCopyJson">Copiar JSON atual</button>
+          <button type="button" class="btn-pill" data-close="modalSchema">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+(function () {
+  "use strict";
+
+  // =========================================================================
+  // 1. CATÁLOGO DE TÓPICOS (mantido estável entre ondas para permitir delta)
+  // =========================================================================
+  var TEMAS = [
+    {
+      id: "rubrica",
+      titulo: "Rubrica / assinar com o dedo na tela",
+      prioridade: "alta",
+      resumoRemake: "Rubrica retirada do fluxo; a assinatura passa a ser uma confirmação explícita com revisão dos documentos.",
+      causaAtual: "Tela 016 parece obrigatória mesmo sendo opcional (R09), traz frase confusa, campo pequeno, traço grosso e só permite limpar tudo.",
+      exemplos: [
+        "\"Campo para assinatura muito pequeno\" — motivo mais citado.",
+        "\"Espaço maior para assinatura\", \"Não consigo ver minha assinatura na tela\".",
+        "\"Sugiro que a assinatura seja de modo horizontal\", \"ter a opção de voltar um pouco só sem apagar tudo\".",
+        "\"Melhorar a espessura do traço\", \"Achei estranho, não apareceu minha escrita!\""
+      ]
+    },
+    {
+      id: "contrato",
+      titulo: "Leitura do contrato e dos termos no celular",
+      prioridade: "alta",
+      resumoRemake: "Contrato reescrito em texto responsivo, resumo dos valores no topo, A− / A+ global e cópia completa em PDF no final.",
+      causaAtual: "O contrato é exibido em visualizador de PDF pequeno embutido na página (telas 013 a 015), difícil de ampliar e sem download.",
+      exemplos: [
+        "\"Letras muito pequenas, difíceis de ler\", \"Tive que usar lupa\".",
+        "\"Mesmo virando o celular não dava pra ampliar direito\".",
+        "\"Deveria haver a opção de baixar o documento\", \"Falta a opção de impressão\", \"Poderiam enviar por email\".",
+        "\"Poderia realçar os pontos fundamentais como valores para facilitar a conferência\"."
+      ]
+    },
+    {
+      id: "outra_forma",
+      titulo: "Pedido de outra forma de assinar (gov.br, digitada, papel)",
+      prioridade: "alta",
+      resumoRemake: "Integração gov.br levada ao negócio (decisão jurídica/produto). Retirar a rubrica já elimina o maior atrito relatado.",
+      causaAtual: "Existe um caminho único (selfie, documento e rubrica), sem opção de assinatura via gov.br ou alternativa digital.",
+      exemplos: [
+        "\"Poderia ser assinatura digital pelo gov\", \"via gov seria melhor e mais moderno\" (14 menções diretas na onda 1).",
+        "\"Usar certificado digital ou gov br no lugar de rubrica\", \"Assinatura digital de verdade padrão ICP Brasil\".",
+        "\"Melhor assinar no papel\", \"pessoalmente é melhor\" (5 menções na onda 1).",
+        "\"Assinatura digital ao invés de fotografia\", \"dar opções de assinaturas\"."
+      ]
+    },
+    {
+      id: "lentidao",
+      titulo: "Lentidão, travamentos e erros",
+      prioridade: "media",
+      resumoRemake: "Esperas com progresso e motivo, confirmações intermediárias que avançam sozinhas e preservação do estado ao voltar.",
+      causaAtual: "Telas de espera (005) sem progresso, botão voltar do navegador quebra o fluxo e erros fazem perder o progresso.",
+      exemplos: [
+        "\"O 'aguarde instantes' demora MUITO, não são instantes\".",
+        "\"Estou tentando desde ontem\", \"quando não lê perde tudo\".",
+        "\"Voltar a página anterior e depois avançar não funciona. Fica informando que arquivo não existe\".",
+        "\"Voltar apenas um passo invés de voltar tudo\"."
+      ]
+    },
+    {
+      id: "selfie",
+      titulo: "Captura facial / selfie difícil",
+      prioridade: "media",
+      resumoRemake: "Captura guiada em tempo real, motivo da falha com tentativas restantes, guia por voz e selfie única mesmo com SPF.",
+      causaAtual: "Dicas estáticas antes da câmera (003), mensagem de falha genérica (R10) e exigência de 2ª selfie quando há SPF (R06).",
+      exemplos: [
+        "\"A parte de tirar a foto não funciona com nenhuma luz do mundo\".",
+        "\"Quando redirecionada para que eu mesma fizesse a selfie, não constava 'botão' para fazer a selfie.\"",
+        "\"Sou idoso com assimetria facial. Foi bem trabalhoso\".",
+        "\"Colocar auxílio sonoro para ajudar pessoas com visão reduzida na hora de fazer a selfie\"."
+      ]
+    },
+    {
+      id: "processo",
+      titulo: "Processo longo, burocrático ou em ordem ruim",
+      prioridade: "media",
+      resumoRemake: "Boas-vindas com resumo das etapas e tempo estimado; barra de progresso fixa em todas as etapas.",
+      causaAtual: "O usuário inicia biometria e envio de documento sem saber quantas etapas faltam nem o tempo estimado.",
+      exemplos: [
+        "\"Muita coisa para formalizar\", \"Muito burocrático\".",
+        "\"Não entendi porque teve essa etapa novamente se já tínhamos feito uma ontem\".",
+        "\"Reconhecimento facial e mais anexo de documentos que já foram enviados\".",
+        "\"Biometria facial deveria ser no final e não no início\"."
+      ]
+    },
+    {
+      id: "documento",
+      titulo: "Envio do documento de identificação",
+      prioridade: "media",
+      resumoRemake: "Regras exibidas antes do envio, ordem frente → verso guiada com bloqueio imediato do lado errado e erros específicos.",
+      causaAtual: "Regras da CNH Digital só aparecem após erro (R07), ordem frente → verso não é avisada (R11) e CIN/passaporte não são aceitos.",
+      exemplos: [
+        "\"Difícil anexar documento\", \"Leitor de documentação não reconhece o documento\".",
+        "\"Não aceitou o documento em PDF\", \"pede pra exportar documento em PDF e é onde fica complicado\".",
+        "\"Problema por conta do RG digital\", \"Não dá pra incluir passaporte\"."
+      ]
+    },
+    {
+      id: "dispositivo",
+      titulo: "Dispositivo e navegador (só celular, Chrome)",
+      prioridade: "baixa",
+      resumoRemake: "Fora do escopo deste protótipo mobile (depende de arquitetura para permitir leitura em desktop e testes de compatibilidade).",
+      causaAtual: "Fluxo restrito ao navegador do celular com relatos pontuais de incompatibilidade em navegadores/tablets.",
+      exemplos: [
+        "\"Poder fazer via computador\", \"deixar ler em dispositivo computador\".",
+        "\"Não abre no Google Chrome\", \"Só no Mozilla funcionou\".",
+        "\"Poderia permitir a abertura em iPad\"."
+      ]
+    },
+    {
+      id: "pontuais",
+      titulo: "Pontuais (token, atendimento, seguro, contraste, acessibilidade…)",
+      prioridade: "baixa",
+      fixoNoFim: true,
+      resumoRemake: "Token de 6 casas mais claro, contraste e botões ajustados. Itens de atendimento, preço e regra do SPF ficam fora do escopo de UX.",
+      causaAtual: "Ocorrências variadas de orientação inicial, contraste visual, canal de envio (WhatsApp) e temas comerciais.",
+      exemplos: [
+        "\"Sobre o código tem q ser mais claro\" (tela 000).",
+        "\"O botão próximo fica escondido\" (termos), \"A cor está preto no preto\".",
+        "\"Melhorar o envio por WhatsApp\"."
+      ]
+    }
+  ];
+
+  // =========================================================================
+  // 2. LOTES DE FEEDBACK (adicionar futuras ondas aqui no mesmo formato)
+  // =========================================================================
+  var LOTES_BASE = [
+    {
+      id: "onda-1",
+      ordem: 1,
+      nome: "Planilha inicial (Origem)",
+      curto: "Onda 1 · 01/09–15/10",
+      periodo: "01/09/2026 a 15/10/2026",
+      fonte: "avaliacoes_assinatura_remota_honda_estudo_caso.xlsx · aba \"Comentarios_Anonimos\"",
+      avaliacoesTotais: null,
+      notasTotais: null,
+      avaliacoesComentario: 305,
+      notasComentario: { 1: 52, 2: 43, 3: 100, 4: 108, 5: 2 },
+      classificacao: { elogiosNeutros: 82, criticasGenericas: 24, criticasEspecificas: 199 },
+      temas: {
+        rubrica: 73,
+        contrato: 41,
+        outra_forma: 27,
+        lentidao: 20,
+        selfie: 20,
+        processo: 12,
+        documento: 11,
+        dispositivo: 7,
+        pontuais: 12
+      },
+      destaques: [
+        "Base inicial que guiou a criação do fluxo remodelado (biometria-remake.html).",
+        "Não continha registros de avaliação sem comentário (apenas os 305 comentários).",
+        "Rubrica (73) e leitura do contrato (41) responderam por metade das críticas."
+      ]
+    },
+    {
+      id: "onda-2",
+      ordem: 2,
+      nome: "Exportação 2096 (Adicionada)",
+      curto: "Onda 2 · 16/10–12/11",
+      periodo: "16/10/2026 a 12/11/2026",
+      fonte: "Exportacao_2096.csv",
+      avaliacoesTotais: 21469,
+      notasTotais: { 1: 269, 2: 242, 3: 566, 4: 1147, 5: 19245 },
+      avaliacoesComentario: 202,
+      notasComentario: { 1: 43, 2: 15, 3: 69, 4: 73, 5: 2 },
+      classificacao: { elogiosNeutros: 59, criticasGenericas: 19, criticasEspecificas: 124 },
+      temas: {
+        rubrica: 47,
+        contrato: 24,
+        outra_forma: 15,
+        lentidao: 17,
+        selfie: 15,
+        processo: 6,
+        documento: 7,
+        dispositivo: 6,
+        pontuais: 8
+      },
+      destaques: [
+        "Trouxe a satisfação geral completa: 21.469 avaliações com média 4,8 ★ (90% nota 5).",
+        "Confirmou o Top 3 de atritos: Rubrica (+47), Contrato (+24) e Outra forma de assinar (+15).",
+        "\"Lentidão e erros\" (+17) superou \"Selfie difícil\" (+15) no consolidado, subindo para 4º isolado."
+      ]
+    }
+  ];
+
+  var DIRETRIZES = [
+    { n: 1, titulo: "Rubrica retirada", desc: "Etapa removida do remake (incluindo presencial e SPF); assinatura vira confirmação." },
+    { n: 2, titulo: "Leitura do contrato", desc: "Contrato em texto legível, resumo dos valores no topo e download do PDF no final." },
+    { n: 3, titulo: "Alternativa gov.br", desc: "Levada como proposta de negócio/integração por ser o pedido espontâneo mais citado." },
+    { n: 4, titulo: "Captura facial", desc: "Orientação em tempo real, motivo da falha, tentativas restantes e selfie única com SPF." },
+    { n: 5, titulo: "Desempenho e estabilidade", desc: "Esperas com progresso, confirmações automáticas (4 s) e botão voltar seguro." },
+    { n: 6, titulo: "Etapas claras", desc: "Tela de boas-vindas com lista de etapas, tempo estimado e barra de progresso fixa." },
+    { n: 7, titulo: "Documento", desc: "Regras exibidas antes do envio, ordem frente → verso guiada e bloqueio imediato do lado errado." },
+    { n: 8, titulo: "Dispositivo e acessibilidade", desc: "A− / A+ global no cabeçalho, guia por voz na selfie e estudo de leitura via computador." }
+  ];
+
+  var STORAGE_KEY = "honda_bio_feedback_lotes_v1";
+
+  function carregarLotesCustom() {
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return [];
+      var arr = JSON.parse(raw);
+      return Array.isArray(arr) ? arr : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function salvarLotesCustom(arr) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
+  }
+
+  function obterTodosLotes() {
+    return LOTES_BASE.concat(carregarLotesCustom()).map(function (l, idx) {
+      return Object.assign({}, l, { ordem: idx + 1 });
+    });
+  }
+
+  // =========================================================================
+  // 3. HELPERS DE CÁLCULO E FORMATAÇÃO
+  // =========================================================================
+  var fmtInt = function (n) { return Number(n || 0).toLocaleString("pt-BR"); };
+  var fmtDec = function (n) { return Number(n || 0).toLocaleString("pt-BR", { minimumFractionDigits: 1, maximumFractionDigits: 1 }); };
+  var fmtPct = function (num, den) { return den ? Math.round((num / den) * 100) : 0; };
+
+  function mediaNotas(notas) {
+    if (!notas) return null;
+    var total = 0, soma = 0;
+    for (var s = 1; s <= 5; s++) {
+      var q = Number(notas[s] || 0);
+      total += q;
+      soma += q * s;
+    }
+    return total ? soma / total : null;
+  }
+
+  function somarLotes(lista) {
+    var out = {
+      avaliacoesComentario: 0,
+      notasComentario: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
+      avaliacoesTotais: 0,
+      temTotaisCompletos: lista.length > 0,
+      notasTotais: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
+      classificacao: { elogiosNeutros: 0, criticasGenericas: 0, criticasEspecificas: 0 },
+      temas: {}
+    };
+    TEMAS.forEach(function (t) { out.temas[t.id] = 0; });
+
+    lista.forEach(function (l) {
+      out.avaliacoesComentario += l.avaliacoesComentario || 0;
+      for (var s = 1; s <= 5; s++) {
+        out.notasComentario[s] += (l.notasComentario && l.notasComentario[s]) || 0;
+      }
+      if (l.avaliacoesTotais != null && l.notasTotais) {
+        out.avaliacoesTotais += l.avaliacoesTotais;
+        for (var k = 1; k <= 5; k++) out.notasTotais[k] += l.notasTotais[k] || 0;
+      } else {
+        out.temTotaisCompletos = false;
+      }
+      out.classificacao.elogiosNeutros += l.classificacao.elogiosNeutros || 0;
+      out.classificacao.criticasGenericas += l.classificacao.criticasGenericas || 0;
+      out.classificacao.criticasEspecificas += l.classificacao.criticasEspecificas || 0;
+      TEMAS.forEach(function (t) {
+        out.temas[t.id] += (l.temas && l.temas[t.id]) || 0;
+      });
+    });
+
+    out.totalCriticas = out.classificacao.criticasGenericas + out.classificacao.criticasEspecificas;
+    out.mediaComentario = mediaNotas(out.notasComentario);
+    out.mediaGeral = out.avaliacoesTotais ? mediaNotas(out.notasTotais) : null;
+    return out;
+  }
+
+  function calcularRanking(temasObj) {
+    var principais = TEMAS.filter(function (t) { return !t.fixoNoFim; }).slice().sort(function (a, b) {
+      return (temasObj[b.id] || 0) - (temasObj[a.id] || 0);
+    });
+    var ranks = {};
+    var prevCount = null, prevRank = 0;
+    principais.forEach(function (t, i) {
+      var c = temasObj[t.id] || 0;
+      var r = (c === prevCount) ? prevRank : (i + 1);
+      ranks[t.id] = r;
+      prevCount = c;
+      prevRank = r;
+    });
+    var finais = TEMAS.filter(function (t) { return t.fixoNoFim; });
+    finais.forEach(function (t, i) {
+      ranks[t.id] = principais.length + i + 1;
+    });
+    return { ranks: ranks, ordenados: principais.concat(finais) };
+  }
+
+  // =========================================================================
+  // 4. ESTADO E RENDERIZAÇÃO
+  // =========================================================================
+  var $ = function (id) { return document.getElementById(id); };
+  var state = {
+    baseMode: "onda-1",
+    novoId: "onda-2",
+    notasMode: "comentarios",
+    openTopics: {}
+  };
+
+  function popularSeletores() {
+    var lotes = obterTodosLotes();
+    var selBase = $("selBase");
+    var selNovo = $("selNovo");
+
+    // Se houver 3+ lotes, permite comparar contra o acumulado anterior além de lotes individuais
+    var baseOpts = [];
+    lotes.forEach(function (l, idx) {
+      baseOpts.push({ value: l.id, label: l.curto + " — " + l.nome });
+      if (idx >= 1 && idx < lotes.length - 1) {
+        baseOpts.push({ value: "acum-ate:" + l.id, label: "Acumulado Ondas 1 a " + (idx + 1) });
+      }
+    });
+
+    selBase.innerHTML = baseOpts.map(function (o) {
+      return '<option value="' + o.value + '">' + o.label + '</option>';
+    }).join("");
+
+    selNovo.innerHTML = lotes.map(function (l) {
+      return '<option value="' + l.id + '">' + l.curto + " — " + l.nome + '</option>';
+    }).join("");
+
+    if (!baseOpts.some(function (o) { return o.value === state.baseMode; })) state.baseMode = lotes[0].id;
+    if (!lotes.some(function (l) { return l.id === state.novoId; })) state.novoId = lotes[lotes.length - 1].id;
+
+    selBase.value = state.baseMode;
+    selNovo.value = state.novoId;
+  }
+
+  function resolverSelecao() {
+    var lotes = obterTodosLotes();
+    var baseLista = [];
+    if (state.baseMode.indexOf("acum-ate:") === 0) {
+      var targetId = state.baseMode.split(":")[1];
+      for (var i = 0; i < lotes.length; i++) {
+        baseLista.push(lotes[i]);
+        if (lotes[i].id === targetId) break;
+      }
+    } else {
+      var found = lotes.find(function (l) { return l.id === state.baseMode; }) || lotes[0];
+      baseLista = [found];
+    }
+
+    var novoLote = lotes.find(function (l) { return l.id === state.novoId; }) || lotes[lotes.length - 1];
+    // Consolidado: soma baseLista + novoLote (evita duplicar se base e novo forem o mesmo)
+    var mesmoLote = baseLista.length === 1 && baseLista[0].id === novoLote.id;
+    var consLista = mesmoLote ? baseLista.slice() : baseLista.concat([novoLote]);
+    var todosComGeral = lotes.filter(function (l) { return l.avaliacoesTotais != null && l.notasTotais; });
+
+    return {
+      lotes: lotes,
+      baseLista: baseLista,
+      novoLote: novoLote,
+      consLista: consLista,
+      mesmoLote: mesmoLote,
+      base: somarLotes(baseLista),
+      novo: somarLotes([novoLote]),
+      cons: somarLotes(consLista),
+      geralDisponivel: todosComGeral.length > 0,
+      geral: somarLotes(todosComGeral),
+      geralLotes: todosComGeral
+    };
+  }
+
+  function render() {
+    var d = resolverSelecao();
+    var baseLabel = d.baseLista.length > 1
+      ? "Ondas 1–" + d.baseLista.length
+      : d.baseLista[0].curto;
+    var novoLabel = d.novoLote.curto;
+
+    $("cmpMeta").innerHTML =
+      '<span class="badge gray">Base: ' + baseLabel + ' (' + fmtInt(d.base.avaliacoesComentario) + ')</span>' +
+      '<span class="badge blue">Adicionado: ' + novoLabel + ' (+' + fmtInt(d.novo.avaliacoesComentario) + ')</span>' +
+      '<span class="badge red">Consolidado: ' + fmtInt(d.cons.avaliacoesComentario) + ' comentários</span>';
+
+    $("kpiSubtitle").textContent = d.mesmoLote
+      ? "Visualizando um único lote (" + d.novoLote.periodo + ")"
+      : "Comparando " + baseLabel + " (" + d.baseLista[0].periodo + ") com " + novoLabel + " (" + d.novoLote.periodo + ")";
+
+    // 1. KPIs
+    var kpiHtml = "";
+    kpiHtml += '<div class="kpi-card">' +
+      '<div class="kpi-label">Avaliações com comentário</div>' +
+      '<div class="kpi-value-row"><span class="kpi-value">' + fmtInt(d.cons.avaliacoesComentario) + '</span>' +
+      (d.mesmoLote ? '' : '<span class="badge red">+' + fmtInt(d.novo.avaliacoesComentario) + '</span>') + '</div>' +
+      '<div class="kpi-split"><span>Antes: <b>' + fmtInt(d.base.avaliacoesComentario) + '</b></span><span>·</span><span>Depois: <b>' + fmtInt(d.cons.avaliacoesComentario) + '</b></span></div>' +
+    '</div>';
+
+    kpiHtml += '<div class="kpi-card">' +
+      '<div class="kpi-label">Comentários com crítica</div>' +
+      '<div class="kpi-value-row"><span class="kpi-value">' + fmtInt(d.cons.totalCriticas) + '</span>' +
+      (d.mesmoLote ? '' : '<span class="badge red">+' + fmtInt(d.novo.totalCriticas) + '</span>') + '</div>' +
+      '<div class="kpi-split"><span>Base dos % — Antes: <b>' + fmtInt(d.base.totalCriticas) + '</b></span><span>·</span><span>Depois: <b>' + fmtInt(d.cons.totalCriticas) + '</b></span></div>' +
+    '</div>';
+
+    var diffMedia = (d.cons.mediaComentario || 0) - (d.base.mediaComentario || 0);
+    var mediaDeltaTxt = Math.abs(diffMedia) < 0.05 ? "Estável (=)" : (diffMedia > 0 ? "+" : "") + fmtDec(diffMedia);
+    kpiHtml += '<div class="kpi-card">' +
+      '<div class="kpi-label">Média (com comentário)</div>' +
+      '<div class="kpi-value-row"><span class="kpi-value">' + fmtDec(d.cons.mediaComentario) + ' ★</span>' +
+      '<span class="badge gray">' + mediaDeltaTxt + '</span></div>' +
+      '<div class="kpi-split"><span>Antes: <b>' + fmtDec(d.base.mediaComentario) + ' ★</b></span><span>·</span><span>Só notas ≤ 4 comentam (R02)</span></div>' +
+    '</div>';
+
+    if (d.geralDisponivel) {
+      var cincoPct = fmtPct(d.geral.notasTotais[5], d.geral.avaliacoesTotais);
+      var escopoGeral = d.geralLotes.map(function (l) { return l.curto; }).join(" + ");
+      kpiHtml += '<div class="kpi-card highlight">' +
+        '<div class="kpi-label">Satisfação geral (base completa)</div>' +
+        '<div class="kpi-value-row"><span class="kpi-value">' + fmtDec(d.geral.mediaGeral) + ' ★</span>' +
+        '<span class="badge green">' + cincoPct + '% nota 5</span></div>' +
+        '<div class="kpi-split"><span><b>' + fmtInt(d.geral.avaliacoesTotais) + '</b> avaliações (' + escopoGeral + ')</span></div>' +
+      '</div>';
+    } else {
+      kpiHtml += '<div class="kpi-card">' +
+        '<div class="kpi-label">Satisfação geral</div>' +
+        '<div class="kpi-value-row"><span class="kpi-value">—</span></div>' +
+        '<div class="kpi-sub">Nenhum lote atual possui notas sem comentário.</div>' +
+      '</div>';
+    }
+    $("kpiGrid").innerHTML = kpiHtml;
+
+    // 2. Distribuição das notas
+    renderNotas(d);
+
+    // 3. Composição dos comentários
+    var compItems = [
+      {
+        titulo: "Elogios, neutros ou vazios",
+        desc: "Ex.: \"Bom\", \"Ok\", \".\"",
+        antes: d.base.classificacao.elogiosNeutros,
+        novo: d.novo.classificacao.elogiosNeutros,
+        depois: d.cons.classificacao.elogiosNeutros,
+        baseAntes: d.base.avaliacoesComentario,
+        baseDepois: d.cons.avaliacoesComentario
+      },
+      {
+        titulo: "Críticas genéricas (sem motivo)",
+        desc: "Ex.: \"Péssimo\", \"Muito difícil\"",
+        antes: d.base.classificacao.criticasGenericas,
+        novo: d.novo.classificacao.criticasGenericas,
+        depois: d.cons.classificacao.criticasGenericas,
+        baseAntes: d.base.avaliacoesComentario,
+        baseDepois: d.cons.avaliacoesComentario
+      },
+      {
+        titulo: "Críticas ou sugestões específicas",
+        desc: "Comentários que apontam um ponto claro de melhoria",
+        antes: d.base.classificacao.criticasEspecificas,
+        novo: d.novo.classificacao.criticasEspecificas,
+        depois: d.cons.classificacao.criticasEspecificas,
+        baseAntes: d.base.avaliacoesComentario,
+        baseDepois: d.cons.avaliacoesComentario
+      },
+      {
+        titulo: "Total com crítica (base do ranking)",
+        desc: "Críticas genéricas + específicas (denominador dos % abaixo)",
+        antes: d.base.totalCriticas,
+        novo: d.novo.totalCriticas,
+        depois: d.cons.totalCriticas,
+        baseAntes: d.base.avaliacoesComentario,
+        baseDepois: d.cons.avaliacoesComentario,
+        emphasis: true
+      }
+    ];
+
+    $("compList").innerHTML = compItems.map(function (c) {
+      var pAntes = fmtPct(c.antes, c.baseAntes);
+      var pDepois = fmtPct(c.depois, c.baseDepois);
+      return '<div class="comp-row' + (c.emphasis ? ' emphasis' : '') + '">' +
+        '<div>' +
+          '<div class="comp-title">' + c.titulo + '</div>' +
+          '<div class="comp-desc">' + c.desc + '</div>' +
+        '</div>' +
+        '<div class="comp-metrics">' +
+          '<b>' + fmtInt(c.depois) + ' (' + pDepois + '%)</b>' +
+          '<span>' + (d.mesmoLote
+            ? fmtInt(c.antes) + ' (' + pAntes + '%)'
+            : fmtInt(c.antes) + ' (' + pAntes + '%) + ' + fmtInt(c.novo)) + '</span>' +
+        '</div>' +
+      '</div>';
+    }).join("");
+
+    // 4. Ranking por tópico
+    renderTopicos(d);
+
+    // 5. Linha do tempo dos lotes
+    renderOndas(d.lotes);
+  }
+
+  function renderNotas(d) {
+    var modoGeral = state.notasMode === "geral";
+    var btnGeral = document.querySelector('#segNotas button[data-mode="geral"]');
+    btnGeral.disabled = !d.geralDisponivel;
+
+    if (modoGeral && d.geralDisponivel) {
+      $("notasLegend").hidden = true;
+      $("notasDesc").textContent = "Todas as " + fmtInt(d.geral.avaliacoesTotais) + " avaliações (" +
+        d.geralLotes.map(function (l) { return l.curto; }).join(" + ") + ") — média " + fmtDec(d.geral.mediaGeral) + " ★";
+
+      var htmlG = "";
+      for (var s = 1; s <= 5; s++) {
+        var q = d.geral.notasTotais[s];
+        var pct = fmtPct(q, d.geral.avaliacoesTotais);
+        htmlG += '<div class="star-row">' +
+          '<span class="star-lbl">' + "★".repeat(s) + " " + s + '</span>' +
+          '<div class="bar-track"><div class="bar-fill" style="width:' + pct + '%;background:' + (s === 5 ? 'var(--rk-green)' : 'var(--red)') + '"></div></div>' +
+          '<span class="star-nums"><b>' + fmtInt(q) + '</b> (' + pct + '%)</span>' +
+        '</div>';
+      }
+      $("starList").innerHTML = htmlG;
+      return;
+    }
+
+    $("notasLegend").hidden = d.mesmoLote;
+    $("notasDesc").textContent = d.mesmoLote
+      ? fmtInt(d.cons.avaliacoesComentario) + " avaliações com comentário"
+      : "Antes (" + fmtInt(d.base.avaliacoesComentario) + ") vs. Consolidado (" + fmtInt(d.cons.avaliacoesComentario) + ")";
+
+    var maxPct = 1;
+    for (var m = 1; m <= 5; m++) {
+      maxPct = Math.max(maxPct,
+        fmtPct(d.base.notasComentario[m], d.base.avaliacoesComentario),
+        fmtPct(d.cons.notasComentario[m], d.cons.avaliacoesComentario)
+      );
+    }
+
+    var htmlC = "";
+    for (var st = 1; st <= 5; st++) {
+      var qAntes = d.base.notasComentario[st];
+      var qNovo = d.novo.notasComentario[st];
+      var qDepois = d.cons.notasComentario[st];
+      var pAntes = fmtPct(qAntes, d.base.avaliacoesComentario);
+      var pDepois = fmtPct(qDepois, d.cons.avaliacoesComentario);
+      var wAntes = Math.round((pAntes / maxPct) * 100);
+      var wDepois = Math.round((pDepois / maxPct) * 100);
+
+      htmlC += '<div class="star-row">' +
+        '<span class="star-lbl">' + "★".repeat(st) + " " + st + '</span>' +
+        '<div class="bar-dual">' +
+          (d.mesmoLote ? '' : '<div class="bar-track sm"><div class="bar-fill before" style="width:' + wAntes + '%"></div></div>') +
+          '<div class="bar-track sm"><div class="bar-fill after" style="width:' + wDepois + '%"></div></div>' +
+        '</div>' +
+        '<span class="star-nums">' +
+          (d.mesmoLote
+            ? '<b>' + fmtInt(qDepois) + '</b> (' + pDepois + '%)'
+            : '<b>' + fmtInt(qDepois) + ' (' + pDepois + '%)</b> <span style="color:#888">· ' + qAntes + ' (' + pAntes + '%) +' + qNovo + '</span>') +
+        '</span>' +
+      '</div>';
+    }
+    $("starList").innerHTML = htmlC;
+  }
+
+  function renderTopicos(d) {
+    var rAntes = calcularRanking(d.base.temas);
+    var rDepois = calcularRanking(d.cons.temas);
+    var maxCons = Math.max.apply(null, rDepois.ordenados.map(function (t) { return d.cons.temas[t.id] || 0; })) || 1;
+    var prioLabel = { alta: "Alta", media: "Média", baixa: "Baixa" };
+
+    var html = "";
+    rDepois.ordenados.forEach(function (t) {
+      var cAntes = d.base.temas[t.id] || 0;
+      var cNovo = d.novo.temas[t.id] || 0;
+      var cDepois = d.cons.temas[t.id] || 0;
+
+      var pAntes = fmtPct(cAntes, d.base.totalCriticas);
+      var pDepois = fmtPct(cDepois, d.cons.totalCriticas);
+      var diffPct = pDepois - pAntes;
+
+      var rkAntes = rAntes.ranks[t.id];
+      var rkDepois = rDepois.ranks[t.id];
+      var rkDiff = rkAntes - rkDepois; // positivo = subiu no ranking de críticas
+
+      var moveHtml = "";
+      if (!d.mesmoLote) {
+        if (rkDiff > 0) moveHtml = '<span class="rank-move up" title="Subiu ' + rkDiff + ' posição(ões) no ranking de críticas">▲ ' + rkDiff + '</span>';
+        else if (rkDiff < 0) moveHtml = '<span class="rank-move down" title="Desceu ' + Math.abs(rkDiff) + ' posição(ões) no ranking de críticas">▼ ' + Math.abs(rkDiff) + '</span>';
+        else moveHtml = '<span class="rank-move eq" title="Manteve a posição #' + rkAntes + '">= #' + rkAntes + '</span>';
+      }
+
+      var pctDeltaHtml = d.mesmoLote ? "" : (
+        diffPct > 0 ? '<span class="delta-pos">(+' + diffPct + ' p.p.)</span>' :
+        diffPct < 0 ? '<span class="delta-neg">(' + diffPct + ' p.p.)</span>' :
+        '<span class="delta-eq">(=)</span>'
+      );
+
+      var wAntes = Math.round((cAntes / maxCons) * 100);
+      var wDepois = Math.round((cDepois / maxCons) * 100);
+      var isOpen = !!state.openTopics[t.id];
+
+      html += '<tr class="topic-row' + (isOpen ? ' open' : '') + '" data-topic="' + t.id + '">' +
+        '<td><div class="rank-cell"><span class="rank-num' + (rkDepois <= 3 ? ' top3' : '') + '">#' + rkDepois + '</span>' + moveHtml + '</div></td>' +
+        '<td>' +
+          '<div class="topic-name">' +
+            '<svg class="topic-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M9 18l6-6-6-6"/></svg>' +
+            t.titulo +
+          '</div>' +
+          '<div class="topic-sub">' + t.resumoRemake + '</div>' +
+        '</td>' +
+        '<td><span class="prio ' + t.prioridade + '">' + prioLabel[t.prioridade] + '</span></td>' +
+        '<td class="num">' + fmtInt(cAntes) + '</td>' +
+        '<td class="num">' + (d.mesmoLote ? '—' : '<span class="badge blue">+' + fmtInt(cNovo) + '</span>') + '</td>' +
+        '<td class="num"><b>' + fmtInt(cDepois) + '</b></td>' +
+        '<td class="num">' + (d.mesmoLote
+          ? '<b>' + pDepois + '%</b>'
+          : pAntes + '% → <b>' + pDepois + '%</b> ' + pctDeltaHtml) + '</td>' +
+        '<td>' +
+          '<div class="bar-dual">' +
+            (d.mesmoLote ? '' : '<div class="bar-track sm"><div class="bar-fill before" style="width:' + wAntes + '%"></div></div>') +
+            '<div class="bar-track sm"><div class="bar-fill after" style="width:' + wDepois + '%"></div></div>' +
+          '</div>' +
+        '</td>' +
+      '</tr>';
+
+      html += '<tr class="detail-row" data-detail-for="' + t.id + '"' + (isOpen ? '' : ' hidden') + '>' +
+        '<td colspan="8">' +
+          '<div class="detail-grid">' +
+            '<div class="detail-box"><h4>O que os usuários relatam</h4><ul>' +
+              t.exemplos.map(function (ex) { return '<li>' + ex + '</li>'; }).join("") +
+            '</ul></div>' +
+            '<div class="detail-box"><h4>Causa no fluxo atual e solução no remake</h4>' +
+              '<p><b>Fluxo atual:</b> ' + t.causaAtual + '</p>' +
+              '<p style="margin-top:6px;"><b>No remake:</b> ' + t.resumoRemake + '</p>' +
+            '</div>' +
+          '</div>' +
+        '</td>' +
+      '</tr>';
+    });
+
+    $("topicsBody").innerHTML = html;
+  }
+
+  function renderOndas(lotes) {
+    $("wavesGrid").innerHTML = lotes.map(function (l, idx) {
+      var isLatest = idx === lotes.length - 1;
+      var medCom = mediaNotas(l.notasComentario);
+      var crit = (l.classificacao.criticasGenericas || 0) + (l.classificacao.criticasEspecificas || 0);
+      var geralStat = l.avaliacoesTotais != null
+        ? '<div class="wave-stat"><b>' + fmtInt(l.avaliacoesTotais) + '</b> totais (' + fmtDec(mediaNotas(l.notasTotais)) + ' ★)</div>'
+        : '<div class="wave-stat">Sem notas sem comentário</div>';
+      var destaquesHtml = (l.destaques && l.destaques.length)
+        ? '<div class="wave-highlights">' + l.destaques.map(function (d) { return '<div>• ' + d + '</div>'; }).join("") + '</div>'
+        : '';
+
+      return '<div class="wave-card' + (isLatest ? ' latest' : '') + '">' +
+        '<div class="wave-top">' +
+          '<span class="wave-title">' + l.nome + '</span>' +
+          '<span class="badge ' + (isLatest ? 'red' : 'gray') + '">Onda ' + (idx + 1) + '</span>' +
+        '</div>' +
+        '<div class="wave-meta"><b>Período:</b> ' + l.periodo + '</div>' +
+        '<div class="wave-meta"><b>Fonte:</b> <code>' + l.fonte + '</code></div>' +
+        '<div class="wave-stats">' +
+          '<div class="wave-stat"><b>' + fmtInt(l.avaliacoesComentario) + '</b> comentários (' + fmtDec(medCom) + ' ★)</div>' +
+          '<div class="wave-stat"><b>' + fmtInt(crit) + '</b> críticas</div>' +
+          geralStat +
+        '</div>' +
+        destaquesHtml +
+        (l.custom ? '<div class="wave-actions"><button type="button" class="btn-xs" data-remove-lote="' + l.id + '">Remover lote salvo</button></div>' : '') +
+      '</div>';
+    }).join("");
+  }
+
+  function renderDiretrizes() {
+    $("dirGrid").innerHTML = DIRETRIZES.map(function (d) {
+      return '<div class="dir-item">' +
+        '<span class="dir-num">' + d.n + '</span>' +
+        '<div><b>' + d.titulo + '</b><p>' + d.desc + '</p></div>' +
+      '</div>';
+    }).join("");
+  }
+
+  // =========================================================================
+  // 5. EVENTOS E MODAIS (comparação, expansão de tópicos, adição de lotes)
+  // =========================================================================
+  $("selBase").addEventListener("change", function () {
+    state.baseMode = this.value;
+    render();
+  });
+
+  $("selNovo").addEventListener("change", function () {
+    state.novoId = this.value;
+    render();
+  });
+
+  $("segNotas").addEventListener("click", function (e) {
+    var btn = e.target.closest("button[data-mode]");
+    if (!btn || btn.disabled) return;
+    state.notasMode = btn.dataset.mode;
+    this.querySelectorAll("button").forEach(function (b) {
+      b.classList.toggle("sel", b === btn);
+    });
+    renderNotas(resolverSelecao());
+  });
+
+  $("topicsBody").addEventListener("click", function (e) {
+    var row = e.target.closest("tr.topic-row");
+    if (!row) return;
+    var id = row.dataset.topic;
+    state.openTopics[id] = !state.openTopics[id];
+    row.classList.toggle("open", state.openTopics[id]);
+    var det = document.querySelector('tr.detail-row[data-detail-for="' + id + '"]');
+    if (det) det.hidden = !state.openTopics[id];
+  });
+
+  $("wavesGrid").addEventListener("click", function (e) {
+    var btn = e.target.closest("button[data-remove-lote]");
+    if (!btn) return;
+    var id = btn.dataset.removeLote;
+    var custom = carregarLotesCustom().filter(function (l) { return l.id !== id; });
+    salvarLotesCustom(custom);
+    popularSeletores();
+    render();
+  });
+
+  // Campos dinâmicos de tópicos no modal de novo lote
+  $("inTopicsGrid").innerHTML = TEMAS.map(function (t) {
+    return '<div class="form-field">' +
+      '<label for="inTop_' + t.id + '">' + t.titulo.split(" (")[0] + '</label>' +
+      '<input id="inTop_' + t.id + '" data-topic-input="' + t.id + '" type="number" min="0" value="0">' +
+    '</div>';
+  }).join("");
+
+  function abrirModal(id, abrir) {
+    $(id).hidden = !abrir;
+  }
+
+  document.querySelectorAll("[data-close]").forEach(function (el) {
+    el.addEventListener("click", function () { abrirModal(el.dataset.close, false); });
+  });
+  document.querySelectorAll(".modal-back").forEach(function (back) {
+    back.addEventListener("click", function (e) {
+      if (e.target === back) back.hidden = true;
+    });
+  });
+
+  $("btnAddLote").addEventListener("click", function () {
+    $("formErr").hidden = true;
+    abrirModal("modalAdd", true);
+  });
+
+  $("btnSchema").addEventListener("click", function () {
+    $("copyStatus").textContent = "";
+    var exemplo = {
+      id: "onda-3",
+      nome: "Exportação pós-remake",
+      curto: "Onda 3 · 13/11–12/12",
+      periodo: "13/11/2026 a 12/12/2026",
+      fonte: "Exportacao_2150.csv",
+      avaliacoesTotais: 22000,
+      notasTotais: { 1: 120, 2: 110, 3: 320, 4: 850, 5: 20600 },
+      avaliacoesComentario: 140,
+      notasComentario: { 1: 20, 2: 15, 3: 45, 4: 58, 5: 2 },
+      classificacao: { elogiosNeutros: 48, criticasGenericas: 12, criticasEspecificas: 80 },
+      temas: { rubrica: 0, contrato: 18, outra_forma: 12, lentidao: 14, selfie: 16, processo: 9, documento: 11, dispositivo: 5, pontuais: 7 },
+      destaques: ["Resumo dos principais pontos percebidos na nova onda."]
+    };
+    $("schemaCode").textContent = JSON.stringify(exemplo, null, 2);
+    abrirModal("modalSchema", true);
+  });
+
+  $("btnCopyJson").addEventListener("click", function () {
+    var payload = JSON.stringify(obterTodosLotes(), null, 2);
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(payload).then(function () {
+        $("copyStatus").textContent = "JSON dos lotes copiado para a área de transferência!";
+      });
+    } else {
+      $("schemaCode").textContent = payload;
+      $("copyStatus").textContent = "JSON exibido acima para cópia manual.";
+    }
+  });
+
+  $("btnResetCustom").addEventListener("click", function () {
+    localStorage.removeItem(STORAGE_KEY);
+    popularSeletores();
+    render();
+    abrirModal("modalAdd", false);
+  });
+
+  $("btnSalvarLote").addEventListener("click", function () {
+    var err = $("formErr");
+    err.hidden = true;
+
+    var nome = $("inNome").value.trim();
+    var periodo = $("inPeriodo").value.trim();
+    var fonte = $("inFonte").value.trim() || "Importação manual";
+
+    if (!nome || !periodo) {
+      err.textContent = "Preencha pelo menos o nome do lote e o período.";
+      err.hidden = false;
+      return;
+    }
+
+    var notasCom = {
+      1: Number($("inN1").value || 0),
+      2: Number($("inN2").value || 0),
+      3: Number($("inN3").value || 0),
+      4: Number($("inN4").value || 0),
+      5: Number($("inN5").value || 0)
+    };
+    var totalCom = notasCom[1] + notasCom[2] + notasCom[3] + notasCom[4] + notasCom[5];
+    if (totalCom <= 0) {
+      err.textContent = "Informe ao menos 1 avaliação com comentário nas estrelas (★1 a ★5).";
+      err.hidden = false;
+      return;
+    }
+
+    var elogios = Number($("inElogios").value || 0);
+    var gen = Number($("inGen").value || 0);
+    var esp = Number($("inEsp").value || 0);
+    if (elogios + gen + esp !== totalCom) {
+      err.textContent = "A soma da classificação (" + (elogios + gen + esp) + ") deve ser igual ao total de comentários (" + totalCom + ").";
+      err.hidden = false;
+      return;
+    }
+
+    var gVals = ["inG1", "inG2", "inG3", "inG4", "inG5"].map(function (id) { return $(id).value.trim(); });
+    var temGeral = gVals.some(function (v) { return v !== ""; });
+    var notasTotais = null, avaliacoesTotais = null;
+    if (temGeral) {
+      notasTotais = {
+        1: Number(gVals[0] || 0),
+        2: Number(gVals[1] || 0),
+        3: Number(gVals[2] || 0),
+        4: Number(gVals[3] || 0),
+        5: Number(gVals[4] || 0)
+      };
+      avaliacoesTotais = notasTotais[1] + notasTotais[2] + notasTotais[3] + notasTotais[4] + notasTotais[5];
+      if (avaliacoesTotais < totalCom) {
+        err.textContent = "O total geral de avaliações (" + avaliacoesTotais + ") não pode ser menor que os comentários (" + totalCom + ").";
+        err.hidden = false;
+        return;
+      }
+    }
+
+    var temas = {};
+    document.querySelectorAll("[data-topic-input]").forEach(function (inp) {
+      temas[inp.dataset.topicInput] = Number(inp.value || 0);
+    });
+
+    var destaques = $("inDestaques").value
+      .split(/\r?\n/)
+      .map(function (s) { return s.trim(); })
+      .filter(Boolean);
+
+    var custom = carregarLotesCustom();
+    var numOnda = LOTES_BASE.length + custom.length + 1;
+    var novo = {
+      id: "onda-" + numOnda + "-" + Date.now().toString(36),
+      nome: nome,
+      curto: "Onda " + numOnda + " · " + periodo.slice(0, 11),
+      periodo: periodo,
+      fonte: fonte,
+      avaliacoesTotais: avaliacoesTotais,
+      notasTotais: notasTotais,
+      avaliacoesComentario: totalCom,
+      notasComentario: notasCom,
+      classificacao: { elogiosNeutros: elogios, criticasGenericas: gen, criticasEspecificas: esp },
+      temas: temas,
+      destaques: destaques,
+      custom: true
+    };
+
+    custom.push(novo);
+    salvarLotesCustom(custom);
+
+    // Seleciona automaticamente o acumulado anterior vs. novo lote
+    var lotes = obterTodosLotes();
+    if (lotes.length >= 3) {
+      state.baseMode = "acum-ate:" + lotes[lotes.length - 2].id;
+    }
+    state.novoId = novo.id;
+
+    popularSeletores();
+    render();
+    abrirModal("modalAdd", false);
+  });
+
+  // Inicialização
+  popularSeletores();
+  renderDiretrizes();
+  render();
+})();
+</script>
+</body>
+</html>
