@@ -149,9 +149,9 @@
     color: var(--rk-muted);
     font-size: 14px;
     line-height: 1.6;
-    max-width: 780px;
   }
   .lead b { color: var(--rk-text); }
+  .hero-text { flex: 1 1 0; min-width: 0; }
   .hero-actions {
     display: flex;
     align-items: center;
@@ -845,7 +845,7 @@
     <!-- Cabeçalho e seletor de comparação -->
     <section class="card">
       <div class="hero-head">
-        <div>
+        <div class="hero-text">
           <div class="eyebrow">Consolidação e evolução de feedbacks</div>
           <h1>Pesquisa de satisfação — Comparativo entre lotes</h1>
           <p class="lead" id="heroLead">
